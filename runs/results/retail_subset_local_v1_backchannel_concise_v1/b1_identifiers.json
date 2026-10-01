@@ -1,0 +1,530 @@
+{
+  "run": "retail_subset_local_v1_backchannel_concise_v1",
+  "definitions": {
+    "auth_success_rate": "share of simulations where authentication succeeded (\u03c4-bench LLM classifier if `tau2 review` ran, else a lookup call with gold arguments)",
+    "entity_recall_used": "share of gold identifiers that appear verbatim (normalised) in a tool-call argument",
+    "entity_never_recognised": "gold identifier never appeared in the agent-heard transcript (needs livekit sidecar)",
+    "entity_recognised_not_used": "heard correctly at least once but never used in a lookup of that kind",
+    "entity_used_wrong_heard_ok": "heard correctly but the tool argument differs (LLM reconstruction / normalisation failure)",
+    "entity_used_wrong_misheard": "tool argument wrong and the transcript never contained the value (STT failure propagated)",
+    "spell_request_rate": "share of simulations where the agent asked to spell / read back at least once"
+  },
+  "summary": {
+    "n": 10,
+    "auth_success_rate": 0.0,
+    "spell_request_rate": 0.6,
+    "entity_recall_used": 0.0,
+    "entity_never_recognised": 0.7368421052631579,
+    "entity_recognised_not_used": 0.10526315789473684,
+    "entity_used_wrong_heard_ok": 0.0,
+    "entity_used_wrong_misheard": 0.15789473684210525,
+    "entity_used_wrong": 0.15789473684210525
+  },
+  "by_group": {
+    "all": {
+      "n": 10,
+      "auth_success_rate": 0.0,
+      "spell_request_rate": 0.6,
+      "entity_recall_used": 0.0,
+      "entity_never_recognised": 0.7368421052631579,
+      "entity_recognised_not_used": 0.10526315789473684,
+      "entity_used_wrong_heard_ok": 0.0,
+      "entity_used_wrong_misheard": 0.15789473684210525,
+      "entity_used_wrong": 0.15789473684210525
+    },
+    "persona=priya_patil": {
+      "n": 2,
+      "auth_success_rate": 0.0,
+      "spell_request_rate": 0.5,
+      "entity_recall_used": 0.0,
+      "entity_never_recognised": 1.0,
+      "entity_recognised_not_used": 0.0,
+      "entity_used_wrong_heard_ok": 0.0,
+      "entity_used_wrong_misheard": 0.0,
+      "entity_used_wrong": 0.0
+    },
+    "env=indoor": {
+      "n": 6,
+      "auth_success_rate": 0.0,
+      "spell_request_rate": 0.6666666666666666,
+      "entity_recall_used": 0.0,
+      "entity_never_recognised": 0.7,
+      "entity_recognised_not_used": 0.0,
+      "entity_used_wrong_heard_ok": 0.0,
+      "entity_used_wrong_misheard": 0.3,
+      "entity_used_wrong": 0.3
+    },
+    "persona=wei_lin": {
+      "n": 3,
+      "auth_success_rate": 0.0,
+      "spell_request_rate": 0.6666666666666666,
+      "entity_recall_used": 0.0,
+      "entity_never_recognised": 0.6666666666666666,
+      "entity_recognised_not_used": 0.0,
+      "entity_used_wrong_heard_ok": 0.0,
+      "entity_used_wrong_misheard": 0.3333333333333333,
+      "entity_used_wrong": 0.3333333333333333
+    },
+    "persona=mamadou_diallo": {
+      "n": 2,
+      "auth_success_rate": 0.0,
+      "spell_request_rate": 0.5,
+      "entity_recall_used": 0.0,
+      "entity_never_recognised": 0.75,
+      "entity_recognised_not_used": 0.0,
+      "entity_used_wrong_heard_ok": 0.0,
+      "entity_used_wrong_misheard": 0.25,
+      "entity_used_wrong": 0.25
+    },
+    "persona=arjun_roy": {
+      "n": 2,
+      "auth_success_rate": 0.0,
+      "spell_request_rate": 0.5,
+      "entity_recall_used": 0.0,
+      "entity_never_recognised": 0.5,
+      "entity_recognised_not_used": 0.5,
+      "entity_used_wrong_heard_ok": 0.0,
+      "entity_used_wrong_misheard": 0.0,
+      "entity_used_wrong": 0.0
+    },
+    "env=outdoor": {
+      "n": 4,
+      "auth_success_rate": 0.0,
+      "spell_request_rate": 0.5,
+      "entity_recall_used": 0.0,
+      "entity_never_recognised": 0.7777777777777778,
+      "entity_recognised_not_used": 0.2222222222222222,
+      "entity_used_wrong_heard_ok": 0.0,
+      "entity_used_wrong_misheard": 0.0,
+      "entity_used_wrong": 0.0
+    },
+    "persona=mildred_kaplan": {
+      "n": 1,
+      "auth_success_rate": 0.0,
+      "spell_request_rate": 1.0,
+      "entity_recall_used": 0.0,
+      "entity_never_recognised": 1.0,
+      "entity_recognised_not_used": 0.0,
+      "entity_used_wrong_heard_ok": 0.0,
+      "entity_used_wrong_misheard": 0.0,
+      "entity_used_wrong": 0.0
+    }
+  },
+  "per_simulation": {
+    "138cf2e0-d6d7-4e2b-a1b0-72bff6bd3f6a": {
+      "task_id": "24",
+      "persona": "priya_patil",
+      "environment": "indoor",
+      "reward": 0.0,
+      "auth": "not_attempted",
+      "auth_source": "heuristic",
+      "gold": {},
+      "used": {},
+      "entity_status": {},
+      "grounding_status": {},
+      "n_lookup_calls": 0,
+      "tick_first_lookup": null,
+      "tick_first_write": null,
+      "spell_requests": 1,
+      "letter_readbacks": 1,
+      "heard_available": true,
+      "user_said_chars": 3980
+    },
+    "47764e20-c2c2-441f-be16-c78cc17a0dbd": {
+      "task_id": "8",
+      "persona": "priya_patil",
+      "environment": "indoor",
+      "reward": 0.0,
+      "auth": "not_attempted",
+      "auth_source": "heuristic",
+      "gold": {
+        "name": [
+          "Mei Kovacs"
+        ],
+        "zip": [
+          "28236"
+        ],
+        "order_id": [
+          "#W6390527"
+        ],
+        "user_id": [
+          "mei_kovacs_8020"
+        ]
+      },
+      "used": {},
+      "entity_status": {
+        "name:Mei Kovacs": "never_recognised",
+        "zip:28236": "never_recognised"
+      },
+      "grounding_status": {
+        "order_id:#W6390527": "never_recognised",
+        "user_id:mei_kovacs_8020": "never_recognised"
+      },
+      "n_lookup_calls": 0,
+      "tick_first_lookup": null,
+      "tick_first_write": null,
+      "spell_requests": 0,
+      "letter_readbacks": 0,
+      "heard_available": true,
+      "user_said_chars": 1496
+    },
+    "4b0dffa2-94b7-461f-8dee-770922d5e998": {
+      "task_id": "23",
+      "persona": "wei_lin",
+      "environment": "indoor",
+      "reward": 0.0,
+      "auth": "failed",
+      "auth_source": "heuristic",
+      "gold": {
+        "name": [
+          "Sofia Hernandez"
+        ],
+        "zip": [
+          "98193"
+        ],
+        "order_id": [
+          "#W3561391",
+          "#W3947049",
+          "#W6876713",
+          "#W9609649"
+        ],
+        "user_id": [
+          "sofia_hernandez_5364"
+        ]
+      },
+      "used": {
+        "name": [
+          "Sophie Hernandez"
+        ],
+        "zip": [
+          "98000193"
+        ]
+      },
+      "entity_status": {
+        "name:Sofia Hernandez": "used_wrong_misheard",
+        "zip:98193": "used_wrong_misheard"
+      },
+      "grounding_status": {
+        "order_id:#W3561391": "never_recognised",
+        "order_id:#W3947049": "never_recognised",
+        "order_id:#W6876713": "never_recognised",
+        "order_id:#W9609649": "never_recognised",
+        "user_id:sofia_hernandez_5364": "never_recognised"
+      },
+      "n_lookup_calls": 1,
+      "tick_first_lookup": 1477,
+      "tick_first_write": null,
+      "spell_requests": 2,
+      "letter_readbacks": 0,
+      "heard_available": true,
+      "user_said_chars": 2180
+    },
+    "58d8aca3-18ed-4ea3-82cc-20e8c92652e4": {
+      "task_id": "16",
+      "persona": "wei_lin",
+      "environment": "indoor",
+      "reward": 0.0,
+      "auth": "not_attempted",
+      "auth_source": "heuristic",
+      "gold": {
+        "name": [
+          "Fatima Johnson"
+        ],
+        "zip": [
+          "78712"
+        ],
+        "order_id": [
+          "#W5199551",
+          "#W8665881",
+          "#W9389413"
+        ],
+        "user_id": [
+          "fatima_johnson_7581"
+        ]
+      },
+      "used": {},
+      "entity_status": {
+        "name:Fatima Johnson": "never_recognised",
+        "zip:78712": "never_recognised"
+      },
+      "grounding_status": {
+        "order_id:#W5199551": "never_recognised",
+        "order_id:#W8665881": "never_recognised",
+        "order_id:#W9389413": "never_recognised",
+        "user_id:fatima_johnson_7581": "never_recognised"
+      },
+      "n_lookup_calls": 0,
+      "tick_first_lookup": null,
+      "tick_first_write": null,
+      "spell_requests": 5,
+      "letter_readbacks": 0,
+      "heard_available": true,
+      "user_said_chars": 3021
+    },
+    "994fe2f9-f8e6-4e8c-ae25-829a67d16515": {
+      "task_id": "22",
+      "persona": "mamadou_diallo",
+      "environment": "indoor",
+      "reward": 0.0,
+      "auth": "failed",
+      "auth_source": "heuristic",
+      "gold": {
+        "name": [
+          "Ethan Garcia"
+        ],
+        "zip": [
+          "80280"
+        ],
+        "order_id": [
+          "#W4967593",
+          "#W5733668",
+          "#W9911714"
+        ],
+        "user_id": [
+          "ethan_garcia_1261"
+        ]
+      },
+      "used": {
+        "user_id": [
+          "12345",
+          "12345"
+        ],
+        "name": [
+          "Chua Unknown",
+          "Chua"
+        ],
+        "zip": [
+          "",
+          ""
+        ]
+      },
+      "entity_status": {
+        "name:Ethan Garcia": "used_wrong_misheard",
+        "zip:80280": "never_recognised"
+      },
+      "grounding_status": {
+        "order_id:#W4967593": "never_recognised",
+        "order_id:#W5733668": "never_recognised",
+        "order_id:#W9911714": "never_recognised",
+        "user_id:ethan_garcia_1261": "used_wrong_misheard"
+      },
+      "n_lookup_calls": 2,
+      "tick_first_lookup": 793,
+      "tick_first_write": 519,
+      "spell_requests": 61,
+      "letter_readbacks": 0,
+      "heard_available": true,
+      "user_said_chars": 1716
+    },
+    "9a613cdb-34e8-4db8-9bf9-2609a4733c73": {
+      "task_id": "7",
+      "persona": "mamadou_diallo",
+      "environment": "indoor",
+      "reward": 0.0,
+      "auth": "not_attempted",
+      "auth_source": "heuristic",
+      "gold": {
+        "name": [
+          "Mei Kovacs"
+        ],
+        "zip": [
+          "28236"
+        ],
+        "order_id": [
+          "#W6390527"
+        ],
+        "user_id": [
+          "mei_kovacs_8020"
+        ]
+      },
+      "used": {},
+      "entity_status": {
+        "name:Mei Kovacs": "never_recognised",
+        "zip:28236": "never_recognised"
+      },
+      "grounding_status": {
+        "order_id:#W6390527": "never_recognised",
+        "user_id:mei_kovacs_8020": "never_recognised"
+      },
+      "n_lookup_calls": 0,
+      "tick_first_lookup": null,
+      "tick_first_write": null,
+      "spell_requests": 0,
+      "letter_readbacks": 0,
+      "heard_available": true,
+      "user_said_chars": 2565
+    },
+    "c770bff1-680f-41f8-9caf-d52919e87335": {
+      "task_id": "19",
+      "persona": "arjun_roy",
+      "environment": "outdoor",
+      "reward": 0.0,
+      "auth": "not_attempted",
+      "auth_source": "heuristic",
+      "gold": {
+        "name": [
+          "Mei Davis"
+        ],
+        "zip": [
+          "80217"
+        ],
+        "order_id": [
+          "#W1267569",
+          "#W2890441"
+        ],
+        "user_id": [
+          "mei_davis_8935"
+        ]
+      },
+      "used": {},
+      "entity_status": {
+        "name:Mei Davis": "never_recognised",
+        "zip:80217": "never_recognised"
+      },
+      "grounding_status": {
+        "order_id:#W1267569": "never_recognised",
+        "order_id:#W2890441": "never_recognised",
+        "user_id:mei_davis_8935": "never_recognised"
+      },
+      "n_lookup_calls": 0,
+      "tick_first_lookup": null,
+      "tick_first_write": null,
+      "spell_requests": 0,
+      "letter_readbacks": 0,
+      "heard_available": true,
+      "user_said_chars": 1065
+    },
+    "d45aee52-058d-4d8c-82e6-c8f1b74f35ee": {
+      "task_id": "14",
+      "persona": "mildred_kaplan",
+      "environment": "outdoor",
+      "reward": 0.0,
+      "auth": "not_attempted",
+      "auth_source": "heuristic",
+      "gold": {
+        "name": [
+          "Mia Garcia"
+        ],
+        "zip": [
+          "46229"
+        ],
+        "email": [
+          "mia.garcia2723@example.com"
+        ],
+        "order_id": [
+          "#W5490111",
+          "#W7387996"
+        ],
+        "user_id": [
+          "mia_garcia_4516"
+        ]
+      },
+      "used": {},
+      "entity_status": {
+        "name:Mia Garcia": "never_recognised",
+        "zip:46229": "never_recognised",
+        "email:mia.garcia2723@example.com": "never_recognised"
+      },
+      "grounding_status": {
+        "order_id:#W5490111": "never_recognised",
+        "order_id:#W7387996": "never_recognised",
+        "user_id:mia_garcia_4516": "never_recognised"
+      },
+      "n_lookup_calls": 0,
+      "tick_first_lookup": null,
+      "tick_first_write": null,
+      "spell_requests": 39,
+      "letter_readbacks": 0,
+      "heard_available": true,
+      "user_said_chars": 804
+    },
+    "e74b1d03-c48d-429a-89d5-97fb9285f410": {
+      "task_id": "4",
+      "persona": "arjun_roy",
+      "environment": "outdoor",
+      "reward": 0.0,
+      "auth": "not_attempted",
+      "auth_source": "heuristic",
+      "gold": {
+        "name": [
+          "Yusuf Rossi"
+        ],
+        "zip": [
+          "19122"
+        ],
+        "order_id": [
+          "#W2378156",
+          "#W4776164",
+          "#W6247578",
+          "#W6679257",
+          "#W9711842"
+        ],
+        "user_id": [
+          "yusuf_rossi_9620"
+        ]
+      },
+      "used": {
+        "user_id": [
+          "yusuf_rossi_789"
+        ]
+      },
+      "entity_status": {
+        "name:Yusuf Rossi": "recognised_not_used",
+        "zip:19122": "recognised_not_used"
+      },
+      "grounding_status": {
+        "order_id:#W2378156": "never_recognised",
+        "order_id:#W4776164": "never_recognised",
+        "order_id:#W6247578": "never_recognised",
+        "order_id:#W6679257": "never_recognised",
+        "order_id:#W9711842": "never_recognised",
+        "user_id:yusuf_rossi_9620": "used_wrong_misheard"
+      },
+      "n_lookup_calls": 0,
+      "tick_first_lookup": null,
+      "tick_first_write": null,
+      "spell_requests": 9,
+      "letter_readbacks": 0,
+      "heard_available": true,
+      "user_said_chars": 3147
+    },
+    "e9615047-50c3-454f-9c3f-5a0182f24465": {
+      "task_id": "6",
+      "persona": "wei_lin",
+      "environment": "outdoor",
+      "reward": 0.0,
+      "auth": "not_attempted",
+      "auth_source": "heuristic",
+      "gold": {
+        "name": [
+          "Mei Kovacs"
+        ],
+        "zip": [
+          "28236"
+        ],
+        "order_id": [
+          "#W6390527"
+        ],
+        "user_id": [
+          "mei_kovacs_8020"
+        ]
+      },
+      "used": {},
+      "entity_status": {
+        "name:Mei Kovacs": "never_recognised",
+        "zip:28236": "never_recognised"
+      },
+      "grounding_status": {
+        "order_id:#W6390527": "never_recognised",
+        "user_id:mei_kovacs_8020": "never_recognised"
+      },
+      "n_lookup_calls": 0,
+      "tick_first_lookup": null,
+      "tick_first_write": null,
+      "spell_requests": 0,
+      "letter_readbacks": 0,
+      "heard_available": true,
+      "user_said_chars": 3177
+    }
+  }
+}

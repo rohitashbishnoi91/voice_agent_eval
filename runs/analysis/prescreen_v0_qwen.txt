@@ -1,0 +1,94 @@
+.FF                                                                      [100%]
+=================================== FAILURES ===================================
+____________________ test_identifier_capture[email_spoken] _____________________
+
+case_id = 'email_spoken'
+turns = ['hello i need to return something', 'my email is yusuf dot rossi at example dot com']
+gold = {'email': 'yusuf.rossi@example.com'}
+
+    @pytest.mark.parametrize("case_id,turns,gold", CASES, ids=[c[0] for c in CASES])
+    def test_identifier_capture(case_id, turns, gold):
+        """Sync wrapper: the tau2 env has no pytest-asyncio; run the case on a fresh loop."""
+        import asyncio
+    
+>       asyncio.run(_run_case(case_id, turns, gold))
+
+../../evals/text/test_b1_spelling.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../.pyenv/versions/3.12.3/lib/python3.12/asyncio/runners.py:194: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+../../../.pyenv/versions/3.12.3/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../.pyenv/versions/3.12.3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+../../evals/text/test_b1_spelling.py:152: in _run_case
+    await last.is_message(role="assistant").judge(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (<livekit.agents.voice.run_result.ChatMessageAssert object at 0x121035610>, <livekit.plugins.openai.llm.LLM object at 0x11e8893d0>)
+kwargs = {'intent': "Asks the customer to spell or confirm their identifying information (name, zip code, or email) letter by letter or digit by digit, OR confirms the customer's identity was found. Must not claim any order change was made."}
+
+    @functools.wraps(func)  # type: ignore
+    async def async_wrapper(*args: Pargs, **kwargs: Pkwargs) -> R:  # pyright: ignore [reportInvalidTypeVarUse]
+        with self._recreate_cm():  # type: ignore
+>           return await func(*args, **kwargs)  # type: ignore
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: LLM did not return any arguments for evaluation.
+E           Context around failure:
+E           >>> [0] ChatMessageEvent(item={'role': 'assistant', 'content': ['Thank you, Yusuf. Could you please spell out your first and last name and your order ID? This will help me locate your order and ensure I have the correct information.'], 'metrics': {'started_speaking_at': 1790669420.1785338, 'stopped_speaking_at': 1790669421.64078, 'llm_node_ttft': 0.1966379999939818, 'llm_node_tps': 26.032995414731925, 'playback_latency': 0.0, 'llm_metadata': {'model_name': 'qwen2.5:7b', 'model_provider': 'localhost:11434'}}})
+
+.venv/lib/python3.12/site-packages/opentelemetry/util/_decorator.py:71: AssertionError
+__________________ test_identifier_capture[zip_digits_merged] __________________
+
+case_id = 'zip_digits_merged'
+turns = ["i'd like to cancel an order", 'name is Yusuf Rossi and the zip is nineteen one twenty two']
+gold = {'first_name': 'Yusuf', 'last_name': 'Rossi', 'zip': '19122'}
+
+    @pytest.mark.parametrize("case_id,turns,gold", CASES, ids=[c[0] for c in CASES])
+    def test_identifier_capture(case_id, turns, gold):
+        """Sync wrapper: the tau2 env has no pytest-asyncio; run the case on a fresh loop."""
+        import asyncio
+    
+>       asyncio.run(_run_case(case_id, turns, gold))
+
+../../evals/text/test_b1_spelling.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../.pyenv/versions/3.12.3/lib/python3.12/asyncio/runners.py:194: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+../../../.pyenv/versions/3.12.3/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../.pyenv/versions/3.12.3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+../../evals/text/test_b1_spelling.py:152: in _run_case
+    await last.is_message(role="assistant").judge(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (<livekit.agents.voice.run_result.ChatMessageAssert object at 0x121c1e510>, <livekit.plugins.openai.llm.LLM object at 0x121d2f1d0>)
+kwargs = {'intent': "Asks the customer to spell or confirm their identifying information (name, zip code, or email) letter by letter or digit by digit, OR confirms the customer's identity was found. Must not claim any order change was made."}
+
+    @functools.wraps(func)  # type: ignore
+    async def async_wrapper(*args: Pargs, **kwargs: Pkwargs) -> R:  # pyright: ignore [reportInvalidTypeVarUse]
+        with self._recreate_cm():  # type: ignore
+>           return await func(*args, **kwargs)  # type: ignore
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: LLM did not return any arguments for evaluation.
+E           Context around failure:
+E           >>> [0] ChatMessageEvent(item={'role': 'assistant', 'content': ["I'll need the order ID to proceed, as well as the reason for cancellation. Could you please provide the order ID, Yusuf? And let me know whether it's because you no longer need it or ordered it by mistake."], 'metrics': {'started_speaking_at': 1790669427.182959, 'stopped_speaking_at': 1790669429.094209, 'llm_node_ttft': 0.1916110000165645, 'llm_node_tps': 25.660067947340185, 'playback_latency': 0.0, 'llm_metadata': {'model_name': 'qwen2.5:7b', 'model_provider': 'localhost:11434'}}})
+
+.venv/lib/python3.12/site-packages/opentelemetry/util/_decorator.py:71: AssertionError
+=============================== warnings summary ===============================
+src/tau2/voice/utils/audio_preprocessing.py:4
+  /Users/rohitashbishnoi/livekit-agent-evals/external/tau2-bench/src/tau2/voice/utils/audio_preprocessing.py:4: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+    import audioop
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../evals/text/test_b1_spelling.py::test_identifier_capture[email_spoken]
+FAILED ../../evals/text/test_b1_spelling.py::test_identifier_capture[zip_digits_merged]
+2 failed, 1 passed, 1 warning in 44.84s

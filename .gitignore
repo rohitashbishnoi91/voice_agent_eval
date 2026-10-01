@@ -1,0 +1,12 @@
+# large / local-only artefacts
+runs/*
+!runs/results/
+!runs/analysis/
+# the tau2-bench clone (our changes live in patches/, see patches/README.md)
+external/tau2-bench/
+.env
+.env.local
+__pycache__/
+*.pyc
+.venv/
+*.wav

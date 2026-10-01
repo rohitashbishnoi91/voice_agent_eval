@@ -1,0 +1,284 @@
+[
+  {
+    "task_id": "24",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 784.5496076249983,
+    "ticks": 3001,
+    "agent_speech_ticks": 814,
+    "user_speech_ticks": 897,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": []
+  },
+  {
+    "task_id": "8",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 802.4260452919989,
+    "ticks": 3001,
+    "agent_speech_ticks": 1088,
+    "user_speech_ticks": 523,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": []
+  },
+  {
+    "task_id": "23",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 785.9612199169933,
+    "ticks": 3001,
+    "agent_speech_ticks": 588,
+    "user_speech_ticks": 752,
+    "tool_calls": 1,
+    "tool_errors": 1,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": [
+      {
+        "tick": 1477,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "last_name": "Hernandez",
+          "zip": "98000193",
+          "first_name": "Sophie"
+        },
+        "id": "call_geudlu4a",
+        "error": true
+      }
+    ]
+  },
+  {
+    "task_id": "16",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 760.8519367919944,
+    "ticks": 3001,
+    "agent_speech_ticks": 526,
+    "user_speech_ticks": 965,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": []
+  },
+  {
+    "task_id": "22",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 979.753238166013,
+    "ticks": 3001,
+    "agent_speech_ticks": 1070,
+    "user_speech_ticks": 592,
+    "tool_calls": 4,
+    "tool_errors": 4,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 3,
+    "unbacked_claims": 3,
+    "calls": [
+      {
+        "tick": 519,
+        "name": "modify_user_address",
+        "arguments": {
+          "zip": "10001",
+          "user_id": "12345",
+          "address1": "101 Highway",
+          "address2": "",
+          "city": "New York",
+          "state": "",
+          "country": ""
+        },
+        "id": "call_9l3asqvd",
+        "error": true
+      },
+      {
+        "tick": 637,
+        "name": "get_user_details",
+        "arguments": {
+          "user_id": "12345"
+        },
+        "id": "call_nklsj4tc",
+        "error": true
+      },
+      {
+        "tick": 793,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "first_name": "Chua",
+          "last_name": "Unknown",
+          "zip": ""
+        },
+        "id": "call_6r8zm5dc",
+        "error": true
+      },
+      {
+        "tick": 1153,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "first_name": "Chua",
+          "last_name": "",
+          "zip": ""
+        },
+        "id": "call_0tzovshx",
+        "error": true
+      }
+    ]
+  },
+  {
+    "task_id": "7",
+    "reward": 0.0,
+    "termination": "TerminationReason.USER_STOP",
+    "duration": 728.2706908340042,
+    "ticks": 2696,
+    "agent_speech_ticks": 813,
+    "user_speech_ticks": 703,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": []
+  },
+  {
+    "task_id": "19",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 1153.9160974170081,
+    "ticks": 3001,
+    "agent_speech_ticks": 1093,
+    "user_speech_ticks": 352,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": []
+  },
+  {
+    "task_id": "14",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 958.8912946250057,
+    "ticks": 3001,
+    "agent_speech_ticks": 1181,
+    "user_speech_ticks": 311,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": []
+  },
+  {
+    "task_id": "4",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 902.962585250003,
+    "ticks": 3001,
+    "agent_speech_ticks": 1016,
+    "user_speech_ticks": 690,
+    "tool_calls": 8,
+    "tool_errors": 8,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 3,
+    "calls": [
+      {
+        "tick": 373,
+        "name": "get_product_details",
+        "arguments": {
+          "product_id": "6086499569"
+        },
+        "id": "call_rwrhz0hk",
+        "error": true
+      },
+      {
+        "tick": 505,
+        "name": "get_user_details",
+        "arguments": {
+          "user_id": "yusuf_rossi_789"
+        },
+        "id": "call_iflvbcml",
+        "error": true
+      },
+      {
+        "tick": 650,
+        "name": "get_product_details",
+        "arguments": {
+          "product_id": "6086499569"
+        },
+        "id": "call_y9gbxuj0",
+        "error": true
+      },
+      {
+        "tick": 766,
+        "name": "get_product_details",
+        "arguments": {
+          "product_id": "6086499569"
+        },
+        "id": "call_b4h37376",
+        "error": true
+      },
+      {
+        "tick": 1071,
+        "name": "get_product_details",
+        "arguments": {
+          "product_id": "6086499569"
+        },
+        "id": "call_pdzhhifu",
+        "error": true
+      },
+      {
+        "tick": 1248,
+        "name": "get_product_details",
+        "arguments": {
+          "product_id": "6789012345"
+        },
+        "id": "call_bwtxmp5k",
+        "error": true
+      },
+      {
+        "tick": 1394,
+        "name": "get_product_details",
+        "arguments": {
+          "product_id": "6086499569"
+        },
+        "id": "call_dhmro8yu",
+        "error": true
+      },
+      {
+        "tick": 1444,
+        "name": "get_product_details",
+        "arguments": {
+          "product_id": "6086499569"
+        },
+        "id": "call_p2tyacik",
+        "error": true
+      }
+    ]
+  },
+  {
+    "task_id": "6",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 808.0103307090176,
+    "ticks": 3001,
+    "agent_speech_ticks": 1008,
+    "user_speech_ticks": 1160,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": []
+  }
+]

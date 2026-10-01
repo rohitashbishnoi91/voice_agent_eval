@@ -1,0 +1,3662 @@
+{
+  "timestamp": "2026-09-29T17:52:02.851700",
+  "info": {
+    "git_commit": "b7ea9074c1cba482b30687fecdb5c8425fd6f619",
+    "num_trials": 1,
+    "max_steps": 3000,
+    "max_errors": 10,
+    "user_info": {
+      "implementation": "voice_streaming_user_simulator",
+      "llm": "ollama_chat/qwen2.5:7b",
+      "llm_args": {
+        "temperature": 0.0
+      },
+      "global_simulation_guidelines": "# Voice Call Simulation Guidelines\n\nYou are playing the role of a customer making a VOICE CALL to a customer service representative. \nYour goal is to simulate realistic phone conversations while following specific scenario instructions.\n\n## Core Voice Call Principles\n- You are SPEAKING on a phone call, not typing messages. Use natural spoken language.\n- Generate one utterance at a time, as you would in a real phone conversation.\n- Include natural speech patterns:\n  - Disfluencies: \"um\", \"uh\", \"you know\", \"like\", \"I mean\"\n  - Restarts: \"Can you [pause] sorry, I meant to ask, can you help me with...\"\n  - Filler words and pauses: \"So, um, I was wondering if you could, you know, help me out\"\n  - Use em dashes (\u2014) and [pause] to signify pauses: \"I was trying to\u2014wait, let me think [pause]\" or \"The issue started [pause] maybe three days ago?\"\n- Don't worry about perfect grammar or complete sentences - speak naturally\n\n## Speaking Special Characters and Numbers\nWhen providing emails, user IDs, or any text with special characters, SPELL THEM OUT as you would on a phone:\n- @ = \"at\"\n- . = \"dot\"\n- _ = \"underscore\"\n- - = \"dash\" or \"hyphen\"\n- / = \"slash\"\n- \\ = \"backslash\"\n\nWhen speaking numbers or spelling out letters, ALWAYS separate them with comma and space:\n- Numbers: \"one, two, three\" NOT \"one two three\"\n- Letters: \"J, O, H, N\" NOT \"J O H N\" or \"JOHN\"\n- Mixed: \"A, B, one, two, three\" NOT \"AB123\"\n\nExamples:\n- Email: \"Yeah, it's john underscore doe at gmail dot com\"\n- User ID: \"My user ID is, um, user dash one, two, three\"\n- Phone: \"It's five, five, five, dash, one, two, three, four\"\n- Spelling name: \"That's J, O, H, N... Smith\"\n- Account number: \"My account is A, B, C, one, two, three, four\"\n- Website: \"I was on your site, uh, www dot example dot com slash support\"\n\n## Scenario Adherence\n- Strictly follow the scenario instructions you have received.\n- **You only know what is explicitly stated in the scenario instructions.** If a piece of information is not provided, you do not know it \u2014 even if it is something a real person would typically know about themselves (e.g., zip code, address, order ID, size/color preferences, past order details). When asked, say you don't know or don't remember.\n- Never fabricate, guess, or infer information not explicitly provided in the scenario instructions. If asked for a preference (e.g., color, size, payment method) that is not in your instructions, say you have no preference. \n- **Do not end the conversation prematurely.** Agreeing to an action is not the same as the action being completed. If the agent offers to do something (e.g., cancel an order, process a refund), wait for the agent to confirm it is done before ending the conversation.\n- **Before ending the conversation, verify that ALL items in your scenario instructions have been addressed.** If your instructions include multiple requests, questions, or tasks, make sure every single one has been completed \u2014 do not stop after only some of them are resolved.\n\n## Natural Conversation Flow\n- Since this is an audio call, there may be background noise and the agent may have difficulty hearing you clearly. If the agent asks you to repeat information, it's okay to repeat it once or twice in the conversation\n- If the agent asks you to repeat your name, email, or other personal details, offer to spell it out letter by letter (as shown in examples above).\n- Interrupt yourself occasionally: \"I've been trying to... oh wait, should I give you my account number first?\"\n- Ask for clarification: \"Sorry, could you repeat that? I didn't quite catch it\"\n- Show emotion naturally: \"I'm really frustrated because...\" or \"Oh great, that would be wonderful!\"\n- Use conversational confirmations: \"Uh huh\", \"Yeah\", \"Okay\", \"Got it\"\n- Vary your speech patterns - sometimes brief, sometimes more verbose\n\n## Handling Agent Silence\nIf it is the agent's turn to respond and the agent doesn't say anything for an extended period:\n- Check in with the agent to see if they're still there or if there are any updates on your previous questions\n- Examples: \"Hello? Are you still there?\", \"Did you find anything?\", \"Any updates on my query about ...?\"\n- Do NOT volunteer new information during these check-ins - only inquire about the current status\n- If the agent continues to not respond after 2 check-ins, show signs of frustration and end the call\n- Examples of frustrated endings: \"This is ridiculous, I'll try calling back later\" or \"I don't have time for this, goodbye\"\n\n## Information Disclosure\n- **Only share information that is explicitly provided in the scenario instructions.**\n- When the agent asks for something not in your scenario, respond naturally: \"Um, I'm not sure actually\", \"I don't remember off the top of my head\", \"Hmm, I'd have to look that up\"\n- Start with minimal information and only add details when specifically asked\n- Make the agent work for information: \"It's not working\" \u2192 (agent asks what's not working) \u2192 \"The app\" \u2192 (agent asks which app) \u2192 \"Your mobile app\"\n- If asked for multiple pieces of information, provide them one at a time: \"Sure, my email is john underscore doe at gmail dot com... oh, you need my phone number too?\"\n- Sometimes forget details: \"My order number is... um, let me check... hold on...\"\n- Use vague initial statements: \"I have a problem\" or \"Something's wrong with my account\" rather than detailed explanations\n\n## Task Completion\n- The goal is to continue the conversation until the task is complete.\n- If the instruction goal is satisfied, generate the '###STOP###' token to end the conversation.\n- If you are transferred to another agent, generate the '###TRANSFER###' token to indicate the transfer.\n- If you find yourself in a situation in which the scenario does not provide enough information for you to continue the conversation, generate the '###OUT-OF-SCOPE###' token to end the conversation.\n\n## Important Reminders\n- Strictly follow the scenario instructions you have received.\n- Never make up or hallucinate information not provided in the scenario instructions.\n- All information not in the scenario should be considered unknown: \"I'm not sure about that\" or \"I don't have that information\"\n- Sound like a real person on a phone call, not a formal written message\n\nRemember: The goal is to create realistic VOICE conversations while strictly adhering to the provided instructions and maintaining character consistency.\n<PERSONA_GUIDELINES>\nNote: You still need to use special tokens like ###STOP### as described in the user guidelines.\n",
+      "voice_settings": {
+        "synthesis_config": {
+          "provider": "kokoro",
+          "provider_config": {
+            "model_id": "eleven_v3",
+            "voice_id": null,
+            "api_key": null,
+            "voice_settings": {
+              "stability": 0.5,
+              "use_speaker_boost": false,
+              "similarity_boost": 0.75,
+              "style": 0.0
+            },
+            "insert_audio_tags": true,
+            "audio_tags_probability": 0.2,
+            "seed": null,
+            "persona_name": null
+          },
+          "channel_effects_config": {
+            "enable_frame_drops": true,
+            "frame_drop_rate": 0.01,
+            "frame_drop_burst_duration_ms": 100.0,
+            "frame_drop_count": 1,
+            "frame_drop_duration_ms": 150
+          },
+          "source_effects_config": {
+            "enable_background_noise": true,
+            "noise_snr_db": 15.0,
+            "noise_snr_drift_db": 3.0,
+            "noise_variation_speed": 0.5,
+            "enable_burst_noise": true,
+            "burst_noise_events_per_minute": 1.0,
+            "burst_snr_range_db": [
+              -5.0,
+              10.0
+            ]
+          },
+          "speech_effects_config": {
+            "enable_dynamic_muffling": true,
+            "muffle_probability": 0.2,
+            "muffle_segment_count": 1,
+            "muffle_segment_duration_ms": 500,
+            "muffle_cutoff_freq": 1500.0,
+            "muffle_transition_ms": 100,
+            "enable_vocal_tics": true,
+            "vocal_tics": [
+              {
+                "text": ".[cough][cough][cough]",
+                "type": "vocal_tic"
+              },
+              {
+                "text": ".[sneeze][sneeze][sneeze]",
+                "type": "vocal_tic"
+              },
+              {
+                "text": ".[sniffle][sniffle][sniffle]",
+                "type": "vocal_tic"
+              }
+            ],
+            "min_words_for_vocal_tics": 3,
+            "enable_non_directed_phrases": true,
+            "non_directed_phrases": [
+              {
+                "text": "Not now.",
+                "type": "non_directed_phrase"
+              },
+              {
+                "text": "Hold on a second.",
+                "type": "non_directed_phrase"
+              },
+              {
+                "text": "I'm on the phone.",
+                "type": "non_directed_phrase"
+              },
+              {
+                "text": "Just a minute.",
+                "type": "non_directed_phrase"
+              },
+              {
+                "text": "I don't know.",
+                "type": "non_directed_phrase"
+              },
+              {
+                "text": "Give me a moment.",
+                "type": "non_directed_phrase"
+              },
+              {
+                "text": "One second.",
+                "type": "non_directed_phrase"
+              },
+              {
+                "text": "I'll be right with you.",
+                "type": "non_directed_phrase"
+              },
+              {
+                "text": "Can you wait?",
+                "type": "non_directed_phrase"
+              },
+              {
+                "text": "Shh, quiet.",
+                "type": "non_directed_phrase"
+              }
+            ],
+            "speech_insert_events_per_minute": 0.7
+          }
+        },
+        "transcription_config": null,
+        "output_dir": null,
+        "speech_environment": {
+          "voice_seed": 300,
+          "persona_name": "matt_delaney",
+          "voice_id": null,
+          "background_noise_file": null,
+          "burst_noise_files": [],
+          "environment": null,
+          "backchannel_min_threshold": null,
+          "use_llm_backchannel": true,
+          "enable_interruptions": false,
+          "telephony_enabled": true,
+          "complexity": "regular",
+          "snr_speech_reference_rms": 3000.0,
+          "source_effects_config": null,
+          "speech_effects_config": null,
+          "channel_effects_config": null
+        },
+        "synthesis_enabled": true,
+        "transcription_enabled": false
+      },
+      "persona_config": {
+        "verbosity": "minimal",
+        "interrupt_tendency": "interrupts"
+      }
+    },
+    "agent_info": {
+      "implementation": "discrete_time_audio_native_agent",
+      "llm": "livekit_session:cascaded-session",
+      "llm_args": null,
+      "voice_settings": null
+    },
+    "environment_info": {
+      "domain_name": "retail",
+      "policy": "# Retail agent policy\n\nAs a retail agent, you can help users:\n\n- **cancel or modify pending orders**\n- **return or exchange delivered orders**\n- **modify their default user address**\n- **provide information about their own profile, orders, and related products**\n\nAt the beginning of the conversation, you have to authenticate the user identity by locating their user id via email, or via name + zip code. This has to be done even when the user already provides the user id.\n\nOnce the user has been authenticated, you can provide the user with information about order, product, profile information, e.g. help the user look up order id.\n\nYou can only help one user per conversation (but you can handle multiple requests from the same user), and must deny any requests for tasks related to any other user.\n\nBefore taking any action that updates the database (cancel, modify, return, exchange), you must list the action details and obtain explicit user confirmation (yes) to proceed.\n\nYou should not make up any information or knowledge or procedures not provided by the user or the tools, or give subjective recommendations or comments.\n\nYou should at most make one tool call at a time, and if you take a tool call, you should not respond to the user at the same time. If you respond to the user, you should not make a tool call at the same time.\n\nYou should deny user requests that are against this policy.\n\nYou should transfer the user to a human agent if and only if the request cannot be handled within the scope of your actions. To transfer, first make a tool call to transfer_to_human_agents, and then send the message 'YOU ARE BEING TRANSFERRED TO A HUMAN AGENT. PLEASE HOLD ON.' to the user.\n\n## Domain basic\n\n- All times in the database are EST and 24 hour based. For example \"02:30:00\" means 2:30 AM EST.\n\n### User\n\nEach user has a profile containing:\n\n- unique user id\n- email\n- default address\n- payment methods.\n\nThere are three types of payment methods: **gift card**, **paypal account**, **credit card**.\n\n### Product\n\nOur retail store has 50 types of products.\n\nFor each **type of product**, there are **variant items** of different **options**.\n\nFor example, for a 't-shirt' product, there could be a variant item with option 'color blue size M', and another variant item with option 'color red size L'.\n\nEach product has the following attributes:\n\n- unique product id\n- name\n- list of variants\n\nEach variant item has the following attributes:\n\n- unique item id\n- information about the value of the product options for this item.\n- availability\n- price\n\nNote: Product ID and Item ID have no relations and should not be confused!\n\n### Order\n\nEach order has the following attributes:\n\n- unique order id\n- user id\n- address\n- items ordered\n- status\n- fullfilments info (tracking id and item ids)\n- payment history\n\nThe status of an order can be: **pending**, **processed**, **delivered**, or **cancelled**.\n\nOrders can have other optional attributes based on the actions that have been taken (cancellation reason, which items have been exchanged, what was the exchane price difference etc)\n\n## Generic action rules\n\nGenerally, you can only take action on pending or delivered orders.\n\nExchange or modify order tools can only be called once per order. Be sure that all items to be changed are collected into a list before making the tool call!!!\n\n## Cancel pending order\n\nAn order can only be cancelled if its status is 'pending', and you should check its status before taking the action.\n\nThe user needs to confirm the order id and the reason (either 'no longer needed' or 'ordered by mistake') for cancellation. Other reasons are not acceptable.\n\nAfter user confirmation, the order status will be changed to 'cancelled', and the total will be refunded via the original payment method immediately if it is gift card, otherwise in 5 to 7 business days.\n\n## Modify pending order\n\nAn order can only be modified if its status is 'pending', and you should check its status before taking the action.\n\nFor a pending order, you can take actions to modify its shipping address, payment method, or product item options, but nothing else.\n\n### Modify payment\n\nThe user can only choose a single payment method different from the original payment method.\n\nIf the user wants the modify the payment method to gift card, it must have enough balance to cover the total amount.\n\nAfter user confirmation, the order status will be kept as 'pending'. The original payment method will be refunded immediately if it is a gift card, otherwise it will be refunded within 5 to 7 business days.\n\n### Modify items\n\nThis action can only be called once, and will change the order status to 'pending (items modifed)'. The agent will not be able to modify or cancel the order anymore. So you must confirm all the details are correct and be cautious before taking this action. In particular, remember to remind the customer to confirm they have provided all the items they want to modify.\n\nFor a pending order, each item can be modified to an available new item of the same product but of different product option. There cannot be any change of product types, e.g. modify shirt to shoe.\n\nThe user must provide a payment method to pay or receive refund of the price difference. If the user provides a gift card, it must have enough balance to cover the price difference.\n\n## Return delivered order\n\nAn order can only be returned if its status is 'delivered', and you should check its status before taking the action.\n\nThe user needs to confirm the order id and the list of items to be returned.\n\nThe user needs to provide a payment method to receive the refund.\n\nThe refund must either go to the original payment method, or an existing gift card.\n\nAfter user confirmation, the order status will be changed to 'return requested', and the user will receive an email regarding how to return items.\n\n## Exchange delivered order\n\nAn order can only be exchanged if its status is 'delivered', and you should check its status before taking the action. In particular, remember to remind the customer to confirm they have provided all items to be exchanged.\n\nFor a delivered order, each item can be exchanged to an available new item of the same product but of different product option. There cannot be any change of product types, e.g. modify shirt to shoe.\n\nThe user must provide a payment method to pay or receive refund of the price difference. If the user provides a gift card, it must have enough balance to cover the price difference.\n\nAfter user confirmation, the order status will be changed to 'exchange requested', and the user will receive an email regarding how to return items. There is no need to place a new order.\n",
+      "tool_defs": null
+    },
+    "seed": 300,
+    "text_streaming_config": {
+      "chunk_by": "words",
+      "chunk_size": 1
+    },
+    "speech_complexity": "regular",
+    "audio_native_config": {
+      "provider": "livekit_session",
+      "cascaded_config_name": "local",
+      "model": "cascaded-session",
+      "agent_prompt_file": "/Users/rohitashbishnoi/livekit-agent-evals/agent/prompts/v0_tau_cascaded.md",
+      "reasoning_effort": null,
+      "live_config": null,
+      "realtime_generation": null,
+      "tick_duration_seconds": 0.2,
+      "max_steps_seconds": 600,
+      "pcm_sample_rate": 16000,
+      "telephony_rate": 8000,
+      "wait_to_respond_threshold_other_seconds": 15.0,
+      "wait_to_respond_threshold_self_seconds": 15.0,
+      "yield_threshold_when_interrupted_seconds": 1.0,
+      "yield_threshold_when_interrupting_seconds": 5.0,
+      "interruption_check_interval_seconds": 2.0,
+      "integration_duration_seconds": 0.5,
+      "silence_annotation_threshold_seconds": 4.0,
+      "backchannel_min_threshold_seconds": 3.0,
+      "backchannel_max_threshold_seconds": 12.0,
+      "backchannel_poisson_rate": 0.1,
+      "use_llm_backchannel": true,
+      "use_xml_prompt": false,
+      "send_audio_instant": false
+    },
+    "retrieval_config": null,
+    "retrieval_config_kwargs": null
+  },
+  "tasks": [
+    {
+      "id": "4",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to know exactly how many tshirt options are available in the online store right now. You want to modify all your pending tshirts to purple, s size, same v-neck, and prefer polyester.",
+          "known_info": "You are Yusuf Rossi in zipcode 19122.",
+          "unknown_info": "You do not remember your email address.",
+          "task_instructions": "You are a private person that does not want to reveal much about yourself."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "4_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Yusuf",
+              "last_name": "Rossi",
+              "zip": "19122"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "4_1",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "6086499569"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "4_3",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "9523456873"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "4_4",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "yusuf_rossi_9620"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "4_5",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W6247578"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "4_6",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W9711842"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "4_7",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W4776164"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "4_8",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W6679257"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "4_9",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W2378156"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "4_10",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "9523456873"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "4_11",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "yusuf_rossi_9620"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "4_12",
+            "requestor": "assistant",
+            "name": "modify_pending_order_items",
+            "arguments": {
+              "order_id": "#W6247578",
+              "item_ids": [
+                "3799046073"
+              ],
+              "new_item_ids": [
+                "9647292434"
+              ],
+              "payment_method_id": "credit_card_9513926"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "4_13",
+            "requestor": "assistant",
+            "name": "modify_pending_order_items",
+            "arguments": {
+              "order_id": "#W4776164",
+              "item_ids": [
+                "8349118980"
+              ],
+              "new_item_ids": [
+                "9647292434"
+              ],
+              "payment_method_id": "credit_card_9513926"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [
+          "10"
+        ],
+        "nl_assertions": [
+          "Agent should tell the user that there are 10 t-shirt options available."
+        ],
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": [
+        {
+          "id": "issue_2b74ee61",
+          "title": "Task looks for number 10, but user does not ask for a number. It is happy with \"various\" or a description.",
+          "description": null,
+          "status": "open",
+          "resolution": null,
+          "created_at": "2026-01-16",
+          "resolved_at": null,
+          "author_email": "keshav@sierra.ai",
+          "pr_link": null,
+          "simulation_file": "task_issues/task_4_issue_2b74ee61.json"
+        }
+      ],
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "6",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to exchange the water bottle and the desk lamp. You want to exchange the water bottle to a bigger one, and the desk lamp to a less bright one (prefer battery > USB > AC). If the agent asks for confirmation, only exchange the desk lamp.",
+          "known_info": "You are mei_kovacs_8020 living in zipcode 28236.",
+          "unknown_info": "You do not remember your email address",
+          "task_instructions": "."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "6_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Mei",
+              "last_name": "Kovacs",
+              "zip": "28236"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "6_1",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "mei_kovacs_8020"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "6_2",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W6390527"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "6_3",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "8310926033"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "6_4",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "6817146515"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "6_5",
+            "requestor": "assistant",
+            "name": "exchange_delivered_order_items",
+            "arguments": {
+              "order_id": "#W6390527",
+              "item_ids": [
+                "8384507844"
+              ],
+              "new_item_ids": [
+                "7453605304"
+              ],
+              "payment_method_id": "paypal_7644869"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "7",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to exchange the water bottle and the desk lamp. You want to exchange the water bottle to a bigger one, and the desk lamp to a less bright one (prefer AC adapter > battery > USB). If the agent asks for confirmation, only exchange the desk lamp.",
+          "known_info": "You are mei_kovacs_8020 living in zipcode 28236.",
+          "unknown_info": "You do not remember your email address",
+          "task_instructions": "."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "7_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Mei",
+              "last_name": "Kovacs",
+              "zip": "28236"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "7_1",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "mei_kovacs_8020"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "7_2",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W6390527"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "7_3",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "8310926033"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "7_4",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "6817146515"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "7_5",
+            "requestor": "assistant",
+            "name": "exchange_delivered_order_items",
+            "arguments": {
+              "order_id": "#W6390527",
+              "item_ids": [
+                "8384507844"
+              ],
+              "new_item_ids": [
+                "1569765161"
+              ],
+              "payment_method_id": "paypal_7644869"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": [
+        {
+          "id": "issue_9a37c151",
+          "title": "For tasks where user does not know order ID, mention explicitly that user does not know th",
+          "description": null,
+          "status": "open",
+          "resolution": null,
+          "created_at": "2026-01-16",
+          "resolved_at": null,
+          "author_email": "keshav@sierra.ai",
+          "pr_link": null,
+          "simulation_file": "task_issues/task_7_issue_9a37c151.json"
+        }
+      ],
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "8",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to exchange the water bottle and the desk lamp. You want to exchange the water bottle to a bigger one, and the desk lamp to a brighter one (prefer battery > USB > AC). If the agent asks for confirmation, only exchange the desk lamp.",
+          "known_info": "You are mei_kovacs_8020 living in zipcode 28236.",
+          "unknown_info": "You do not remember your email address",
+          "task_instructions": "."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "8_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Mei",
+              "last_name": "Kovacs",
+              "zip": "28236"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "8_1",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "mei_kovacs_8020"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "8_2",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W6390527"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "8_3",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "8310926033"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "8_4",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "6817146515"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "8_5",
+            "requestor": "assistant",
+            "name": "exchange_delivered_order_items",
+            "arguments": {
+              "order_id": "#W6390527",
+              "item_ids": [
+                "8384507844"
+              ],
+              "new_item_ids": [
+                "9083642334"
+              ],
+              "payment_method_id": "paypal_7644869"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "14",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You just quit gaming and want to cancel or return everything associated with it. (It's just a keyboard and a mouse, but do not reveal it to the agent). Original payment is preferred.",
+          "known_info": "You are mia_garcia_4516 with email mia.garcia2723@example.com",
+          "unknown_info": null,
+          "task_instructions": "You are into gaming but realized the importance of studying hard."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "14_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_email",
+            "arguments": {
+              "email": "mia.garcia2723@example.com"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "14_1",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "mia_garcia_4516"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "14_2",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W5490111"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "14_3",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W7387996"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "14_4",
+            "requestor": "assistant",
+            "name": "return_delivered_order_items",
+            "arguments": {
+              "order_id": "#W5490111",
+              "item_ids": [
+                "1421289881"
+              ],
+              "payment_method_id": "credit_card_3124723"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "14_5",
+            "requestor": "assistant",
+            "name": "return_delivered_order_items",
+            "arguments": {
+              "order_id": "#W7387996",
+              "item_ids": [
+                "5796612084"
+              ],
+              "payment_method_id": "paypal_9497703"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "16",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to cancel all pending orders (since they are no longer needed) and return the watch you have received (but nothing else), and you want to know the total amount you can get back.",
+          "known_info": "You are Fatima Johnson in zipcode 78712.",
+          "unknown_info": "You do not remember your email address",
+          "task_instructions": "You are a private person that does not want to reveal much about yourself."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "16_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Fatima",
+              "last_name": "Johnson",
+              "zip": "78712"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "16_1",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "fatima_johnson_7581"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "16_2",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W5199551"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "16_3",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W8665881"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "16_4",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W9389413"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "16_5",
+            "requestor": "assistant",
+            "name": "calculate",
+            "arguments": {
+              "expression": "3131.1 + 4777.75 + 367.38"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "16_6",
+            "requestor": "assistant",
+            "name": "cancel_pending_order",
+            "arguments": {
+              "order_id": "#W5199551",
+              "reason": "no longer needed"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "16_7",
+            "requestor": "assistant",
+            "name": "cancel_pending_order",
+            "arguments": {
+              "order_id": "#W8665881",
+              "reason": "no longer needed"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "16_8",
+            "requestor": "assistant",
+            "name": "return_delivered_order_items",
+            "arguments": {
+              "order_id": "#W9389413",
+              "item_ids": [
+                "2554056026"
+              ],
+              "payment_method_id": "paypal_5364164"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [
+          "8276.23"
+        ],
+        "nl_assertions": [
+          "Agent should tell the user the total refund amount is $8,276.23."
+        ],
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "19",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to return the water bottle, and exchange the pet bed and office chair to the cheapest version. Mention the two things together and you want to get both done. If and only if you can only do one of the two things, you prefer to do whatever saves you most money. Ask the agent how much money you can save in both options.",
+          "known_info": "You are Mei Davis in zipcode 80217.",
+          "unknown_info": "You do not remember your email address",
+          "task_instructions": "You are in debt and sad today, but very brief."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "19_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Mei",
+              "last_name": "Davis",
+              "zip": "80217"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "19_1",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "mei_davis_8935"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "19_2",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W2890441"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "19_3",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W1267569"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "19_4",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "2747247837"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "19_5",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "4794339885"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "19_6",
+            "requestor": "assistant",
+            "name": "return_delivered_order_items",
+            "arguments": {
+              "order_id": "#W2890441",
+              "item_ids": [
+                "2366567022"
+              ],
+              "payment_method_id": "credit_card_1061405"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [
+          "54.04",
+          "41.64"
+        ],
+        "nl_assertions": [
+          "Agent should tell the user that returning the water bottle gives a refund of $54.04.",
+          "Agent should tell the user that exchanging the pet bed and office chair saves $41.64 total."
+        ],
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "22",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to change your user address and all possible order addresses to be 101 Highway, New York, 10001 (including the orders). Once the agent has confirmed the changes for the default address AND the order addresses, then you regret it and want to change the user address back to the original address.",
+          "known_info": "You are Ethan Garcia, and you live in Denver, 80280.",
+          "unknown_info": "You do not remember your email address",
+          "task_instructions": "You are a mysterious person and do not want to reveal much about yourself."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "22_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Ethan",
+              "last_name": "Garcia",
+              "zip": "80280"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "22_1",
+            "requestor": "assistant",
+            "name": "modify_user_address",
+            "arguments": {
+              "user_id": "ethan_garcia_1261",
+              "address1": "101 Highway",
+              "address2": "",
+              "city": "New York",
+              "state": "NY",
+              "country": "USA",
+              "zip": "10001"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "22_2",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W4967593"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "22_3",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W9911714"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "22_4",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W5733668"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "22_5",
+            "requestor": "assistant",
+            "name": "modify_pending_order_address",
+            "arguments": {
+              "order_id": "#W9911714",
+              "address1": "101 Highway",
+              "address2": "",
+              "city": "New York",
+              "state": "NY",
+              "country": "USA",
+              "zip": "10001"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "22_6",
+            "requestor": "assistant",
+            "name": "modify_user_address",
+            "arguments": {
+              "user_id": "ethan_garcia_1261",
+              "address1": "667 Highland Drive",
+              "address2": "Suite 865",
+              "city": "Denver",
+              "state": "CO",
+              "country": "USA",
+              "zip": "80280"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "23",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to exchange the helmet for a medium sized, red, high ventilation type, and you want to exchange the luggage set (in another order) to a two-piece black one with soft material. Lastly, you want to modify the grill you just ordered to the same type as the one you already received.",
+          "known_info": "You are Sofia Hernandez, and you live in Seattle, WA, 98193.",
+          "unknown_info": "You do not remember your email address",
+          "task_instructions": "."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "23_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Sofia",
+              "last_name": "Hernandez",
+              "zip": "98193"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "23_1",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "sofia_hernandez_5364"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "23_2",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W3561391"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "23_3",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W6876713"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "23_4",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W9609649"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "23_5",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W3947049"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "23_6",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "7765186836"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "23_7",
+            "requestor": "assistant",
+            "name": "exchange_delivered_order_items",
+            "arguments": {
+              "order_id": "#W3947049",
+              "item_ids": [
+                "3358616356"
+              ],
+              "new_item_ids": [
+                "8573379326"
+              ],
+              "payment_method_id": "credit_card_7901829"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "23_8",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "5426915165"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "23_9",
+            "requestor": "assistant",
+            "name": "exchange_delivered_order_items",
+            "arguments": {
+              "order_id": "#W6876713",
+              "item_ids": [
+                "6301799585"
+              ],
+              "new_item_ids": [
+                "8926329222"
+              ],
+              "payment_method_id": "credit_card_7901829"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "23_10",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "6819683148"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "23_11",
+            "requestor": "assistant",
+            "name": "modify_pending_order_items",
+            "arguments": {
+              "order_id": "#W3561391",
+              "item_ids": [
+                "5946177616"
+              ],
+              "new_item_ids": [
+                "7082455361"
+              ],
+              "payment_method_id": "credit_card_7901829"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "24",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to cancel the grill, but if the agent asks you to confirm, you regret and want to keep it. You then want to ask which two t-shirts you have ordered in another order, and what materials are they.",
+          "known_info": "You are Sofia Hernandez, and you live in Seattle, WA, 98193.",
+          "unknown_info": "You do not remember your email address",
+          "task_instructions": "Make everything sound very natural and make up reasons."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [],
+        "env_assertions": null,
+        "communicate_info": [
+          "polyester",
+          "cotton"
+        ],
+        "nl_assertions": [
+          "Agent should tell the user the materials of the two t-shirts are polyester and cotton."
+        ],
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "25",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You have an order sent to Texas by accident, and you want to know the tracking number of the order, and return all items in it except the pet bed. You want the refund to your amex credit card, and if the agent cannot help, transfer to a human. You don't remember the order number. It is urgent.",
+          "known_info": "You are Isabella Johansson, and you live in zipcode 32286.",
+          "unknown_info": "You do not remember your email address",
+          "task_instructions": "."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "25_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Isabella",
+              "last_name": "Johansson",
+              "zip": "32286"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "25_1",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "isabella_johansson_2152"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "25_2",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W3792453"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "25_3",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W7181492"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "25_4",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W5565470"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "25_5",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W2575533"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "28",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to return the skateboard, garden hose, backpack, keyboard, and bed. You also want to cancel the garden hose from the pending order you just placed (you ONLY want to cancel that hose \u2014 if this would require cancelling the entire order, tell the agent not to do it). Make sure ALL the items you want to return are returned: first return the skateboard, then the garden hose and backpack, then the keyboard and bed. Finally, you want to know the total refund amount.",
+          "known_info": "You are Isabella Johansson, and you live in zipcode 32286.",
+          "unknown_info": "You don't know your email.",
+          "task_instructions": "You are extremely brief but patient."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "28_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Isabella",
+              "last_name": "Johansson",
+              "zip": "32286"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "28_1",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "isabella_johansson_2152"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "28_2",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W3792453"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "28_3",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W7181492"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "28_4",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W5565470"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "28_5",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W2575533"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "28_6",
+            "requestor": "assistant",
+            "name": "return_delivered_order_items",
+            "arguments": {
+              "order_id": "#W3792453",
+              "item_ids": [
+                "4293355847"
+              ],
+              "payment_method_id": "paypal_3024827"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "28_7",
+            "requestor": "assistant",
+            "name": "return_delivered_order_items",
+            "arguments": {
+              "order_id": "#W7181492",
+              "item_ids": [
+                "5753502325",
+                "9851293632"
+              ],
+              "payment_method_id": "paypal_3024827"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "28_8",
+            "requestor": "assistant",
+            "name": "return_delivered_order_items",
+            "arguments": {
+              "order_id": "#W5565470",
+              "item_ids": [
+                "9570044148",
+                "6857426243"
+              ],
+              "payment_method_id": "paypal_3024827"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "28_9",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W2575533"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "28_10",
+            "requestor": "assistant",
+            "name": "calculate",
+            "arguments": {
+              "expression": "200.8 + 96.35 + 193.38 + 231.37 + 196.53"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [
+          "918.43"
+        ],
+        "nl_assertions": [
+          "Agent should tell the user the total refund amount is $918.43."
+        ],
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "29",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to exchange your skateboard for a shorter bamboo material one. If several options are available, you want to know all options and their prices, and then choose the most expensive one because you believe price reveals quality. Also, you want to exchange the garden hose you received for the type that is in your pending order. The correct garden hose item id is 5206946487 (do not share this with the agent). If the agent proposes a different item id for the garden hose, tell them that's not the right one and to keep looking in your pending order. You do not want to cancel any orders.",
+          "known_info": "You are Isabella Johansson, and you live in zipcode 32286.",
+          "unknown_info": "You do not remember your email address",
+          "task_instructions": "You are a chill person but want to get both things done."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "29_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Isabella",
+              "last_name": "Johansson",
+              "zip": "32286"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "29_1",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "isabella_johansson_2152"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "29_2",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W3792453"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "29_3",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "1968349452"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "29_4",
+            "requestor": "assistant",
+            "name": "exchange_delivered_order_items",
+            "arguments": {
+              "order_id": "#W3792453",
+              "item_ids": [
+                "4293355847"
+              ],
+              "new_item_ids": [
+                "8176740019"
+              ],
+              "payment_method_id": "paypal_3024827"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "29_5",
+            "requestor": "assistant",
+            "name": "exchange_delivered_order_items",
+            "arguments": {
+              "order_id": "#W7181492",
+              "item_ids": [
+                "5753502325"
+              ],
+              "new_item_ids": [
+                "5206946487"
+              ],
+              "payment_method_id": "paypal_3024827"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [
+          "180.1",
+          "189.57",
+          "208.6"
+        ],
+        "nl_assertions": [
+          "Agent should tell the user the prices of the available bamboo skateboard options: $180.10, $189.57, and $208.60."
+        ],
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "30",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You just received your tablet and it was damaged when you opened the package. You want to know the tracking number of that order first. Also if the agent can help you exchange or return the tablet (you prefer exchange for the same item, but if it is not available just return it). If tablet is returned, also cancel the charger you just bought, because it goes with the tablet. And finally, return the sneaker.",
+          "known_info": "You are Olivia Lopez, and you live in Texas in zipcode 76171.",
+          "unknown_info": "You do not remember your email address.",
+          "task_instructions": "You like to do one thing at a time, and reveal minimal information about yourself."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "30_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Olivia",
+              "last_name": "Lopez",
+              "zip": "76171"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "30_1",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "olivia_lopez_3865"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "30_2",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W9319364"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "30_3",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W9373487"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "30_4",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W2692684"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "30_5",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "8024098596"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "30_6",
+            "requestor": "assistant",
+            "name": "return_delivered_order_items",
+            "arguments": {
+              "order_id": "#W2692684",
+              "item_ids": [
+                "3788616824"
+              ],
+              "payment_method_id": "gift_card_7711863"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "30_7",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W9373487"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "30_8",
+            "requestor": "assistant",
+            "name": "cancel_pending_order",
+            "arguments": {
+              "order_id": "#W9373487",
+              "reason": "no longer needed"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "30_9",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W2692684"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "30_10",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W5481803"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "30_11",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W7449508"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "30_12",
+            "requestor": "assistant",
+            "name": "return_delivered_order_items",
+            "arguments": {
+              "order_id": "#W7449508",
+              "item_ids": [
+                "6477915553"
+              ],
+              "payment_method_id": "gift_card_7711863"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [
+          "746342064230"
+        ],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "31",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": ". You just lost your tablet you just received and are in a bad mood. You want to know the tracking number of the order, and if the agent can help you refund or reorder the tablet. (You know it's a long shot, but you want to try). If not, cancel the charger you just bought, because it goes with the tablet... Also cancel the boot and keep the kettle (if not possible, do not do anything on that order), and return the sneaker.",
+          "known_info": "You are Olivia Lopez, and you live in Texas in zipcode 76171.",
+          "unknown_info": "You don't have an email.",
+          "task_instructions": "You like to do one thing at a time, and reveal minimal information about yourself."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "31_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Olivia",
+              "last_name": "Lopez",
+              "zip": "76171"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "31_1",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "olivia_lopez_3865"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "31_2",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W9319364"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "31_3",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W9373487"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "31_4",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W2692684"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "31_5",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W5481803"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "31_6",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W7449508"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "31_7",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W9373487"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "31_8",
+            "requestor": "assistant",
+            "name": "cancel_pending_order",
+            "arguments": {
+              "order_id": "#W9373487",
+              "reason": "no longer needed"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "31_9",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W5481803"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "31_10",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W7449508"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "31_11",
+            "requestor": "assistant",
+            "name": "return_delivered_order_items",
+            "arguments": {
+              "order_id": "#W7449508",
+              "item_ids": [
+                "6477915553"
+              ],
+              "payment_method_id": "gift_card_7711863"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [
+          "746342064230"
+        ],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "33",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You had a work-from-home situation and ordered three home office items along with some hiking items, so that you can go back to your parent's place at Seattle to remote work and enjoy outdoor life. But your company just announced that you will be back to the office soon. If cancelling partial items is possible with the agent, you want to return the office items (your forgot what) and keep the hiking items. You want to know the total amount you will get back, and you want to get the refund on your original payment method. If cancelling partial items is not possible, just keep the order and forget about it, but change your default user profile address to the Seattle parent house shown in your order (you do not want to reveal it in chat).",
+          "known_info": "You are an interesting guy called Noah Patel, living in the Big Apple in 10108.",
+          "unknown_info": "You do not remember your email address",
+          "task_instructions": "You are a funny guy but recently the work from home situation has made you a bit anxious."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "33_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Noah",
+              "last_name": "Patel",
+              "zip": "10108"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "33_1",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "noah_patel_6952"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "33_2",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W6111398"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "33_3",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W7043598"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "33_4",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W1845024"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "33_5",
+            "requestor": "assistant",
+            "name": "modify_user_address",
+            "arguments": {
+              "user_id": "noah_patel_6952",
+              "address1": "517 Lakeview Drive",
+              "address2": "Suite 183",
+              "city": "Seattle",
+              "country": "USA",
+              "state": "WA",
+              "zip": "98195"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": [],
+        "reward_basis": [
+          "DB"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "35",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to return the speaker that is more expensive yet not resistent to water. Also, You want to modify the 17-inch laptop to the 13-inch version in another order. If no exact item is available, you want to know all available 13-inch options, and you prefer i5 over i7, and prefer silver and black than other colors.",
+          "known_info": "You are aarav_santos_2259 and aarav.santos8321@example.com and aarav.santos8320@example.com.",
+          "unknown_info": null,
+          "task_instructions": "You are a rude person."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "35_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_email",
+            "arguments": {
+              "email": "aarav.santos8321@example.com"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "35_1",
+            "requestor": "assistant",
+            "name": "find_user_id_by_email",
+            "arguments": {
+              "email": "aarav.santos8320@example.com"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "35_2",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "aarav_santos_2259"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "35_3",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W9672333"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "35_4",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "4760268021"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "35_5",
+            "requestor": "assistant",
+            "name": "return_delivered_order_items",
+            "arguments": {
+              "order_id": "#W8528674",
+              "item_ids": [
+                "6704763132"
+              ],
+              "payment_method_id": "paypal_7664977"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "35_6",
+            "requestor": "assistant",
+            "name": "modify_pending_order_items",
+            "arguments": {
+              "order_id": "#W9672333",
+              "item_ids": [
+                "1684786391"
+              ],
+              "new_item_ids": [
+                "5052031638"
+              ],
+              "payment_method_id": "paypal_7664977"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "36",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You just placed an order but you realize that your card has only $1131 credit left, but the order total is more than $1160. You wonder if the agent can help split the payment with another card. If not, you wonder what the most expensive item and its price, and if you can just cancel that item. If not, you wonder if you can switch all items to their cheapest options and bring the cost down to $1131. If so, do it. If not, you wonder if the agent can just cancel the order so that you can order again.",
+          "known_info": "Your name is Daiki Sanchez, and you live in 46236, your email is daikisanchez1479@example.com.",
+          "unknown_info": null,
+          "task_instructions": "You are a bit anxious and want to get things done quickly, and you speak very briefly."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "36_9",
+            "requestor": "assistant",
+            "name": "modify_pending_order_items",
+            "arguments": {
+              "order_id": "#W9348897",
+              "item_ids": [
+                "6117189161",
+                "7453605304",
+                "3799046073"
+              ],
+              "new_item_ids": [
+                "6700049080",
+                "5320792178",
+                "3234800602"
+              ],
+              "payment_method_id": "credit_card_8853416"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [
+          "camera",
+          "481.5"
+        ],
+        "nl_assertions": [
+          "Agent should tell the user the most expensive item in the order is the camera.",
+          "Agent should tell the user the camera costs $481.50."
+        ],
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "41",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You just created your user id mei_patel_7272 and ordered some things, but you have two problems: first, the 1000-piece intermediate jigsaw might be too hard for your little kid, you wonder if you can change it to the easiest one with fewest pieces; second, you might have typed your address wrong. You want to check it, and potentially correct all order addresses and your user address. Make sure you mention these two problems at the same time in the same order.",
+          "known_info": "Your name is Mei Patel, and you live in 445 Maple Drive, Suite 394, Fort Worth, Texas, 76165.",
+          "unknown_info": "You do not remember your email address",
+          "task_instructions": "You are brief and your memory is not too good sometimes, but you are polite."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "41_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Mei",
+              "last_name": "Patel",
+              "zip": "76165"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "41_1",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "mei_patel_7272"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "41_2",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W9583042"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "41_3",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W4082615"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "41_4",
+            "requestor": "assistant",
+            "name": "modify_pending_order_address",
+            "arguments": {
+              "order_id": "#W9583042",
+              "address1": "445 Maple Drive",
+              "address2": "Suite 394",
+              "city": "Fort Worth",
+              "state": "TX",
+              "country": "USA",
+              "zip": "76165"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "41_5",
+            "requestor": "assistant",
+            "name": "modify_pending_order_address",
+            "arguments": {
+              "order_id": "#W4082615",
+              "address1": "445 Maple Drive",
+              "address2": "Suite 394",
+              "city": "Fort Worth",
+              "state": "TX",
+              "country": "USA",
+              "zip": "76165"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "41_6",
+            "requestor": "assistant",
+            "name": "modify_user_address",
+            "arguments": {
+              "user_id": "mei_patel_7272",
+              "address1": "445 Maple Drive",
+              "address2": "Suite 394",
+              "city": "Fort Worth",
+              "state": "TX",
+              "country": "USA",
+              "zip": "76165"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "41_7",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "1808611083"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "41_8",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W4082615"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "41_9",
+            "requestor": "assistant",
+            "name": "modify_pending_order_items",
+            "arguments": {
+              "order_id": "#W4082615",
+              "item_ids": [
+                "9779102705"
+              ],
+              "new_item_ids": [
+                "1096508426"
+              ],
+              "payment_method_id": "paypal_4768213"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "42",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You just created your user id mei_patel_7272 and ordered some things, but realized you might have typed your address wrong. You want to check it, and potentially correct all order addresses and your user address. After this, you'd like to check the jigsaw you ordered, and if it's not shipped yet, you want to change it to the easiest jigsaw (easiest level, least pieces) because your kid is too young. By default you use PayPal.",
+          "known_info": "Your name is Mei Patel, and you live in 445 Maple Drive, Suite 394, Fort Worth, Texas, 76165.",
+          "unknown_info": "You do not remember your email address",
+          "task_instructions": "You are brief and your memory is not too good sometimes, but you are polite."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "42_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Mei",
+              "last_name": "Patel",
+              "zip": "76165"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "42_1",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "mei_patel_7272"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "42_2",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W9583042"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "42_3",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W4082615"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "42_4",
+            "requestor": "assistant",
+            "name": "modify_pending_order_address",
+            "arguments": {
+              "order_id": "#W9583042",
+              "address1": "445 Maple Drive",
+              "address2": "Suite 394",
+              "city": "Fort Worth",
+              "state": "TX",
+              "country": "USA",
+              "zip": "76165"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "42_5",
+            "requestor": "assistant",
+            "name": "modify_pending_order_address",
+            "arguments": {
+              "order_id": "#W4082615",
+              "address1": "445 Maple Drive",
+              "address2": "Suite 394",
+              "city": "Fort Worth",
+              "state": "TX",
+              "country": "USA",
+              "zip": "76165"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "42_6",
+            "requestor": "assistant",
+            "name": "modify_user_address",
+            "arguments": {
+              "user_id": "mei_patel_7272",
+              "address1": "445 Maple Drive",
+              "address2": "Suite 394",
+              "city": "Fort Worth",
+              "state": "TX",
+              "country": "USA",
+              "zip": "76165"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "42_7",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "1808611083"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "42_8",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W4082615"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "42_9",
+            "requestor": "assistant",
+            "name": "modify_pending_order_items",
+            "arguments": {
+              "order_id": "#W4082615",
+              "item_ids": [
+                "9779102705"
+              ],
+              "new_item_ids": [
+                "1096508426"
+              ],
+              "payment_method_id": "paypal_4768213"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "51",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to return the digital camera that you received. You guess that the order number is #W8855135, but you're not 100% sure. Insist that you want to return the camera and get a refund to the original payment method.",
+          "known_info": "You are Sofia Li, residing in San Antonio, 78260.",
+          "unknown_info": "You do not remember your email address",
+          "task_instructions": "."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "51_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Sofia",
+              "last_name": "Li",
+              "zip": "78260"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "51_1",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W8855135"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "51_3",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "8940227892"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "51_4",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "sofia_li_9219"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "51_5",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W4689314"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "51_6",
+            "requestor": "assistant",
+            "name": "return_delivered_order_items",
+            "arguments": {
+              "order_id": "#W4689314",
+              "item_ids": [
+                "5996159312"
+              ],
+              "payment_method_id": "credit_card_8105988"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "56",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You wonder when is your air purifier is arriving. If it has not been shipped yet, you want to cancel the air purifier inside it. If you cannot cancel just the air purifier, you want to modify it to the cheapest possible air purifier, and refund to the gift card. You do not remember your gift card id but it should be in your user account. If you cannot modify it or refund to the gift card, no action.",
+          "known_info": "You are ivan_hernandez_6923 living in San Diego, 92133.",
+          "unknown_info": "You don't have an email.",
+          "task_instructions": "You are polite but brief and firm."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "56_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Ivan",
+              "last_name": "Hernandez",
+              "zip": "92133"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "56_1",
+            "requestor": "assistant",
+            "name": "get_user_details",
+            "arguments": {
+              "user_id": "ivan_hernandez_6923"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "56_2",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W5838674"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "56_3",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W4284542"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "56_4",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W2782744"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "56_5",
+            "requestor": "assistant",
+            "name": "get_product_details",
+            "arguments": {
+              "product_id": "3821016478"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "56_6",
+            "requestor": "assistant",
+            "name": "modify_pending_order_items",
+            "arguments": {
+              "order_id": "#W4284542",
+              "item_ids": [
+                "8302289002"
+              ],
+              "new_item_ids": [
+                "9534205511"
+              ],
+              "payment_method_id": "gift_card_9368765"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "59",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You recently placed two orders, and now you would like to make several changes and checks. You'll first inquire about the status difference between your two orders, #W2702727 and #W8268610, since both are \"pending,\" but one was placed much earlier in the year. You are considering cancelling the older order as you find the wait time unreasonable. If the agent cannot guarantee the older order will be processed within 5 days, you want to cancel it. You also want to confirm the total price of the refund. \n\n    For order #W2702727, you intend to switch the shipping address to your new home in a different city because you plan to move prior to its delivery next month. Your new address is 1234 Elm St, Springfield, IL, 62701. You want the agent to confirm the change and ensure the order will be delivered to the new address. You also want to confirm the total price of the order after the address change.",
+          "known_info": "You are Yusuf Taylor from San Jose, CA, 95154.",
+          "unknown_info": "You do not remember your email address.",
+          "task_instructions": "Your approach will be firm, as you are unhappy with the pending status's duration but try to make all requests in one go and ask for them to be resolved efficiently and correctly in context with each other."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "59_0",
+            "requestor": "assistant",
+            "name": "find_user_id_by_name_zip",
+            "arguments": {
+              "first_name": "Yusuf",
+              "last_name": "Taylor",
+              "zip": "95154"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "59_1",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W2702727"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "59_2",
+            "requestor": "assistant",
+            "name": "get_order_details",
+            "arguments": {
+              "order_id": "#W8268610"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "59_3",
+            "requestor": "assistant",
+            "name": "cancel_pending_order",
+            "arguments": {
+              "order_id": "#W8268610",
+              "reason": "no longer needed"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "59_4",
+            "requestor": "assistant",
+            "name": "modify_pending_order_address",
+            "arguments": {
+              "order_id": "#W2702727",
+              "address1": "1234 Elm St",
+              "address2": "",
+              "city": "Springfield",
+              "state": "IL",
+              "country": "USA",
+              "zip": "62701"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [
+          "164.28",
+          "625.60"
+        ],
+        "nl_assertions": [
+          "Agent should tell the user the refund for the cancelled desk lamp order is $164.28.",
+          "Agent should tell the user the total price of order #W2702727 is $625.60."
+        ],
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "79",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You just bought a water bottle with 500ml but you regret it, and you want to change it to the other bottle you just placed with 1000ml capacity. If the exact item is not available any more, you can allow the material to be different, but you want the color to be the same as your other 1L bottle.",
+          "known_info": "You name is Emma Kovacs and your zip code is 32190.",
+          "unknown_info": "You do not know your email. You do not know order numbers.",
+          "task_instructions": "You are insecure, rigid, sad, logical. You do not want to cancel any orders."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "79_0",
+            "requestor": "assistant",
+            "name": "modify_pending_order_items",
+            "arguments": {
+              "order_id": "#W8661412",
+              "item_ids": [
+                "3453331371"
+              ],
+              "new_item_ids": [
+                "2439754078"
+              ],
+              "payment_method_id": "credit_card_7239357"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "87",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to modify all your pending order address to the Washington DC address (which you do not want to reveal but is in one of the orders), along with your user default address.",
+          "known_info": "You name is Yusuf Hernandez and your email is yusuf.hernandez8836@example.com.",
+          "unknown_info": null,
+          "task_instructions": "You are shy, rigid."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "87_0",
+            "requestor": "assistant",
+            "name": "modify_pending_order_address",
+            "arguments": {
+              "order_id": "#W2166301",
+              "address1": "565 Maple Drive",
+              "address2": "Suite 501",
+              "city": "Washington",
+              "country": "USA",
+              "state": "DC",
+              "zip": "20307"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "87_1",
+            "requestor": "assistant",
+            "name": "modify_pending_order_address",
+            "arguments": {
+              "order_id": "#W2466703",
+              "address1": "565 Maple Drive",
+              "address2": "Suite 501",
+              "city": "Washington",
+              "country": "USA",
+              "state": "DC",
+              "zip": "20307"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "87_2",
+            "requestor": "assistant",
+            "name": "modify_pending_order_address",
+            "arguments": {
+              "order_id": "#W6832752",
+              "address1": "565 Maple Drive",
+              "address2": "Suite 501",
+              "city": "Washington",
+              "country": "USA",
+              "state": "DC",
+              "zip": "20307"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "87_3",
+            "requestor": "assistant",
+            "name": "modify_user_address",
+            "arguments": {
+              "user_id": "yusuf_hernandez_6785",
+              "address1": "565 Maple Drive",
+              "address2": "Suite 501",
+              "city": "Washington",
+              "country": "USA",
+              "state": "DC",
+              "zip": "20307"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "98",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to exchange your Bicycle for one with a larger frame size for your kid (you are okay with having a mountain bike instead of a road bike). Jigsaw Puzzle in the same order also needs to be exchanged, you want the same difficulty, but 1000 more pieces, and you prefer animal than art theme if both are available. Make sure you mention these at the same time.  You also want to exchange your camera to a slightly lower resolution, without changing the other options. If the agent asks for confirmation, mention that you'd prefer the other card as payment or refund method. Lastly, you want to cancel the skateboard in your other order.",
+          "known_info": "You name is Sofia Li and your zip code is 78260.",
+          "unknown_info": "You do not remember your email address",
+          "task_instructions": "You are outgoing, organized, cautious, pessimistic.   If you cannot cancel one single item, you are okay with cancelling the whole order, with the reason of no longer needed."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "99_0",
+            "requestor": "assistant",
+            "name": "exchange_delivered_order_items",
+            "arguments": {
+              "order_id": "#W4689314",
+              "item_ids": [
+                "5996159312"
+              ],
+              "new_item_ids": [
+                "8363011723"
+              ],
+              "payment_method_id": "credit_card_8105988"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "99_1",
+            "requestor": "assistant",
+            "name": "exchange_delivered_order_items",
+            "arguments": {
+              "order_id": "#W3916020",
+              "item_ids": [
+                "7758198585",
+                "4068787148"
+              ],
+              "new_item_ids": [
+                "5606522780",
+                "6245746168"
+              ],
+              "payment_method_id": "credit_card_8105988"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "99_2",
+            "requestor": "assistant",
+            "name": "cancel_pending_order",
+            "arguments": {
+              "order_id": "#W8855135",
+              "reason": "no longer needed"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "101",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You just placed an order with two watches, you want to change its address to your New York address (you don't want to reveal it but it's in your other order). You also want to modify the silicone watch to a metal one. If multiple colors available, you prefer white. \nIn another order, you have an air purifier along with a speaker, and you want to change the purifier to large size and night mode, but still with HEPA filter. You are certain that this order contains both an air purifier and a speaker.",
+          "known_info": "You name is Noah Ito and your zip code is 98187.",
+          "unknown_info": "You do not remember your email address.",
+          "task_instructions": "You are logical but also impatient.  You like to say things in pieces."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "102_0",
+            "requestor": "assistant",
+            "name": "modify_pending_order_address",
+            "arguments": {
+              "order_id": "#W4219264",
+              "address1": "144 Lakeview Drive",
+              "address2": "Suite 925",
+              "city": "New York",
+              "country": "USA",
+              "state": "NY",
+              "zip": "10228"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "102_1",
+            "requestor": "assistant",
+            "name": "modify_pending_order_items",
+            "arguments": {
+              "order_id": "#W4219264",
+              "item_ids": [
+                "8886009523"
+              ],
+              "new_item_ids": [
+                "2407258246"
+              ],
+              "payment_method_id": "credit_card_1620755"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "102_2",
+            "requestor": "assistant",
+            "name": "modify_pending_order_items",
+            "arguments": {
+              "order_id": "#W6729841",
+              "item_ids": [
+                "3076708684"
+              ],
+              "new_item_ids": [
+                "8302289002"
+              ],
+              "payment_method_id": "credit_card_1620755"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "102",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You just placed an order with two watches, you want to change its address to your New York address (you don't want to reveal it but it's in your other order). You also want to modify the silicone watch to a metal one. If multiple colors available, you prefer white. For the air purifier you received along with sneakers, you want to exchange the purifier to large size and night mode, but still with HEPA filter.",
+          "known_info": "You name is Noah Ito and your zip code is 98187.",
+          "unknown_info": "You do not remember your email address.",
+          "task_instructions": "You are logical but also impatient. You like to say things in pieces."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "103_0",
+            "requestor": "assistant",
+            "name": "modify_pending_order_address",
+            "arguments": {
+              "order_id": "#W4219264",
+              "address1": "144 Lakeview Drive",
+              "address2": "Suite 925",
+              "city": "New York",
+              "country": "USA",
+              "state": "NY",
+              "zip": "10228"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "103_1",
+            "requestor": "assistant",
+            "name": "modify_pending_order_items",
+            "arguments": {
+              "order_id": "#W4219264",
+              "item_ids": [
+                "8886009523"
+              ],
+              "new_item_ids": [
+                "2407258246"
+              ],
+              "payment_method_id": "credit_card_1620755"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "103_2",
+            "requestor": "assistant",
+            "name": "exchange_delivered_order_items",
+            "arguments": {
+              "order_id": "#W3445693",
+              "item_ids": [
+                "6341716129"
+              ],
+              "new_item_ids": [
+                "8302289002"
+              ],
+              "payment_method_id": "credit_card_1620755"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "106",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to exchange your T-Shirt because it is too big, one size smaller would be good. You like the cotton feeling. If multiple colors are available, you prefer black.",
+          "known_info": "You name is Sofia Thomas and your emails are sofia.thomas3019@example.com and sofia.thomas3069@example.com.",
+          "unknown_info": ".",
+          "task_instructions": "You are dependent, pessimistic, direct."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "107_0",
+            "requestor": "assistant",
+            "name": "exchange_delivered_order_items",
+            "arguments": {
+              "order_id": "#W3388163",
+              "item_ids": [
+                "9354168549"
+              ],
+              "new_item_ids": [
+                "2060066974"
+              ],
+              "payment_method_id": "paypal_5334408"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": [
+          "Agent should process the exchange."
+        ],
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    },
+    {
+      "id": "112",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to modify your laptop order to your NYC address (you don't want to reveal it yourself but the address should be in your orders profile). You also want to modify the laptop to item number 9844888101. You also want to change your watch for one with black dial color but keeping the leather strap.",
+          "known_info": "You name is Yara Silva and your zip code is 77159.",
+          "unknown_info": "You do not remember your email address",
+          "task_instructions": "You are sad and cautious. You like to say things piecewise."
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [
+          {
+            "action_id": "113_0",
+            "requestor": "assistant",
+            "name": "modify_pending_order_items",
+            "arguments": {
+              "order_id": "#W9810810",
+              "item_ids": [
+                "1355937109"
+              ],
+              "new_item_ids": [
+                "9949163720"
+              ],
+              "payment_method_id": "gift_card_7252880"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "113_1",
+            "requestor": "assistant",
+            "name": "modify_pending_order_address",
+            "arguments": {
+              "order_id": "#W3730488",
+              "address1": "555 Highland Drive",
+              "address2": "Suite 872",
+              "city": "New York",
+              "country": "USA",
+              "state": "NY",
+              "zip": "10116"
+            },
+            "info": null,
+            "compare_args": null
+          },
+          {
+            "action_id": "113_2",
+            "requestor": "assistant",
+            "name": "modify_pending_order_items",
+            "arguments": {
+              "order_id": "#W3730488",
+              "item_ids": [
+                "2913673670"
+              ],
+              "new_item_ids": [
+                "9844888101"
+              ],
+              "payment_method_id": "gift_card_7252880"
+            },
+            "info": null,
+            "compare_args": null
+          }
+        ],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": null,
+        "reward_basis": [
+          "DB",
+          "NL_ASSERTION"
+        ]
+      },
+      "issues": null,
+      "required_documents": null,
+      "user_tools": null
+    }
+  ],
+  "simulation_index": [
+    {
+      "id": "6be2f6e7-b1d5-40c1-b1bf-ab5286666066",
+      "task_id": "4",
+      "trial": 0,
+      "reward": 0.0,
+      "termination_reason": "max_steps",
+      "agent_cost": null,
+      "duration": 830.9809949590126
+    },
+    {
+      "id": "1a4f27cc-255c-48d3-b629-9b7a1d8d34f6",
+      "task_id": "6",
+      "trial": 0,
+      "reward": 0.0,
+      "termination_reason": "max_steps",
+      "agent_cost": null,
+      "duration": 912.9374964999733
+    },
+    {
+      "id": "e18e9f0f-2b0e-4f10-b2eb-de0805c99112",
+      "task_id": "7",
+      "trial": 0,
+      "reward": 0.0,
+      "termination_reason": "max_steps",
+      "agent_cost": null,
+      "duration": 1166.4299116669863
+    },
+    {
+      "id": "3b4f70e7-5c02-4a80-baf1-ac22a70c09b1",
+      "task_id": "8",
+      "trial": 0,
+      "reward": 0.0,
+      "termination_reason": "max_steps",
+      "agent_cost": null,
+      "duration": 1077.2831636249903
+    },
+    {
+      "id": "a62b1cb4-e4bd-4b2e-8704-16da3b09de56",
+      "task_id": "14",
+      "trial": 0,
+      "reward": 0.0,
+      "termination_reason": "max_steps",
+      "agent_cost": null,
+      "duration": 1670.0746828330157
+    },
+    {
+      "id": "ab8d5627-0fa9-44ad-8665-c53fd0596c63",
+      "task_id": "16",
+      "trial": 0,
+      "reward": 0.0,
+      "termination_reason": "max_steps",
+      "agent_cost": null,
+      "duration": 774.1611497080012
+    },
+    {
+      "id": "ce326f80-8762-4e68-b1de-3097ad9e0af3",
+      "task_id": "19",
+      "trial": 0,
+      "reward": 0.0,
+      "termination_reason": "max_steps",
+      "agent_cost": null,
+      "duration": 1159.05147008301
+    },
+    {
+      "id": "9238c299-5f03-4ef6-b551-0ce186db17da",
+      "task_id": "22",
+      "trial": 0,
+      "reward": 0.0,
+      "termination_reason": "max_steps",
+      "agent_cost": null,
+      "duration": 876.5656968749827
+    },
+    {
+      "id": "6b64bb1d-68fc-46ac-a07d-eb46646bedd6",
+      "task_id": "23",
+      "trial": 0,
+      "reward": 0.0,
+      "termination_reason": "max_steps",
+      "agent_cost": null,
+      "duration": 926.8489089589857
+    },
+    {
+      "id": "825c0e29-b77c-4995-aab5-472a6e85ae92",
+      "task_id": "24",
+      "trial": 0,
+      "reward": 0.0,
+      "termination_reason": "max_steps",
+      "agent_cost": null,
+      "duration": 962.6420214590034
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+[
+  {
+    "task_id": "6",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 912.9374964999733,
+    "ticks": 3001,
+    "agent_speech_ticks": 1079,
+    "user_speech_ticks": 867,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "calls": []
+  },
+  {
+    "task_id": "8",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 1077.2831636249903,
+    "ticks": 3001,
+    "agent_speech_ticks": 1161,
+    "user_speech_ticks": 559,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "calls": []
+  },
+  {
+    "task_id": "23",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 926.8489089589857,
+    "ticks": 3001,
+    "agent_speech_ticks": 784,
+    "user_speech_ticks": 754,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "calls": []
+  },
+  {
+    "task_id": "4",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 830.9809949590126,
+    "ticks": 3001,
+    "agent_speech_ticks": 1126,
+    "user_speech_ticks": 593,
+    "tool_calls": 2,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "calls": [
+      {
+        "tick": 923,
+        "name": "list_all_product_types",
+        "arguments": {},
+        "id": "call_em4rv9zg",
+        "error": false
+      },
+      {
+        "tick": 1010,
+        "name": "get_product_details",
+        "arguments": {
+          "product_id": "9523456873"
+        },
+        "id": "call_fp2gpvh3",
+        "error": false
+      }
+    ]
+  },
+  {
+    "task_id": "24",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 962.6420214590034,
+    "ticks": 3001,
+    "agent_speech_ticks": 882,
+    "user_speech_ticks": 469,
+    "tool_calls": 1,
+    "tool_errors": 1,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "calls": [
+      {
+        "tick": 1022,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "123456789"
+        },
+        "id": "call_aijm89uf",
+        "error": true
+      }
+    ]
+  },
+  {
+    "task_id": "22",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 876.5656968749827,
+    "ticks": 3001,
+    "agent_speech_ticks": 1168,
+    "user_speech_ticks": 659,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "calls": []
+  },
+  {
+    "task_id": "14",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 1670.0746828330157,
+    "ticks": 3001,
+    "agent_speech_ticks": 1191,
+    "user_speech_ticks": 404,
+    "tool_calls": 1,
+    "tool_errors": 1,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "calls": [
+      {
+        "tick": 620,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "first_name": "A, M, E, N",
+          "last_name": "F, I, N, N",
+          "zip": "1, 2, 3, 4, 5"
+        },
+        "id": "call_bg5wepds",
+        "error": true
+      }
+    ]
+  },
+  {
+    "task_id": "16",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 774.1611497080012,
+    "ticks": 3001,
+    "agent_speech_ticks": 661,
+    "user_speech_ticks": 989,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "calls": []
+  },
+  {
+    "task_id": "19",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 1159.05147008301,
+    "ticks": 3001,
+    "agent_speech_ticks": 1250,
+    "user_speech_ticks": 299,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "calls": []
+  },
+  {
+    "task_id": "7",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 1166.4299116669863,
+    "ticks": 3001,
+    "agent_speech_ticks": 1097,
+    "user_speech_ticks": 468,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "calls": []
+  }
+]

@@ -1,0 +1,2905 @@
+diff --git a/pyproject.toml b/pyproject.toml
+index 050282c..37c0eb4 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -33,6 +33,11 @@ dependencies = [
+     "requests>=2.31.0",
+     "numpy>=1.24.0",
+     "httpx>=0.24.0",
++    "edge-tts>=7.2.8",
++    "faster-whisper>=1.2.1",
++    "kokoro-onnx>=0.6.1",
++    "python-multipart>=0.0.32",
++    "soundfile>=0.14.0",
+ ]
+ 
+ [project.optional-dependencies]
+diff --git a/src/tau2/agent/base/voice.py b/src/tau2/agent/base/voice.py
+index 6127f38..448fdb3 100644
+--- a/src/tau2/agent/base/voice.py
++++ b/src/tau2/agent/base/voice.py
+@@ -115,6 +115,7 @@ class VoiceMixin(
+         synthesis_config = self.voice_settings.synthesis_config
+         provider_config = deepcopy(synthesis_config.provider_config)
+         provider_config.voice_id = get_elevenlabs_voice_id(speech_env.persona_name)
++        provider_config.persona_name = speech_env.persona_name
+ 
+         # Generate per-turn effects (complexity overrides already merged into synthesis_config)
+         speech_effects, source_effects, channel_effects = generate_turn_effects(
+diff --git a/src/tau2/agent/discrete_time_audio_native_agent.py b/src/tau2/agent/discrete_time_audio_native_agent.py
+index 9456198..c732022 100644
+--- a/src/tau2/agent/discrete_time_audio_native_agent.py
++++ b/src/tau2/agent/discrete_time_audio_native_agent.py
+@@ -84,7 +84,7 @@ from tau2.voice.pricing import compute_tick_cost
+ 
+ # Provider type alias
+ AudioNativeProvider = Literal[
+-    "openai", "openai_live", "gemini", "xai", "nova", "qwen", "livekit"
++    "openai", "openai_live", "gemini", "xai", "nova", "qwen", "livekit", "livekit_session"
+ ]
+ 
+ # VAD config union type (string annotations for lazy resolution)
+@@ -217,6 +217,7 @@ class DiscreteTimeAudioNativeAgent(FullDuplexAgent[DiscreteTimeAgentState]):
+         cascaded_config: Optional["CascadedConfig"] = None,
+         audio_taps_dir: Optional[Path] = None,
+         live_config: Optional[LiveConfig] = None,
++        agent_prompt_file: Optional[str] = None,
+     ):
+         """Initialize the discrete-time audio native agent.
+ 
+@@ -261,6 +262,7 @@ class DiscreteTimeAudioNativeAgent(FullDuplexAgent[DiscreteTimeAgentState]):
+         self.max_inactive_seconds = max_inactive_seconds
+         self.cascaded_config = cascaded_config
+         self.live_config = live_config
++        self.agent_prompt_file = agent_prompt_file
+         self._live_trace_path = (
+             audio_taps_dir / "live.jsonl" if audio_taps_dir else None
+         )
+@@ -298,7 +300,7 @@ class DiscreteTimeAudioNativeAgent(FullDuplexAgent[DiscreteTimeAgentState]):
+             from tau2.voice.audio_native.qwen.provider import QwenVADConfig
+ 
+             self.vad_config = QwenVADConfig()
+-        elif provider == "livekit":
++        elif provider in ("livekit", "livekit_session"):
+             from tau2.voice.audio_native.livekit.discrete_time_adapter import (
+                 LiveKitVADConfig,
+             )
+@@ -360,6 +362,11 @@ class DiscreteTimeAudioNativeAgent(FullDuplexAgent[DiscreteTimeAgentState]):
+         else:
+             agent_instruction = AUDIO_NATIVE_VOICE_INSTRUCTION
+ 
++        # Optional override of the instruction block (prompt-iteration experiments).
++        if self.agent_prompt_file:
++            agent_instruction = Path(self.agent_prompt_file).read_text().strip()
++            logger.info(f"Agent instruction overridden from {self.agent_prompt_file}")
++
+         return template.format(
+             agent_instruction=agent_instruction,
+             domain_policy=self.domain_policy,
+@@ -860,6 +867,7 @@ def create_discrete_time_audio_native_agent(tools, domain_policy, **kwargs):
+             cascaded_config=getattr(audio_native_config, "cascaded_config", None),
+             audio_taps_dir=audio_taps_dir,
+             live_config=audio_native_config.live_config,
++            agent_prompt_file=getattr(audio_native_config, "agent_prompt_file", None),
+         )
+     else:
+         # Fallback: use individual kwargs or defaults
+diff --git a/src/tau2/cli.py b/src/tau2/cli.py
+index 6193854..6c185b5 100644
+--- a/src/tau2/cli.py
++++ b/src/tau2/cli.py
+@@ -257,7 +257,16 @@ def add_run_args(parser):
+     parser.add_argument(
+         "--audio-native-provider",
+         type=str,
+-        choices=["openai", "openai_live", "gemini", "xai", "nova", "qwen", "livekit"],
++        choices=[
++            "openai",
++            "openai_live",
++            "gemini",
++            "xai",
++            "nova",
++            "qwen",
++            "livekit",
++            "livekit_session",
++        ],
+         default=DEFAULT_AUDIO_NATIVE_PROVIDER,
+         help=f"Audio native API provider. Default is '{DEFAULT_AUDIO_NATIVE_PROVIDER}'.",
+     )
+@@ -267,7 +276,16 @@ def add_run_args(parser):
+         default=None,
+         help="Cascaded config preset name for livekit provider. "
+         "Available presets: 'default', 'openai-thinking'. "
+-        "See tau2.voice.audio_native.livekit.config for details.",
++        "See tau2.voice.audio_native.livekit.config for details. "
++        "For livekit_session: 'cascaded-session' (default), 'cascaded-session-vad'. "
++        "See tau2.voice.audio_native.livekit_session.config.",
++    )
++    parser.add_argument(
++        "--agent-prompt-file",
++        type=str,
++        default=None,
++        help="Path to a text file that replaces the built-in voice agent instruction block "
++        "(the domain policy is still appended). Audio-native runs only. Marks the run as custom.",
+     )
+     parser.add_argument(
+         "--audio-native-model",
+@@ -641,6 +659,7 @@ def main():
+                 provider=args.audio_native_provider,
+                 model=audio_native_model,
+                 cascaded_config_name=args.cascaded_config,
++                agent_prompt_file=args.agent_prompt_file,
+                 reasoning_effort=args.reasoning_effort,
+                 live_config=args.live_config,
+                 realtime_generation=args.realtime_generation,
+diff --git a/src/tau2/config.py b/src/tau2/config.py
+index c285d64..e3d27b5 100644
+--- a/src/tau2/config.py
++++ b/src/tau2/config.py
+@@ -1,6 +1,8 @@
+ # =============================================================================
+ # SIMULATION DEFAULTS (overridable via CLI)
+ # =============================================================================
++import os
++
+ DEFAULT_MAX_STEPS = 200
+ DEFAULT_MAX_ERRORS = 10
+ DEFAULT_SEED = 300
+@@ -29,7 +31,7 @@ DEFAULT_LLM_ENV_INTERFACE = "gpt-4.1-2025-04-14"
+ DEFAULT_LLM_ENV_INTERFACE_TEMPERATURE = 0.0
+ DEFAULT_LLM_ENV_INTERFACE_ARGS = {"temperature": DEFAULT_LLM_ENV_INTERFACE_TEMPERATURE}
+ 
+-DEFAULT_LLM_EVAL_USER_SIMULATOR = "claude-opus-4-5"
++DEFAULT_LLM_EVAL_USER_SIMULATOR = os.environ.get("TAU2_REVIEW_MODEL", "claude-opus-4-5")
+ 
+ # LLM debug logging
+ DEFAULT_LLM_LOG_MODE = "latest"  # Options: "all", "latest"
+@@ -74,7 +76,9 @@ TELEPHONY_ULAW_SILENCE = b"\x7f"  # μ-law silence byte
+ # VOICE DEFAULTS (overridable via CLI, legacy half-duplex mode)
+ # =============================================================================
+ DEFAULT_VOICE_ENABLED = False
+-DEFAULT_VOICE_SYNTHESIS_PROVIDER = "elevenlabs"
++DEFAULT_VOICE_SYNTHESIS_PROVIDER = os.environ.get(
++    "TAU2_VOICE_SYNTHESIS_PROVIDER", "elevenlabs"
++)  # overridable: elevenlabs | kokoro (local) | edge (keyless network)
+ DEFAULT_VOICE_TRANSCRIPTION_MODEL = "nova-3"
+ DEFAULT_VOICE_MODEL = "eleven_v3"
+ 
+@@ -90,7 +94,9 @@ DEFAULT_TEXT_STREAMING_CONFIG = {
+ # VOICE USER SIMULATOR (fixed versioning + overridable model)
+ # =============================================================================
+ VOICE_USER_SIMULATOR_VERSION = "v1.0"  # fixed, bump on changes
+-VOICE_USER_SIMULATOR_DECISION_MODEL = "gpt-4.1"  # overridable
++VOICE_USER_SIMULATOR_DECISION_MODEL = os.environ.get(
++    "TAU2_VOICE_DECISION_MODEL", "gpt-4.1"
++)  # overridable (LiteLLM model string, e.g. ollama_chat/llama3.1:8b)
+ DEFAULT_SPEECH_COMPLEXITY = "regular"  # overridable: "control", "regular"
+ 
+ # =============================================================================
+@@ -213,6 +219,7 @@ DEFAULT_AUDIO_NATIVE_MODELS = {
+     "nova": DEFAULT_NOVA_MODEL,
+     "qwen": DEFAULT_QWEN_MODEL,
+     "livekit": "dummy",
++    "livekit_session": "cascaded-session",
+ }
+ 
+ DEFAULT_AUDIO_NATIVE_REASONING_EFFORT: dict[str, str | None] = {
+@@ -223,6 +230,7 @@ DEFAULT_AUDIO_NATIVE_REASONING_EFFORT: dict[str, str | None] = {
+     "nova": None,
+     "qwen": None,
+     "livekit": None,
++    "livekit_session": None,
+ }
+ 
+ AUDIO_NATIVE_PROVIDER_TYPES = {
+@@ -233,6 +241,7 @@ AUDIO_NATIVE_PROVIDER_TYPES = {
+     "nova": "audio_native",
+     "qwen": "audio_native",
+     "livekit": "cascaded",
++    "livekit_session": "cascaded",
+ }
+ 
+ # =============================================================================
+diff --git a/src/tau2/data_model/simulation.py b/src/tau2/data_model/simulation.py
+index 8c23c35..7ecc092 100644
+--- a/src/tau2/data_model/simulation.py
++++ b/src/tau2/data_model/simulation.py
+@@ -73,7 +73,14 @@ class AudioNativeConfig(BaseModel):
+ 
+     # Provider selection
+     provider: Literal[
+-        "openai", "openai_live", "gemini", "xai", "nova", "qwen", "livekit"
++        "openai",
++        "openai_live",
++        "gemini",
++        "xai",
++        "nova",
++        "qwen",
++        "livekit",
++        "livekit_session",
+     ] = Field(
+         default=DEFAULT_AUDIO_NATIVE_PROVIDER,
+         description="Audio native API provider: 'openai' (OpenAI Realtime), 'openai_live' (OpenAI Live), 'gemini' (Gemini Live), 'xai' (xAI Grok Voice Agent), 'nova' (Amazon Nova Sonic), 'qwen' (Alibaba Qwen Omni), or 'livekit' (LiveKit cascaded STT→LLM→TTS)",
+@@ -89,6 +96,12 @@ class AudioNativeConfig(BaseModel):
+         default=DEFAULT_AUDIO_NATIVE_MODELS[DEFAULT_AUDIO_NATIVE_PROVIDER],
+         description="Audio native model to use",
+     )
++    agent_prompt_file: Optional[str] = Field(
++        default=None,
++        description="Path to a file whose contents replace the built-in agent instruction block "
++        "(CASCADED_MODEL_INSTRUCTION / AUDIO_NATIVE_VOICE_INSTRUCTION) in the system prompt. "
++        "The domain policy is still appended unchanged. Non-standard: marks the run as custom.",
++    )
+     reasoning_effort: Optional[str] = Field(
+         default=None,
+         description="Reasoning effort for thinking models: 'minimal', 'low', 'medium', 'high'. If None, not sent.",
+@@ -283,6 +296,16 @@ class AudioNativeConfig(BaseModel):
+         if self.cascaded_config_name is None:
+             return None
+ 
++        if self.provider == "livekit_session":
++            from tau2.voice.audio_native.livekit_session.config import SESSION_CONFIGS
++
++            if self.cascaded_config_name not in SESSION_CONFIGS:
++                raise ValueError(
++                    f"Unknown livekit_session config: '{self.cascaded_config_name}'. "
++                    f"Available: {list(SESSION_CONFIGS.keys())}"
++                )
++            return SESSION_CONFIGS[self.cascaded_config_name]
++
+         from tau2.voice.audio_native.livekit.config import CASCADED_CONFIGS
+ 
+         if self.cascaded_config_name not in CASCADED_CONFIGS:
+diff --git a/src/tau2/data_model/voice.py b/src/tau2/data_model/voice.py
+index 753a340..369e94f 100644
+--- a/src/tau2/data_model/voice.py
++++ b/src/tau2/data_model/voice.py
+@@ -96,6 +96,10 @@ class ElevenLabsTTSConfig(BaseModel):
+     insert_audio_tags: bool = Field(default=True)
+     audio_tags_probability: float = Field(default=0.2, ge=0.0, le=1.0)
+     seed: Optional[int] = Field(default=None)
++    persona_name: Optional[str] = Field(
++        default=None,
++        description="Persona being voiced; used by keyless backends (kokoro/edge) to pick a voice.",
++    )
+ 
+ 
+ ProviderConfig = ElevenLabsTTSConfig
+@@ -109,7 +113,7 @@ ProviderConfig = ElevenLabsTTSConfig
+ class SynthesisConfig(BaseModel):
+     """Voice synthesis configuration with 3-tier effect taxonomy."""
+ 
+-    provider: str = Field(default="elevenlabs")
++    provider: str = Field(default_factory=lambda: DEFAULT_VOICE_SYNTHESIS_PROVIDER)
+     provider_config: Optional[ProviderConfig] = Field(default=ElevenLabsTTSConfig())
+     channel_effects_config: ChannelEffectsConfig = Field(
+         default_factory=ChannelEffectsConfig
+@@ -324,7 +328,7 @@ class VoiceSettings(BaseModel):
+         no_audio_tags: bool = not ELEVENLABS_ENABLE_AUDIO_TAGS,
+     ) -> "VoiceSettings":
+         """Create a VoiceSettings instance from CLI arguments."""
+-        if voice_synthesis_provider != "elevenlabs":
++        if voice_synthesis_provider not in ("elevenlabs", "kokoro", "edge"):
+             raise ValueError(
+                 f"Unsupported voice synthesis provider: {voice_synthesis_provider}"
+             )
+diff --git a/src/tau2/runner/batch.py b/src/tau2/runner/batch.py
+index 3e31dc2..0a8e556 100644
+--- a/src/tau2/runner/batch.py
++++ b/src/tau2/runner/batch.py
+@@ -65,6 +65,11 @@ from tau2.utils.utils import DATA_DIR
+ _current_simulation_id: ContextVar[Optional[str]] = ContextVar(
+     "_current_simulation_id", default=None
+ )
++# Per-simulation artifact directory (artifacts/task_<id>/sim_<uuid>), set for every
++# simulation so provider adapters can drop sidecar files next to the audio.
++_current_artifact_dir: ContextVar[Optional[Path]] = ContextVar(
++    "_current_artifact_dir", default=None
++)
+ 
+ 
+ # =============================================================================
+@@ -286,6 +291,9 @@ class _TaskLogContext:
+                 / f"sim_{self.simulation_id}"
+             )
+ 
++        if self.task_log_dir:
++            _current_artifact_dir.set(self.task_log_dir)
++
+         if self.verbose_logs and self.task_log_dir:
+             self.task_log_dir.mkdir(parents=True, exist_ok=True)
+             _current_simulation_id.set(self.simulation_id)
+@@ -857,7 +865,7 @@ def preregister_voice_plugins(config: RunConfig) -> None:
+     if (
+         isinstance(config, VoiceRunConfig)
+         and config.audio_native_config is not None
+-        and config.audio_native_config.provider == "livekit"
++        and config.audio_native_config.provider in ("livekit", "livekit_session")
+     ):
+         from tau2.voice.audio_native.livekit import preregister_livekit_plugins
+ 
+diff --git a/src/tau2/runner/worker.py b/src/tau2/runner/worker.py
+index 6137337..d22d74e 100644
+--- a/src/tau2/runner/worker.py
++++ b/src/tau2/runner/worker.py
+@@ -194,7 +194,7 @@ def _maybe_preregister_livekit(run_payload: dict, registered: set) -> None:
+     if "livekit" in registered:
+         return
+     audio_config = (run_payload.get("config") or {}).get("audio_native_config") or {}
+-    if audio_config.get("provider") == "livekit":
++    if audio_config.get("provider") in ("livekit", "livekit_session"):
+         from tau2.voice.audio_native.livekit import preregister_livekit_plugins
+ 
+         preregister_livekit_plugins()
+diff --git a/src/tau2/utils/llm_utils.py b/src/tau2/utils/llm_utils.py
+index cc70482..f046b03 100644
+--- a/src/tau2/utils/llm_utils.py
++++ b/src/tau2/utils/llm_utils.py
+@@ -352,6 +352,67 @@ def _write_llm_log(
+         json.dump(call_data, f, indent=2)
+ 
+ 
++def _needs_local_chat_format(model: str) -> bool:
++    """Local chat templates (llama3.x etc. via Ollama) cannot represent a system
++    message that appears after assistant turns: the model leaks role headers and
++    may answer as the other party. Opt in automatically for Ollama models, or
++    force with TAU2_LOCAL_CHAT_FORMAT=1."""
++    import os
++
++    flag = os.environ.get("TAU2_LOCAL_CHAT_FORMAT")
++    if flag is not None:
++        return flag not in ("0", "", "false", "False")
++    return str(model).startswith(("ollama", "ollama_chat"))
++
++
++_USER_SIM_CALLS = {"user_simulator_response", "user_streaming_response"}
++_LOCAL_USERSIM_GUARD = (
++    "[System note] Reminder for the CUSTOMER role: never invent identifiers (order numbers, item ids, "
++    "emails, zip codes, names, phone numbers) or facts that are not in your instructions - if you do not know "
++    "something, say that you do not know or do not have it. Stay on the task in your instructions. "
++    "Speak only as the customer, in one short spoken turn."
++)
++
++
++def _local_usersim_guard_enabled() -> bool:
++    """LOCAL-ONLY deviation (documented): small local user-simulator models (llama3.1:8b,
++    qwen2.5:7b) invent order ids / emails when the agent asks for them, which makes tasks
++    unwinnable and poisons identifier evals. A late reminder fixes most of it.
++    Disable with TAU2_LOCAL_USERSIM_GUARD=0. Never active for cloud models."""
++    import os
++
++    return os.environ.get("TAU2_LOCAL_USERSIM_GUARD", "1") not in ("0", "", "false", "False")
++
++
++def _append_local_usersim_guard(litellm_messages: list[dict]) -> list[dict]:
++    out = list(litellm_messages)
++    if out and out[-1].get("role") == "user" and not out[-1].get("tool_calls"):
++        out[-1] = {**out[-1], "content": f"{out[-1].get('content') or ''}\n{_LOCAL_USERSIM_GUARD}".strip()}
++    else:
++        out.append({"role": "user", "content": _LOCAL_USERSIM_GUARD})
++    return out
++
++
++def _adapt_mid_conversation_system_messages(litellm_messages: list[dict]) -> list[dict]:
++    """Keep leading system messages; turn any later system message into a
++    user-role note so the template stays user/assistant-alternating."""
++    out: list[dict] = []
++    seen_non_system = False
++    for m in litellm_messages:
++        if m.get("role") == "system" and seen_non_system:
++            note = {"role": "user", "content": f"[System note] {m.get('content') or ''}".strip()}
++            # merge with a preceding user note to avoid two user turns in a row
++            if out and out[-1].get("role") == "user" and not out[-1].get("tool_calls"):
++                out[-1] = {"role": "user", "content": f"{out[-1].get('content') or ''}\n{note['content']}".strip()}
++            else:
++                out.append(note)
++            continue
++        if m.get("role") != "system":
++            seen_non_system = True
++        out.append(m)
++    return out
++
++
+ def generate(
+     model: str,
+     messages: list[Message],
+@@ -386,6 +447,10 @@ def generate(
+         os.environ["VERTEXAI_LOCATION"] = "global"
+ 
+     litellm_messages = to_litellm_messages(messages)
++    if _needs_local_chat_format(model):
++        litellm_messages = _adapt_mid_conversation_system_messages(litellm_messages)
++        if call_name in _USER_SIM_CALLS and _local_usersim_guard_enabled():
++            litellm_messages = _append_local_usersim_guard(litellm_messages)
+     tools_schema = [tool.openai_schema for tool in tools] if tools else None
+     if tools_schema and tool_choice is None:
+         tool_choice = "auto"
+@@ -404,6 +469,13 @@ def generate(
+     }
+     request_timestamp = datetime.now().isoformat()
+ 
++    if _needs_local_chat_format(model) and "max_tokens" not in kwargs:
++        # LOCAL-ONLY: small local models occasionally never emit a stop token; one user-simulator
++        # turn ran to 8.9k tokens (23 min) in the v1 subset run. A spoken user turn is < 150 tokens.
++        if call_name in _USER_SIM_CALLS:
++            kwargs["max_tokens"] = int(os.environ.get("TAU2_LOCAL_USERSIM_MAX_TOKENS", "400"))
++        elif call_name in ("interruption_decision", "backchannel_decision"):
++            kwargs["max_tokens"] = 32
+     start_time = time.perf_counter()
+     try:
+         response = completion(
+@@ -432,6 +504,12 @@ def generate(
+         "The response should be an assistant message"
+     )
+     content = response_choice.message.content
++    if isinstance(content, str) and content.lstrip().lower().startswith("assistant"):
++        # Some local chat templates (e.g. llama3.x via Ollama) leak the role
++        # header ("assistant\n\n", sometimes repeated) into the text.
++        import re as _re
++
++        content = _re.sub(r"^(\s*assistant\s*)+", "", content, flags=_re.I)
+     raw_tool_calls = response_choice.message.tool_calls or []
+     tool_calls = [
+         ToolCall(
+diff --git a/src/tau2/voice/audio_native/adapter.py b/src/tau2/voice/audio_native/adapter.py
+index 3996add..de86910 100644
+--- a/src/tau2/voice/audio_native/adapter.py
++++ b/src/tau2/voice/audio_native/adapter.py
+@@ -420,7 +420,12 @@ def create_adapter(
+ 
+     # --- Resolve model default ---
+     if model is None:
+-        if provider == "livekit":
++        if provider == "livekit_session":
++            from tau2.voice.audio_native.livekit_session.config import SessionConfig
++
++            config = cascaded_config or SessionConfig()
++            model = f"session:{config.llm.model}"
++        elif provider == "livekit":
+             from tau2.voice.audio_native.livekit.config import CascadedConfig
+ 
+             config = cascaded_config or CascadedConfig()
+@@ -523,6 +528,19 @@ def create_adapter(
+             send_audio_instant=send_audio_instant,
+             audio_format=audio_format,
+         )
++    elif provider == "livekit_session":
++        from tau2.voice.audio_native.livekit_session.config import SessionConfig
++        from tau2.voice.audio_native.livekit_session.discrete_time_adapter import (
++            LiveKitSessionAdapter,
++        )
++
++        config = cascaded_config or SessionConfig()
++        adapter = LiveKitSessionAdapter(
++            tick_duration_ms=tick_duration_ms,
++            session_config=config,
++            send_audio_instant=send_audio_instant,
++            audio_format=audio_format,
++        )
+     else:
+         raise ValueError(f"Unknown provider: {provider}")
+ 
+diff --git a/src/tau2/voice/audio_native/livekit/__init__.py b/src/tau2/voice/audio_native/livekit/__init__.py
+index 8162bc8..2315742 100644
+--- a/src/tau2/voice/audio_native/livekit/__init__.py
++++ b/src/tau2/voice/audio_native/livekit/__init__.py
+@@ -72,22 +72,26 @@ def preregister_livekit_plugins() -> None:
+     """
+     from loguru import logger
+ 
+-    try:
+-        # Import the plugins - this triggers their registration
+-        from livekit.plugins import (  # noqa: F401
+-            anthropic,
+-            deepgram,
+-            elevenlabs,
+-            openai,
+-        )
++    import importlib
+ 
+-        logger.debug("LiveKit plugins pre-registered on main thread")
+-    except ImportError as e:
++    # Import each plugin independently so an optional one that is not installed
++    # (anthropic, elevenlabs) does not prevent the required ones (deepgram,
++    # openai) from being registered on the main thread.
++    registered, missing = [], []
++    for name in ("deepgram", "openai", "anthropic", "elevenlabs", "silero"):
++        try:
++            importlib.import_module(f"livekit.plugins.{name}")
++            registered.append(name)
++        except ImportError:
++            missing.append(name)
++    logger.debug(f"LiveKit plugins pre-registered on main thread: {registered}")
++    if "deepgram" in missing or "openai" in missing:
+         logger.warning(
+-            f"Failed to pre-register LiveKit plugins: {e}. "
+-            "Install with: pip install livekit-plugins-openai livekit-plugins-deepgram "
+-            "livekit-plugins-anthropic livekit-plugins-elevenlabs"
++            f"Required LiveKit plugins missing: {missing}. "
++            "Install with: pip install livekit-plugins-openai livekit-plugins-deepgram"
+         )
++    elif missing:
++        logger.debug(f"Optional LiveKit plugins not installed: {missing}")
+ 
+ 
+ __all__ = [
+diff --git a/src/tau2/voice/audio_native/livekit_session/README.md b/src/tau2/voice/audio_native/livekit_session/README.md
+new file mode 100644
+index 0000000..bd602ff
+--- /dev/null
++++ b/src/tau2/voice/audio_native/livekit_session/README.md
+@@ -0,0 +1,55 @@
++# LiveKit AgentSession cascaded provider (`livekit_session`)
++
++A τ-bench audio-native provider whose agent is a real `livekit.agents.AgentSession`
++running the cascaded pipeline (Deepgram nova-3 → gpt-4.1 → Deepgram Aura by default).
++
++| | `livekit` (built-in) | `livekit_session` (this module) |
++|---|---|---|
++| Pipeline | LiveKit *plugins* called directly | `AgentSession` + `Agent` |
++| Turn end | Deepgram VAD endpointing (`endpointing_ms`) | LiveKit turn detector / VAD / STT endpointing (`TurnHandlingOptions`) |
++| Barge-in | instant on any STT speech event | LiveKit interruption handling (adaptive model or VAD, min duration/words, false-interruption resume) |
++| Preemptive generation | no | yes (LiveKit default) |
++| Tool execution | provider parses LLM tool calls | LiveKit function tools bridged to τ-bench (results next tick) |
++| Extra outputs | – | `livekit_events.jsonl` sidecar per simulation |
++
++```
++tau2 run --domain retail --audio-native --audio-native-provider livekit_session \
++    --cascaded-config cascaded-session --speech-complexity regular --verbose-logs
++```
++
++Presets (`config.py::SESSION_CONFIGS`): `cascaded-session` (turn detector + adaptive
++interruptions; needs LiveKit Cloud credentials for the hosted v1 detector and the
++adaptive model), `cascaded-session-mini` (local v1-mini detector), `cascaded-session-vad`
++(VAD-only turn taking and interruptions; config ablation).
++
++`--agent-prompt-file <file>` replaces the instruction block of the system prompt
++(the domain policy is still appended). Any prompt/turn-handling change makes a
++leaderboard submission "custom".
++
++## How a tick works
++
++1. Pending τ-bench tool results resolve the futures of the bridged LiveKit tools.
++2. The tick's user audio (G.711 8 kHz) is converted to 16 kHz PCM and pushed into
++   `TickAudioInput` as 20 ms frames.
++3. Events from the session (transcripts, state changes, tool calls, TTS text tokens,
++   usage) are drained from a queue until the tick deadline.
++4. Up to one tick of synthesized agent audio is pulled from `TickAudioOutput`
++   (LiveKit pushed it faster than real time), converted to G.711, and paired with a
++   proportional slice of the utterance transcript captured by `TickTextOutput`.
++5. `playback_finished` is reported to LiveKit only when the simulation has actually
++   drained a flushed segment, so the agent state machine follows simulated playback.
++   When LiveKit clears the output buffer (real interruption) the remaining audio is
++   discarded and reported as interrupted; a pause (possible false interruption) just
++   stops draining until resume.
++
++Sidecar records (`artifacts/task_<id>/sim_<uuid>/livekit_events.jsonl`):
++`user_input_transcribed`, `user_state_changed`, `agent_state_changed`,
++`overlapping_speech`, `agent_false_interruption`, `function_tools_executed`,
++`conversation_item_added`, `metrics_collected` (LLM/TTS/STT), `error`, `close`.
++
++## Tests
++
++```
++uv run pytest tests/test_voice/test_livekit_session_adapter.py -q            # pure tests
++TAU2_RUN_LIVEKIT_SESSION_TESTS=1 uv run pytest ... -k end_to_end -s        # needs Deepgram + OpenAI keys
++```
+diff --git a/src/tau2/voice/audio_native/livekit_session/__init__.py b/src/tau2/voice/audio_native/livekit_session/__init__.py
+new file mode 100644
+index 0000000..cb9f331
+--- /dev/null
++++ b/src/tau2/voice/audio_native/livekit_session/__init__.py
+@@ -0,0 +1,39 @@
++"""LiveKit AgentSession-based cascaded voice provider (STT → LLM → TTS).
++
++Runs a real ``livekit.agents.AgentSession`` inside the τ-bench tick loop, so the
++system under test is a genuine LiveKit voice agent: LiveKit's turn detector,
++endpointing, (adaptive) interruption handling, preemptive generation and tool
++execution are all exercised. Audio enters and leaves the session through
++custom ``AudioInput``/``AudioOutput`` sinks paced by the 200 ms simulation
++ticks; τ-bench tool calls are bridged through LiveKit function tools whose
++results are delivered on the next tick.
++
++Compare with ``tau2.voice.audio_native.livekit`` which drives LiveKit *plugins*
++directly and lets Deepgram's VAD decide turns.
++
++Usage (CLI):
++    tau2 run --domain retail --audio-native --audio-native-provider livekit_session \
++        --cascaded-config cascaded-session [--agent-prompt-file prompts/v1.md]
++"""
++
++from tau2.voice.audio_native.livekit_session.config import (
++    SESSION_CONFIGS,
++    SessionConfig,
++    TurnHandlingConfig,
++    VADConfig,
++)
++from tau2.voice.audio_native.livekit_session.discrete_time_adapter import (
++    LiveKitSessionAdapter,
++)
++from tau2.voice.audio_native.livekit_session.session_provider import (
++    SessionVoiceProvider,
++)
++
++__all__ = [
++    "LiveKitSessionAdapter",
++    "SESSION_CONFIGS",
++    "SessionConfig",
++    "SessionVoiceProvider",
++    "TurnHandlingConfig",
++    "VADConfig",
++]
+diff --git a/src/tau2/voice/audio_native/livekit_session/config.py b/src/tau2/voice/audio_native/livekit_session/config.py
+new file mode 100644
+index 0000000..998300b
+--- /dev/null
++++ b/src/tau2/voice/audio_native/livekit_session/config.py
+@@ -0,0 +1,314 @@
++"""Configuration for the LiveKit AgentSession-based cascaded voice provider.
++
++Unlike ``tau2.voice.audio_native.livekit`` (which drives LiveKit *plugins*
++directly with Deepgram's VAD deciding turns), this provider runs a real
++``livekit.agents.AgentSession``: LiveKit's turn detector, endpointing,
++adaptive interruption handling and preemptive generation are all in the loop,
++so behaviours governed by those components can be evaluated.
++
++Presets (``SESSION_CONFIGS``) mirror the leaderboard "Cascaded baseline"
++pipeline (Deepgram nova-3 STT → OpenAI gpt-4.1 → Deepgram aura-asteria-en TTS)
++and only differ in how turn taking is handled.
++"""
++
++import os
++from typing import Dict, Literal, Optional, Union
++
++from pydantic import BaseModel, Field
++
++# Re-use the component configs of the plugin-level cascaded provider so the
++# two providers describe the same pipeline with the same fields.
++from tau2.voice.audio_native.livekit.config import (
++    AnthropicLLMConfig,
++    DeepgramSTTConfig,
++    DeepgramTTSConfig,
++    ElevenLabsTTSConfig,
++    OpenAILLMConfig,
++)
++
++
++class OpenAICompatLLMConfig(BaseModel):
++    """Any OpenAI-compatible chat-completions endpoint (Groq, Ollama, Hugging Face
++    router, OpenRouter, vLLM, ...). Tool calling must be supported by the model."""
++
++    provider: Literal["openai_compat"] = "openai_compat"
++    model: str = "llama-3.3-70b-versatile"
++    base_url: str = "https://api.groq.com/openai/v1"
++    api_key_env: str = Field(
++        default="GROQ_API_KEY",
++        description="Env var holding the key. Use 'NONE' for keyless local servers (Ollama).",
++    )
++    temperature: Optional[float] = None
++    parallel_tool_calls: Optional[bool] = None
++    max_completion_tokens: Optional[int] = None
++
++
++class OpenAICompatSTTConfig(BaseModel):
++    """OpenAI-compatible /audio/transcriptions endpoint (non-streaming; the
++    AgentSession wraps it with VAD). E.g. a local faster-whisper server."""
++
++    provider: Literal["openai_compat"] = "openai_compat"
++    model: str = "whisper-1"
++    base_url: str = "http://localhost:8000/v1"
++    api_key_env: str = "NONE"
++    language: str = "en"
++
++
++class OpenAICompatTTSConfig(BaseModel):
++    """OpenAI-compatible /audio/speech endpoint, e.g. a local Kokoro-FastAPI server."""
++
++    provider: Literal["openai_compat"] = "openai_compat"
++    model: str = "kokoro"
++    voice: str = "af_heart"
++    base_url: str = "http://localhost:8880/v1"
++    api_key_env: str = "NONE"
++    sample_rate: int = 24000
++
++
++LLMConfig = Union[OpenAILLMConfig, AnthropicLLMConfig, OpenAICompatLLMConfig]
++STTConfig = Union[DeepgramSTTConfig, OpenAICompatSTTConfig]
++TTSConfig = Union[DeepgramTTSConfig, ElevenLabsTTSConfig, OpenAICompatTTSConfig]
++
++TurnDetectionMode = Literal["turn_detector", "vad", "stt", "manual"]
++InterruptionMode = Literal["adaptive", "vad"]
++
++
++class TurnHandlingConfig(BaseModel):
++    """Subset of LiveKit ``TurnHandlingOptions`` we expose for experiments.
++
++    Field names follow the LiveKit docs (Python SDK, seconds).
++    """
++
++    turn_detection: TurnDetectionMode = Field(
++        default="turn_detector",
++        description=(
++            "'turn_detector' = LiveKit audio end-of-turn model (default, recommended); "
++            "'vad' = Silero VAD silence only; 'stt' = STT endpointing cues; "
++            "'manual' = explicit control (not used here)."
++        ),
++    )
++    turn_detector_version: Optional[Literal["v1", "v1-mini"]] = Field(
++        default=None,
++        description="LiveKit turn detector version. None = SDK default "
++        "(v1 on LiveKit Cloud / with Cloud credentials, v1-mini locally).",
++    )
++    unlikely_threshold: Optional[float] = Field(
++        default=None,
++        description="Turn detector end-of-turn threshold override (lower = more eager).",
++    )
++    endpointing_mode: Literal["fixed", "dynamic"] = "fixed"
++    endpointing_min_delay: float = Field(
++        default=0.5,
++        description="Seconds of silence before the turn can end. LiveKit default 0.5 "
++        "(the SDK lowers unset values to 0.3 when the audio turn detector is used).",
++    )
++    endpointing_max_delay: float = Field(
++        default=3.0,
++        description="Seconds before the turn is force-closed. LiveKit default 3.0 "
++        "(2.5 with the audio turn detector).",
++    )
++
++    interruptions_enabled: bool = True
++    interruption_mode: Optional[InterruptionMode] = Field(
++        default=None,
++        description="'adaptive' = LiveKit barge-in model (needs aligned-transcript STT); "
++        "'vad' = VAD-only. None = SDK auto-selection.",
++    )
++    min_interruption_duration: float = Field(
++        default=0.5,
++        description="Seconds of user speech before it counts as a barge-in.",
++    )
++    min_interruption_words: int = Field(
++        default=0, description="Minimum transcribed words before a barge-in counts."
++    )
++    false_interruption_timeout: Optional[float] = Field(
++        default=2.0,
++        description="Seconds of silence after an interruption before it is deemed false "
++        "and speech resumes. None disables false-interruption handling.",
++    )
++    resume_false_interruption: bool = True
++
++    preemptive_generation: bool = Field(
++        default=True,
++        description="Start the LLM on the final transcript before the turn is confirmed.",
++    )
++
++
++class VADConfig(BaseModel):
++    """Silero VAD parameters (``livekit.agents.inference.VAD`` / silero plugin)."""
++
++    min_speech_duration: float = 0.05
++    min_silence_duration: float = Field(
++        default=0.55,
++        description="Must be >= 0.25 when the audio turn detector is used.",
++    )
++    prefix_padding_duration: float = 0.5
++    activation_threshold: float = 0.5
++
++
++class SessionConfig(BaseModel):
++    """Full configuration for the AgentSession-based cascaded provider."""
++
++    stt: STTConfig = Field(default_factory=DeepgramSTTConfig)
++    llm: LLMConfig = Field(default_factory=OpenAILLMConfig)
++    tts: TTSConfig = Field(default_factory=DeepgramTTSConfig)
++    vad: VADConfig = Field(default_factory=VADConfig)
++    turn_handling: TurnHandlingConfig = Field(default_factory=TurnHandlingConfig)
++
++    llm_timeout_s: Optional[float] = Field(
++        default=None,
++        description="Per-attempt LLM request timeout (livekit APIConnectOptions.timeout, default 10 s). "
++        "Local models need more: a cold prompt evaluation of the 4k-token retail prompt takes 7-8 s on a laptop.",
++    )
++    max_tool_steps: int = Field(
++        default=3,
++        description="LiveKit AgentSession max consecutive tool calls per turn.",
++    )
++    write_tool_names: list[str] = Field(
++        default_factory=list,
++        description="τ-bench tools that mutate state; executed with interruptions "
++        "disallowed so a barge-in cannot cancel a half-applied write. Empty = derive "
++        "from the domain's ToolType.WRITE tools at connect time.",
++    )
++    tts_input_sample_rate: int = Field(
++        default=16000,
++        description="PCM sample rate fed into the session (Deepgram STT expects 16 kHz).",
++    )
++    events_sidecar: bool = Field(
++        default=True,
++        description="Write LiveKit-side events (transcripts, state changes, interruptions, "
++        "per-turn metrics) to a per-simulation JSONL sidecar for the behaviour evals.",
++    )
++    log_prompts: bool = False
++
++
++# Keep DeepgramTTSConfig / ElevenLabsTTSConfig etc. importable from here too.
++__all__ = [
++    "AnthropicLLMConfig",
++    "DeepgramSTTConfig",
++    "DeepgramTTSConfig",
++    "ElevenLabsTTSConfig",
++    "InterruptionMode",
++    "LLMConfig",
++    "OpenAICompatLLMConfig",
++    "OpenAICompatSTTConfig",
++    "OpenAICompatTTSConfig",
++    "OpenAILLMConfig",
++    "SESSION_CONFIGS",
++    "STTConfig",
++    "SessionConfig",
++    "TTSConfig",
++    "TurnDetectionMode",
++    "TurnHandlingConfig",
++    "VADConfig",
++]
++
++
++SESSION_CONFIGS: Dict[str, SessionConfig] = {
++    # Same models as the leaderboard "Cascaded baseline" row, with LiveKit's
++    # recommended turn handling (audio turn detector + adaptive interruption).
++    "cascaded-session": SessionConfig(
++        stt=DeepgramSTTConfig(model="nova-3"),
++        llm=OpenAILLMConfig(model="gpt-4.1"),
++        tts=DeepgramTTSConfig(model="aura-asteria-en"),
++        turn_handling=TurnHandlingConfig(
++            turn_detection="turn_detector",
++            interruption_mode="adaptive",
++        ),
++    ),
++    # Config ablation: VAD-only turn detection and VAD-only interruptions.
++    # Closest AgentSession analogue of the plugin-level baseline's behaviour.
++    "cascaded-session-vad": SessionConfig(
++        stt=DeepgramSTTConfig(model="nova-3"),
++        llm=OpenAILLMConfig(model="gpt-4.1"),
++        tts=DeepgramTTSConfig(model="aura-asteria-en"),
++        turn_handling=TurnHandlingConfig(
++            turn_detection="vad",
++            interruption_mode="vad",
++        ),
++    ),
++    # Local-only variant: on-CPU v1-mini turn detector and VAD-based interruptions
++    # (the adaptive interruption model is served by LiveKit Cloud). No LiveKit
++    # Cloud credentials needed.
++    "cascaded-session-mini": SessionConfig(
++        stt=DeepgramSTTConfig(model="nova-3"),
++        llm=OpenAILLMConfig(model="gpt-4.1"),
++        tts=DeepgramTTSConfig(model="aura-asteria-en"),
++        turn_handling=TurnHandlingConfig(
++            turn_detection="turn_detector",
++            turn_detector_version="v1-mini",
++            interruption_mode="vad",
++        ),
++    ),
++    # ---- Free-tier stacks (no paid keys) -------------------------------------
++    # Groq free tier for the LLM (fast, tool calling), Deepgram on its signup
++    # credit for STT/TTS, local v1-mini turn detector, VAD interruptions.
++    "free-groq": SessionConfig(
++        stt=DeepgramSTTConfig(model="nova-3"),
++        llm=OpenAICompatLLMConfig(
++            model="llama-3.3-70b-versatile",
++            base_url="https://api.groq.com/openai/v1",
++            api_key_env="GROQ_API_KEY",
++        ),
++        tts=DeepgramTTSConfig(model="aura-asteria-en"),
++        turn_handling=TurnHandlingConfig(
++            turn_detection="turn_detector",
++            turn_detector_version="v1-mini",
++            interruption_mode="vad",
++        ),
++    ),
++    # Fully local, no keys: Ollama LLM (scripts/local_stack.sh up), local
++    # faster-whisper STT server (:8000) and Kokoro TTS server (:8880).
++    "local": SessionConfig(
++        stt=OpenAICompatSTTConfig(model="whisper-1", base_url="http://localhost:8000/v1"),
++        llm=OpenAICompatLLMConfig(
++            # qwen2.5:7b (default since 2026-09-29): on the text pre-screen it never fabricates
++            # writes or placeholder lookups, unlike llama3.1:8b, so its voice-run failures are
++            # the voice-specific ones we evaluate. TAU2_LOCAL_LLM=llama3.1:8b switches back.
++            model=os.environ.get("TAU2_LOCAL_LLM", "qwen2.5:7b"),
++            base_url="http://localhost:11434/v1", api_key_env="NONE",
++            parallel_tool_calls=False,
++        ),
++        tts=OpenAICompatTTSConfig(model="kokoro", voice="af_heart", base_url="http://localhost:8880/v1"),
++        turn_handling=TurnHandlingConfig(
++            turn_detection="turn_detector",
++            turn_detector_version="v1-mini",
++            interruption_mode="vad",
++        ),
++        llm_timeout_s=40.0,
++    ),
++    # Ollama LLM with Deepgram audio (keyless LLM, signup-credit audio).
++    # Config ablation for behaviour 2 (planned): same as `local` but a backchannel must be
++    # >= 2 transcribed words and >= 1.0 s before it counts as a barge-in. Not a prompt change;
++    # bounds how much of S_BC is reachable by prompts at all on this stack.
++    "local-bc": SessionConfig(
++        stt=OpenAICompatSTTConfig(model="whisper-1", base_url="http://localhost:8000/v1"),
++        llm=OpenAICompatLLMConfig(
++            model=os.environ.get("TAU2_LOCAL_LLM", "qwen2.5:7b"),
++            base_url="http://localhost:11434/v1", api_key_env="NONE",
++            parallel_tool_calls=False,
++        ),
++        tts=OpenAICompatTTSConfig(model="kokoro", voice="af_heart", base_url="http://localhost:8880/v1"),
++        turn_handling=TurnHandlingConfig(
++            turn_detection="turn_detector",
++            turn_detector_version="v1-mini",
++            interruption_mode="vad",
++            min_interruption_duration=1.0,
++            min_interruption_words=2,
++        ),
++        llm_timeout_s=40.0,
++    ),
++    "free-ollama-deepgram": SessionConfig(
++        stt=DeepgramSTTConfig(model="nova-3"),
++        llm=OpenAICompatLLMConfig(
++            model="llama3.1:8b", base_url="http://localhost:11434/v1", api_key_env="NONE",
++            parallel_tool_calls=False,
++        ),
++        tts=DeepgramTTSConfig(model="aura-asteria-en"),
++        turn_handling=TurnHandlingConfig(
++            turn_detection="turn_detector",
++            turn_detector_version="v1-mini",
++            interruption_mode="vad",
++        ),
++    ),
++}
+diff --git a/src/tau2/voice/audio_native/livekit_session/discrete_time_adapter.py b/src/tau2/voice/audio_native/livekit_session/discrete_time_adapter.py
+new file mode 100644
+index 0000000..654686d
+--- /dev/null
++++ b/src/tau2/voice/audio_native/livekit_session/discrete_time_adapter.py
+@@ -0,0 +1,438 @@
++"""Discrete-time adapter for the AgentSession-based cascaded provider.
++
++Same tick contract as ``LiveKitCascadedAdapter`` (background asyncio loop,
++telephony ↔ PCM conversion, event queue drained within the tick budget,
++per-tick audio capping, proportional transcripts, usage ledger), but the agent
++pipeline is a real ``AgentSession``. Barge-in is *not* decided here: the
++adapter only reacts to LiveKit clearing the output buffer.
++"""
++
++from __future__ import annotations
++
++import asyncio
++import threading
++import time
++from pathlib import Path
++from typing import Any, List, Optional, Tuple
++
++from loguru import logger
++from pydantic import BaseModel
++
++from tau2.config import (
++    DEFAULT_AUDIO_NATIVE_CONNECT_TIMEOUT,
++    DEFAULT_AUDIO_NATIVE_DISCONNECT_TIMEOUT,
++    DEFAULT_AUDIO_NATIVE_THREAD_JOIN_TIMEOUT,
++    DEFAULT_AUDIO_NATIVE_TICK_TIMEOUT_BUFFER,
++)
++from tau2.data_model.audio import AudioFormat
++from tau2.data_model.message import ToolCall
++from tau2.data_model.usage import UsageRecord
++from tau2.environment.tool import Tool
++from tau2.voice.audio_native.adapter import DiscreteTimeAdapter
++from tau2.voice.audio_native.audio_converter import StreamingTelephonyConverter
++from tau2.voice.audio_native.livekit.provider import CascadedEvent, CascadedEventType
++from tau2.voice.audio_native.livekit_session.config import SessionConfig
++from tau2.voice.audio_native.livekit_session.session_provider import (
++    SessionVoiceProvider,
++)
++from tau2.voice.audio_native.tick_result import (
++    TickResult,
++    UtteranceTranscript,
++    buffer_excess_audio,
++    get_proportional_transcript,
++)
++
++
++class LiveKitSessionVADConfig(BaseModel):
++    """Interface-compatibility placeholder (VAD lives inside the AgentSession)."""
++
++
++def _current_artifact_dir() -> Optional[Path]:
++    try:
++        from tau2.runner.batch import _current_artifact_dir
++
++        return _current_artifact_dir.get()
++    except Exception:
++        return None
++
++
++class LiveKitSessionAdapter(DiscreteTimeAdapter):
++    def __init__(
++        self,
++        tick_duration_ms: int,
++        session_config: Optional[SessionConfig] = None,
++        send_audio_instant: bool = True,
++        audio_format: Optional[AudioFormat] = None,
++        sidecar_path: Optional[Path] = None,
++    ):
++        super().__init__(tick_duration_ms, audio_format=audio_format)
++        self.session_config = session_config or SessionConfig()
++        self.send_audio_instant = send_audio_instant
++        self._sidecar_path_override = sidecar_path
++
++        self._provider: Optional[SessionVoiceProvider] = None
++        self._loop: Optional[asyncio.AbstractEventLoop] = None
++        self._thread: Optional[threading.Thread] = None
++        self._connected = False
++        self._event_queue: Optional[asyncio.Queue] = None
++
++        self._tick_count = 0
++        self._pending_tool_results: List[Tuple[str, str, bool, bool]] = []
++        self._buffered_audio_chunks: List[Tuple[bytes, Optional[str]]] = []
++        self._cumulative_user_audio_ms = 0
++        self._utterance_transcripts: dict[str, UtteranceTranscript] = {}
++        self._stt_session_counter = 0
++        self._input_rate = self.session_config.tts_input_sample_rate
++        self._converters: dict[int, StreamingTelephonyConverter] = {}
++        self._tools: List[Tool] = []
++
++    # ------------------------------------------------------------------ props
++    @property
++    def provider(self) -> Optional[SessionVoiceProvider]:
++        """The current (or last) provider. The orchestrator reads
++        ``adapter.provider.session_id`` after the agent is stopped, so this must
++        not raise once disconnected."""
++        return self._provider
++
++    @property
++    def is_connected(self) -> bool:
++        return self._connected and self._loop is not None
++
++    # -------------------------------------------------------------- lifecycle
++    def connect(
++        self,
++        system_prompt: str,
++        tools: List[Tool],
++        vad_config: Any = None,
++        modality: str = "audio",
++    ) -> None:
++        if self._connected:
++            logger.warning("Already connected, disconnecting first")
++            self.disconnect()
++        self._tools = tools
++        write_tools = self.session_config.write_tool_names or self._derive_write_tools(
++            tools
++        )
++
++        sidecar = self._sidecar_path_override
++        if sidecar is None:
++            art = _current_artifact_dir()
++            if art is not None:
++                sidecar = art / "livekit_events.jsonl"
++
++        # LiveKit plugins must be registered on the main thread. In tau2 runs this
++        # already happened (runner.batch.preregister_voice_plugins); for direct use
++        # (tests, scripts) do it here on the caller's thread before the loop starts.
++        try:
++            from tau2.voice.audio_native.livekit import preregister_livekit_plugins
++
++            preregister_livekit_plugins()
++        except Exception as e:  # pragma: no cover
++            logger.warning(f"plugin preregistration skipped: {e}")
++
++        self._start_background_loop()
++        assert self._loop is not None
++
++        async def _create_and_connect():
++            self._event_queue = asyncio.Queue()
++            self._provider = SessionVoiceProvider(
++                self.session_config, self._event_queue, sidecar_path=sidecar
++            )
++            await self._provider.connect(
++                system_prompt, tools, write_tool_names=write_tools
++            )
++
++        try:
++            fut = asyncio.run_coroutine_threadsafe(_create_and_connect(), self._loop)
++            fut.result(timeout=DEFAULT_AUDIO_NATIVE_CONNECT_TIMEOUT)
++            self._connected = True
++            self._stt_session_counter += 1
++            self._converters.clear()
++            self._buffered_audio_chunks = []
++            self._tick_count = 0
++            self._utterance_transcripts.clear()
++            logger.info(
++                f"LiveKitSessionAdapter connected (tick={self.tick_duration_ms}ms, "
++                f"bytes_per_tick={self.bytes_per_tick}, sidecar={sidecar})"
++            )
++        except Exception as e:
++            logger.error(f"Failed to connect LiveKitSessionAdapter: {e}")
++            self._stop_background_loop()
++            raise RuntimeError(f"Failed to connect livekit_session adapter: {e}") from e
++
++    @staticmethod
++    def _derive_write_tools(tools: List[Tool]) -> List[str]:
++        names = []
++        for t in tools:
++            tt = getattr(t, "tool_type", None) or getattr(t, "type", None)
++            if tt is not None and "WRITE" in str(tt).upper():
++                names.append(t.name)
++        return names
++
++    def _make_stt_usage_record(self) -> Optional[UsageRecord]:
++        if self._provider is None or self._provider.stt_audio_seconds_sent <= 0:
++            return None
++        return UsageRecord(
++            provider=self.session_config.stt.provider,
++            model=self.session_config.stt.model,
++            component="stt",
++            semantics="cumulative",
++            scope_id=f"stt-session-{self._stt_session_counter}",
++            audio_input_seconds=self._provider.stt_audio_seconds_sent,
++        )
++
++    def get_usage_records(self) -> List[UsageRecord]:
++        records = super().get_usage_records()
++        live = self._make_stt_usage_record()
++        if live is not None:
++            records.append(live)
++        return records
++
++    def disconnect(self) -> None:
++        if not self._connected:
++            return
++        rec = self._make_stt_usage_record()
++        if rec is not None:
++            self._usage_records.append(rec)
++        if self._loop is not None and self._provider is not None:
++            fut = asyncio.run_coroutine_threadsafe(
++                self._provider.disconnect(), self._loop
++            )
++            try:
++                fut.result(timeout=DEFAULT_AUDIO_NATIVE_DISCONNECT_TIMEOUT + 10)
++            except Exception as e:
++                logger.warning(f"Error during disconnect: {e}")
++        self._stop_background_loop()
++        self._connected = False
++        # keep self._provider (disconnected) so session_id stays readable
++        self._tick_count = 0
++        self._buffered_audio_chunks = []
++        self._converters.clear()
++        logger.info("LiveKitSessionAdapter disconnected")
++
++    def _start_background_loop(self) -> None:
++        if self._loop is not None:
++            return
++
++        def run_loop():
++            self._loop = asyncio.new_event_loop()
++            asyncio.set_event_loop(self._loop)
++            self._loop.run_forever()
++
++        self._thread = threading.Thread(
++            target=run_loop, daemon=True, name="lk-session-loop"
++        )
++        self._thread.start()
++        while self._loop is None:
++            time.sleep(0.01)
++
++    def _stop_background_loop(self) -> None:
++        if self._loop is not None:
++            self._loop.call_soon_threadsafe(self._loop.stop)
++            if self._thread is not None:
++                self._thread.join(timeout=DEFAULT_AUDIO_NATIVE_THREAD_JOIN_TIMEOUT)
++            self._loop = None
++            self._thread = None
++
++    # ------------------------------------------------------------------ ticks
++    def run_tick(
++        self, user_audio: bytes, tick_number: Optional[int] = None
++    ) -> TickResult:
++        if not self.is_connected:
++            raise RuntimeError("Not connected. Call connect() first.")
++        if tick_number is None:
++            tick_number = self._tick_count
++        self._tick_count = tick_number + 1
++        fut = asyncio.run_coroutine_threadsafe(
++            self._async_run_tick(user_audio, tick_number), self._loop
++        )
++        try:
++            return fut.result(
++                timeout=self.tick_duration_ms / 1000
++                + DEFAULT_AUDIO_NATIVE_TICK_TIMEOUT_BUFFER
++            )
++        except Exception as e:
++            logger.error(f"Error in run_tick (tick={tick_number}): {e}")
++            raise
++
++    def _converter_for(self, sample_rate: int) -> StreamingTelephonyConverter:
++        conv = self._converters.get(sample_rate)
++        if conv is None:
++            conv = StreamingTelephonyConverter(
++                input_sample_rate=self._input_rate, output_sample_rate=sample_rate
++            )
++            self._converters[sample_rate] = conv
++        return conv
++
++    async def _async_run_tick(self, user_audio: bytes, tick_number: int) -> TickResult:
++        loop = asyncio.get_running_loop()
++        tick_start = loop.time()
++        deadline = tick_start + self.tick_duration_ms / 1000
++        self._current_tick_number = tick_number
++
++        events: List[CascadedEvent] = []
++        tool_calls: List[ToolCall] = []
++        vad_events: List[str] = []
++        agent_audio_chunks: List[Tuple[bytes, Optional[str]]] = []
++        interrupted = False
++
++        user_audio_duration_ms = (
++            len(user_audio) / self.audio_format.bytes_per_second * 1000
++        )
++        cumulative_at_start = self._cumulative_user_audio_ms
++        self._cumulative_user_audio_ms += int(user_audio_duration_ms)
++
++        provider = self._provider
++        assert provider is not None, "run_tick before connect()"
++        # 1. deliver tool results queued since last tick
++        for call_id, result, _request_response, is_error in self._pending_tool_results:
++            provider.resolve_tool(call_id, result, is_error=is_error)
++        self._pending_tool_results.clear()
++
++        # 2. feed user audio (telephony -> 16 kHz PCM16)
++        pcm = self._converter_for(self._input_rate).convert_input(user_audio)
++        provider.push_audio(pcm)
++
++        # 3. previous tick's overflow audio first
++        if self._buffered_audio_chunks:
++            agent_audio_chunks.extend(self._buffered_audio_chunks)
++            self._buffered_audio_chunks = []
++
++        # 4. drain events until the deadline (leave a little room to drain audio)
++        drain_deadline = deadline - 0.01
++        while True:
++            remaining = drain_deadline - loop.time()
++            if remaining <= 0:
++                break
++            try:
++                ev = await asyncio.wait_for(
++                    self._event_queue.get(), timeout=max(0.001, remaining)
++                )
++            except asyncio.TimeoutError:
++                break
++            events.append(ev)
++            if self._handle_event(ev, vad_events, tool_calls):
++                interrupted = True
++                agent_audio_chunks.clear()
++
++        # 5. pull this tick's agent audio from the session output sink
++        if not interrupted:
++            for pcm_bytes, item_id, sr in self.provider.drain_output(
++                self.tick_duration_ms
++            ):
++                tel = self._converter_for(sr).convert_output(pcm_bytes)
++                agent_audio_chunks.append((tel, item_id))
++                ut = self._utterance_transcripts.setdefault(
++                    item_id, UtteranceTranscript(item_id=item_id)
++                )
++                ut.add_audio(len(tel))
++        # any TTS_COMPLETED events emitted during drain are picked up next tick
++        while not self._event_queue.empty():
++            ev = self._event_queue.get_nowait()
++            events.append(ev)
++            if self._handle_event(ev, vad_events, tool_calls):
++                interrupted = True
++                agent_audio_chunks.clear()
++
++        tick_usage = list(self._tick_usage_buffer)
++        self._tick_usage_buffer.clear()
++
++        result = TickResult(
++            tick_number=tick_number,
++            audio_sent_bytes=len(user_audio),
++            audio_sent_duration_ms=user_audio_duration_ms,
++            user_audio_data=user_audio,
++            events=events,
++            vad_events=vad_events,
++            tool_calls=tool_calls,
++            usage_records=tick_usage,
++            agent_audio_chunks=agent_audio_chunks,
++            bytes_per_tick=self.bytes_per_tick,
++            bytes_per_second=self.audio_format.bytes_per_second,
++            tick_sim_duration_ms=self.tick_duration_ms,
++            cumulative_user_audio_at_tick_start_ms=cumulative_at_start,
++        )
++        if interrupted:
++            result.was_truncated = True
++        self._buffered_audio_chunks = buffer_excess_audio(result, self.bytes_per_tick)
++        result.proportional_transcript = get_proportional_transcript(
++            result.agent_audio_chunks, self._utterance_transcripts
++        )
++
++        elapsed = loop.time() - tick_start
++        remaining = self.tick_duration_ms / 1000 - elapsed
++        if remaining > 0:
++            await asyncio.sleep(remaining)
++        logger.debug(f"Tick {tick_number}: {result.summary()}")
++        return result
++
++    def _handle_event(
++        self, ev: CascadedEvent, vad_events: List[str], tool_calls: List[ToolCall]
++    ) -> bool:
++        """Update per-tick collections. Returns True if the agent was interrupted."""
++        t = ev.type
++        if t == CascadedEventType.LLM_TOKEN:
++            item_id = ev.data.get("item_id")
++            token = ev.data.get("token") or ""
++            if item_id and token:
++                self._utterance_transcripts.setdefault(
++                    item_id, UtteranceTranscript(item_id=item_id)
++                ).add_transcript(token)
++        elif t == CascadedEventType.SPEECH_STARTED:
++            vad_events.append("speech_started")
++        elif t == CascadedEventType.SPEECH_ENDED:
++            vad_events.append("speech_stopped")
++        elif t == CascadedEventType.INTERRUPTED:
++            if ev.data.get("paused"):
++                return False  # paused for a possible false interruption; keep audio
++            vad_events.append("interrupted")
++            self._buffered_audio_chunks = []
++            self._utterance_transcripts.clear()
++            return True
++        elif t == CascadedEventType.TOOL_CALL:
++            tc = ev.tool_call
++            if tc:
++                tool_calls.append(tc)
++        elif t == CascadedEventType.USAGE:
++            d = ev.data
++            comp = d.get("component")
++            if comp == "llm":
++                self.record_usage(
++                    UsageRecord(
++                        provider=d.get("provider", "unknown"),
++                        model=d.get("model", "unknown"),
++                        component="llm",
++                        input_tokens=d.get("prompt_tokens"),
++                        output_tokens=d.get("completion_tokens"),
++                        input_cached_tokens=d.get("prompt_cached_tokens"),
++                    )
++                )
++            elif comp == "tts":
++                self.record_usage(
++                    UsageRecord(
++                        provider=d.get("provider", "unknown"),
++                        model=d.get("model", "unknown"),
++                        component="tts",
++                        characters=d.get("characters"),
++                    )
++                )
++        elif t == CascadedEventType.ERROR:
++            logger.warning(f"AgentSession error event: {ev.data}")
++        return False
++
++    # ------------------------------------------------------------------ tools
++    def send_tool_result(
++        self,
++        call_id: str,
++        result: str,
++        request_response: bool = True,
++        is_error: bool = False,
++    ) -> None:
++        self._pending_tool_results.append((call_id, result, request_response, is_error))
++        logger.debug(f"Queued tool result for call_id={call_id} (error={is_error})")
++
++    async def _execute_tick(self, user_audio, tick_number, result, tick_start):
++        raise NotImplementedError("LiveKitSessionAdapter uses its own run_tick")
++
++    async def _flush_pending_tool_results(self):
++        raise NotImplementedError("LiveKitSessionAdapter uses its own run_tick")
+diff --git a/src/tau2/voice/audio_native/livekit_session/session_provider.py b/src/tau2/voice/audio_native/livekit_session/session_provider.py
+new file mode 100644
+index 0000000..73d5313
+--- /dev/null
++++ b/src/tau2/voice/audio_native/livekit_session/session_provider.py
+@@ -0,0 +1,804 @@
++"""AgentSession-backed voice provider.
++
++Everything here runs on the adapter's background asyncio loop. The provider
++owns one ``AgentSession`` per simulation and exposes three tick-friendly
++operations to the adapter:
++
++- ``push_audio(pcm16)``          user audio for this tick (16 kHz PCM16)
++- ``drain_output(tick_ms)``      agent audio produced so far, paced to the tick
++- ``resolve_tool(call_id, ...)`` deliver a τ-bench tool result
++
++and a ``CascadedEvent`` stream (same event vocabulary as the plugin-level
++cascaded provider) that the adapter maps onto ``TickResult``.
++
++LiveKit-side signals that the τ-bench trajectory cannot represent
++(final transcripts as heard by the agent, user/agent state changes,
++overlapping-speech verdicts, false interruptions, per-turn metrics) are
++appended to a JSONL sidecar next to the simulation's audio artifacts.
++"""
++
++from __future__ import annotations
++
++import asyncio
++import json
++import time
++import uuid
++from collections import deque
++from dataclasses import dataclass, field
++from pathlib import Path
++from typing import Any, Dict, List, Optional, Tuple
++
++from loguru import logger
++
++from tau2.data_model.message import ToolCall
++from tau2.environment.tool import Tool
++from tau2.voice.audio_native.livekit.config import (
++    AnthropicLLMConfig,
++    DeepgramSTTConfig,
++    DeepgramTTSConfig,
++    ElevenLabsTTSConfig,
++    OpenAILLMConfig,
++)
++from tau2.voice.audio_native.livekit.provider import CascadedEvent, CascadedEventType
++from tau2.voice.audio_native.livekit_session.config import (
++    OpenAICompatLLMConfig,
++    OpenAICompatSTTConfig,
++    OpenAICompatTTSConfig,
++    SessionConfig,
++)
++
++
++def _resolve_key(env_name: str) -> str:
++    """API key for OpenAI-compatible endpoints; keyless servers get a placeholder."""
++    import os
++
++    if not env_name or env_name.upper() == "NONE":
++        return "not-needed"
++    key = os.environ.get(env_name)
++    if not key:
++        raise ValueError(f"{env_name} is not set (required by the configured endpoint)")
++    return key
++
++# Sidecar event types we persist (everything else is dropped to keep files small).
++SIDECAR_EVENT_TYPES = {
++    "user_input_transcribed",
++    "user_state_changed",
++    "agent_state_changed",
++    "agent_false_interruption",
++    "overlapping_speech",
++    "function_tools_executed",
++    "conversation_item_added",
++    "metrics_collected",
++    "user_transcription_timeout",
++    "error",
++    "close",
++}
++_SIDECAR_EXCLUDE = {"speech_input", "probabilities", "speech_handle"}
++
++
++# =============================================================================
++# Tick-paced audio / text I/O for the AgentSession
++# =============================================================================
++
++
++def _lk_io():
++    from livekit.agents.voice import io as lk_io
++
++    return lk_io
++
++
++@dataclass
++class _AudioSegment:
++    item_id: str
++    sample_rate: int
++    chunks: deque = field(default_factory=deque)  # bytes not yet drained
++    received_bytes: int = 0
++    drained_bytes: int = 0
++    complete: bool = False  # flush() seen
++    started: bool = False  # first bytes drained (playback started)
++    finished: bool = False  # on_playback_finished reported
++
++    @property
++    def bytes_per_second(self) -> int:
++        return self.sample_rate * 2  # mono PCM16
++
++
++class TickAudioInput:
++    """AudioInput fed by the tick loop; splits pushed PCM16 into 20 ms frames."""
++
++    def __init__(self, sample_rate: int) -> None:
++        lk_io = _lk_io()
++
++        class _Impl(lk_io.AudioInput):
++            def __init__(inner, sr: int) -> None:
++                super().__init__(label="TauTickAudioInput")
++                inner._sr = sr
++                inner._queue: asyncio.Queue = asyncio.Queue()
++                inner._closed = False
++
++            async def __anext__(inner):
++                from livekit import rtc
++
++                frame = await inner._queue.get()
++                if frame is None:
++                    raise StopAsyncIteration
++                assert isinstance(frame, rtc.AudioFrame)
++                return frame
++
++            def push(inner, pcm16: bytes) -> None:
++                from livekit import rtc
++
++                if inner._closed or not pcm16:
++                    return
++                frame_bytes = int(inner._sr * 0.02) * 2  # 20 ms
++                for i in range(0, len(pcm16), frame_bytes):
++                    chunk = pcm16[i : i + frame_bytes]
++                    if len(chunk) % 2:
++                        chunk = chunk[:-1]
++                    if not chunk:
++                        continue
++                    inner._queue.put_nowait(
++                        rtc.AudioFrame(
++                            data=chunk,
++                            sample_rate=inner._sr,
++                            num_channels=1,
++                            samples_per_channel=len(chunk) // 2,
++                        )
++                    )
++
++            def close(inner) -> None:
++                inner._closed = True
++                inner._queue.put_nowait(None)
++
++        self.impl = _Impl(sample_rate)
++
++    def push(self, pcm16: bytes) -> None:
++        self.impl.push(pcm16)
++
++    def close(self) -> None:
++        self.impl.close()
++
++
++class TickAudioOutput:
++    """AudioOutput whose "playback" is the tick loop draining bytes.
++
++    LiveKit pushes synthesized frames faster than real time; we buffer them and
++    hand out at most one tick's worth per ``drain()``. Playback-finished is
++    reported to the session when a flushed segment has been fully drained (so
++    the agent state machine follows the *simulated* playback), or immediately
++    with ``interrupted=True`` when LiveKit clears the buffer on a barge-in.
++    """
++
++    def __init__(self, emit) -> None:
++        lk_io = _lk_io()
++
++        class _Impl(lk_io.AudioOutput):
++            def __init__(inner) -> None:
++                super().__init__(
++                    label="TauTickAudioOutput",
++                    capabilities=lk_io.AudioOutputCapabilities(pause=True),
++                    sample_rate=None,
++                )
++                inner._segments: deque[_AudioSegment] = deque()
++                inner._current: Optional[_AudioSegment] = None
++                inner._counter = 0
++                inner._paused = False
++
++            async def capture_frame(inner, frame) -> None:
++                await super().capture_frame(frame)
++                if inner._current is None:
++                    inner._counter += 1
++                    seg = _AudioSegment(
++                        item_id=f"utt_{inner._counter}", sample_rate=frame.sample_rate
++                    )
++                    inner._segments.append(seg)
++                    inner._current = seg
++                    emit(CascadedEventType.TTS_STARTED, {"item_id": seg.item_id})
++                data = bytes(frame.data)
++                inner._current.chunks.append(data)
++                inner._current.received_bytes += len(data)
++
++            def flush(inner) -> None:
++                super().flush()
++                if inner._current is not None:
++                    inner._current.complete = True
++                    inner._current = None
++
++            def clear_buffer(inner) -> None:
++                # LiveKit decided the user interrupted (or the session is closing).
++                discarded = 0
++                last_pos = 0.0
++                had_pending = False
++                for seg in list(inner._segments):
++                    remaining = seg.received_bytes - seg.drained_bytes
++                    discarded += remaining
++                    last_pos = seg.drained_bytes / seg.bytes_per_second
++                    if not seg.finished:
++                        had_pending = True
++                        seg.finished = True
++                        inner.on_playback_finished(
++                            playback_position=last_pos, interrupted=True
++                        )
++                inner._segments.clear()
++                inner._current = None
++                inner._paused = False
++                if had_pending or discarded:
++                    emit(CascadedEventType.INTERRUPTED, {"discarded_bytes": discarded})
++
++            def pause(inner) -> None:
++                inner._paused = True
++                emit(CascadedEventType.INTERRUPTED, {"paused": True})
++
++            def resume(inner) -> None:
++                inner._paused = False
++
++            @property
++            def paused(inner) -> bool:
++                return inner._paused
++
++            def drain(inner, tick_ms: int) -> List[Tuple[bytes, str, int]]:
++                """Return [(pcm16, item_id, sample_rate)] worth <= tick_ms of audio."""
++                out: List[Tuple[bytes, str, int]] = []
++                if inner._paused:
++                    return out
++                budget_sec = tick_ms / 1000.0
++                while inner._segments and budget_sec > 1e-6:
++                    seg = inner._segments[0]
++                    budget_bytes = int(budget_sec * seg.bytes_per_second) & ~1
++                    if budget_bytes <= 0:
++                        break
++                    taken = bytearray()
++                    while seg.chunks and len(taken) < budget_bytes:
++                        chunk = seg.chunks[0]
++                        need = budget_bytes - len(taken)
++                        if len(chunk) <= need:
++                            taken += chunk
++                            seg.chunks.popleft()
++                        else:
++                            taken += chunk[:need]
++                            seg.chunks[0] = chunk[need:]
++                    if taken:
++                        if not seg.started:
++                            seg.started = True
++                            inner.on_playback_started(created_at=time.time())
++                        seg.drained_bytes += len(taken)
++                        out.append((bytes(taken), seg.item_id, seg.sample_rate))
++                        budget_sec -= len(taken) / seg.bytes_per_second
++                    if seg.complete and not seg.chunks:
++                        # Fully played out.
++                        inner._segments.popleft()
++                        if not seg.finished:
++                            seg.finished = True
++                            inner.on_playback_finished(
++                                playback_position=seg.drained_bytes
++                                / seg.bytes_per_second,
++                                interrupted=False,
++                            )
++                        emit(CascadedEventType.TTS_COMPLETED, {"item_id": seg.item_id})
++                        continue
++                    if not seg.chunks:
++                        break  # waiting for more TTS audio of this segment
++                return out
++
++            def has_pending_audio(inner) -> bool:
++                return any(seg.chunks for seg in inner._segments)
++
++        self.impl = _Impl()
++
++    def drain(self, tick_ms: int):
++        return self.impl.drain(tick_ms)
++
++    def has_pending_audio(self) -> bool:
++        return self.impl.has_pending_audio()
++
++
++class TickTextOutput:
++    """TextOutput capturing the agent's spoken text per segment (for the
++    proportional transcript shown to the user simulator)."""
++
++    def __init__(self, emit) -> None:
++        lk_io = _lk_io()
++
++        class _Impl(lk_io.TextOutput):
++            def __init__(inner) -> None:
++                super().__init__(label="TauTickTextOutput", next_in_chain=None)
++                inner._counter = 0
++                inner._open = False
++
++            async def capture_text(inner, text: str) -> None:
++                if not inner._open:
++                    inner._counter += 1
++                    inner._open = True
++                emit(
++                    CascadedEventType.LLM_TOKEN,
++                    {"item_id": f"utt_{inner._counter}", "token": text},
++                )
++
++            def flush(inner) -> None:
++                if inner._open:
++                    emit(
++                        CascadedEventType.LLM_COMPLETED,
++                        {"item_id": f"utt_{inner._counter}"},
++                    )
++                inner._open = False
++
++        self.impl = _Impl()
++
++
++# =============================================================================
++# Provider
++# =============================================================================
++
++
++def build_llm(c):
++    """LiveKit LLM plugin instance for an LLM config (shared with agent/retail_agent.py)."""
++    if isinstance(c, OpenAILLMConfig):
++        from livekit.plugins import openai
++
++        kwargs: Dict[str, Any] = {"model": c.model}
++        if c.temperature is not None:
++            kwargs["temperature"] = c.temperature
++        if c.reasoning_effort is not None:
++            kwargs["reasoning_effort"] = c.reasoning_effort
++        if c.parallel_tool_calls is not None:
++            kwargs["parallel_tool_calls"] = c.parallel_tool_calls
++        if c.max_completion_tokens is not None:
++            kwargs["max_completion_tokens"] = c.max_completion_tokens
++        return openai.LLM(**kwargs)
++    if isinstance(c, AnthropicLLMConfig):
++        from livekit.plugins import anthropic
++
++        kwargs = {"model": c.model, "max_tokens": c.max_tokens}
++        if c.temperature is not None:
++            kwargs["temperature"] = c.temperature
++        return anthropic.LLM(**kwargs)
++    if isinstance(c, OpenAICompatLLMConfig):
++        from livekit.plugins import openai
++
++        kwargs = {
++            "model": c.model,
++            "base_url": c.base_url,
++            "api_key": _resolve_key(c.api_key_env),
++        }
++        if c.temperature is not None:
++            kwargs["temperature"] = c.temperature
++        if c.parallel_tool_calls is not None:
++            kwargs["parallel_tool_calls"] = c.parallel_tool_calls
++        if c.max_completion_tokens is not None:
++            kwargs["max_completion_tokens"] = c.max_completion_tokens
++        return openai.LLM(**kwargs)
++    raise ValueError(f"Unsupported LLM config: {type(c)}")
++
++
++
++class SessionVoiceProvider:
++    """One LiveKit AgentSession bridged to the τ-bench tick loop."""
++
++    def __init__(
++        self,
++        config: SessionConfig,
++        event_queue: "asyncio.Queue[CascadedEvent]",
++        sidecar_path: Optional[Path] = None,
++    ) -> None:
++        self.config = config
++        self.session_id = f"lksess-{uuid.uuid4()}"
++        self._event_queue = event_queue
++        self._sidecar_path = sidecar_path
++        self._sidecar_fh = None
++        self._session = None
++        self._agent = None
++        self._stt = self._llm = self._tts = self._vad = None
++        self._pending_tools: Dict[str, asyncio.Future] = {}
++        self._write_tools: set[str] = set()
++        self._connected = False
++        self.audio_in: Optional[TickAudioInput] = None
++        self.audio_out: Optional[TickAudioOutput] = None
++        self.text_out: Optional[TickTextOutput] = None
++        self.stt_audio_seconds_sent: float = 0.0
++        self.pushed_audio_bytes: int = 0
++
++    # ---- events -----------------------------------------------------------
++
++    def _emit(self, etype: CascadedEventType, data: Optional[dict] = None) -> None:
++        self._event_queue.put_nowait(CascadedEvent(type=etype, data=data or {}))
++
++    def _sidecar(self, ev: Any) -> None:
++        if self._sidecar_fh is None:
++            return
++        try:
++            if hasattr(ev, "model_dump"):
++                rec = ev.model_dump(
++                    mode="json", exclude=_SIDECAR_EXCLUDE, warnings=False
++                )
++            elif isinstance(ev, dict):
++                rec = ev
++            else:
++                rec = {"type": type(ev).__name__, "repr": repr(ev)[:500]}
++            rec.setdefault("t", time.time())
++            self._sidecar_fh.write(json.dumps(rec, default=str) + "\n")
++            self._sidecar_fh.flush()
++        except Exception as e:  # never let logging break the call
++            logger.debug(f"sidecar write failed: {e}")
++
++    @property
++    def is_connected(self) -> bool:
++        return self._connected
++
++    # ---- lifecycle --------------------------------------------------------
++
++    async def connect(
++        self,
++        system_prompt: str,
++        tools: List[Tool],
++        write_tool_names: Optional[List[str]] = None,
++    ) -> None:
++        from livekit.agents import Agent, AgentSession
++
++        cfg = self.config
++        self._write_tools = set(write_tool_names or cfg.write_tool_names or [])
++        if self._sidecar_path and cfg.events_sidecar:
++            self._sidecar_path.parent.mkdir(parents=True, exist_ok=True)
++            self._sidecar_fh = open(self._sidecar_path, "a")
++            self._sidecar(
++                {
++                    "type": "session_start",
++                    "session_id": self.session_id,
++                    "config": cfg.model_dump(),
++                }
++            )
++
++        self._stt = self._build_stt()
++        self._llm = self._build_llm()
++        self._tts = self._build_tts()
++        self._vad = self._build_vad()
++        turn_handling = self._build_turn_handling()
++
++        self.audio_in = TickAudioInput(cfg.tts_input_sample_rate)
++        self.audio_out = TickAudioOutput(self._emit)
++        self.text_out = TickTextOutput(self._emit)
++
++        session_kwargs: Dict[str, Any] = {}
++        if cfg.llm_timeout_s:
++            from livekit.agents import APIConnectOptions
++            from livekit.agents.voice.agent_session import SessionConnectOptions
++
++            session_kwargs["conn_options"] = SessionConnectOptions(
++                llm_conn_options=APIConnectOptions(timeout=cfg.llm_timeout_s)
++            )
++        session = AgentSession(
++            stt=self._stt,
++            llm=self._llm,
++            tts=self._tts,
++            vad=self._vad,
++            turn_handling=turn_handling,
++            max_tool_steps=cfg.max_tool_steps,
++            loop=asyncio.get_running_loop(),
++            **session_kwargs,
++        )
++        session.input.audio = self.audio_in.impl
++        session.output.audio = self.audio_out.impl
++        session.output.transcription = self.text_out.impl
++        self._register_session_events(session)
++        self._register_metrics()
++
++        lk_tools = [self._make_tool(t) for t in tools]
++        self._agent = Agent(instructions=system_prompt, tools=lk_tools)
++        self._session = session
++        if cfg.log_prompts:
++            logger.info(f"AgentSession system prompt:\n{system_prompt}")
++        await session.start(self._agent, record=False)
++        self._connected = True
++        logger.info(
++            f"SessionVoiceProvider connected: stt={cfg.stt.provider}/{cfg.stt.model} "
++            f"llm={cfg.llm.provider}/{cfg.llm.model} tts={cfg.tts.provider}/{cfg.tts.model} "
++            f"turn_detection={cfg.turn_handling.turn_detection} "
++            f"interruption={cfg.turn_handling.interruption_mode or 'auto'}"
++        )
++
++    async def disconnect(self) -> None:
++        self._connected = False
++        for fut in self._pending_tools.values():
++            if not fut.done():
++                fut.cancel()
++        self._pending_tools.clear()
++        if self.audio_in:
++            self.audio_in.close()
++        if self._session is not None:
++            try:
++                await asyncio.wait_for(self._session.aclose(), timeout=10)
++            except Exception as e:
++                logger.warning(f"AgentSession close error: {e}")
++            self._session = None
++        if self._sidecar_fh:
++            self._sidecar({"type": "session_end", "session_id": self.session_id})
++            self._sidecar_fh.close()
++            self._sidecar_fh = None
++
++    # ---- component builders ----------------------------------------------
++
++    def _build_stt(self):
++        c = self.config.stt
++        if isinstance(c, DeepgramSTTConfig):
++            from livekit.plugins import deepgram
++
++            kwargs: Dict[str, Any] = dict(
++                model=c.model,
++                language=c.language,
++                interim_results=c.interim_results,
++                punctuate=c.punctuate,
++                smart_format=c.smart_format,
++            )
++            try:
++                return deepgram.STT(**kwargs, endpointing_ms=c.endpointing_ms)
++            except TypeError:
++                return deepgram.STT(**kwargs)
++        if isinstance(c, OpenAICompatSTTConfig):
++            from livekit.plugins import openai
++
++            return openai.STT(
++                model=c.model,
++                language=c.language,
++                base_url=c.base_url,
++                api_key=_resolve_key(c.api_key_env),
++            )
++        raise ValueError(f"Unsupported STT config: {type(c)}")
++
++    def _build_llm(self):
++        return build_llm(self.config.llm)
++
++    def _build_tts(self):
++        c = self.config.tts
++        if isinstance(c, DeepgramTTSConfig):
++            from livekit.plugins import deepgram
++
++            try:
++                return deepgram.TTS(model=c.model, sample_rate=c.sample_rate)
++            except TypeError:
++                return deepgram.TTS(model=c.model)
++        if isinstance(c, ElevenLabsTTSConfig):
++            from livekit.plugins import elevenlabs
++
++            return elevenlabs.TTS(voice_id=c.voice_id, model=c.model)
++        if isinstance(c, OpenAICompatTTSConfig):
++            from livekit.plugins import openai
++
++            return openai.TTS(
++                model=c.model,
++                voice=c.voice,
++                base_url=c.base_url,
++                api_key=_resolve_key(c.api_key_env),
++                response_format="pcm",
++            )
++        raise ValueError(f"Unsupported TTS config: {type(c)}")
++
++    def _build_vad(self):
++        v = self.config.vad
++        try:
++            from livekit.agents import inference
++
++            return inference.VAD(
++                model="silero",
++                min_speech_duration=v.min_speech_duration,
++                min_silence_duration=v.min_silence_duration,
++                prefix_padding_duration=v.prefix_padding_duration,
++                activation_threshold=v.activation_threshold,
++            )
++        except (ImportError, AttributeError, TypeError) as e:
++            logger.warning(
++                f"inference.VAD unavailable ({e}); falling back to silero plugin"
++            )
++            from livekit.plugins import silero
++
++            return silero.VAD.load(
++                min_speech_duration=v.min_speech_duration,
++                min_silence_duration=v.min_silence_duration,
++                prefix_padding_duration=v.prefix_padding_duration,
++                activation_threshold=v.activation_threshold,
++            )
++
++    def _build_turn_handling(self) -> dict:
++        th = self.config.turn_handling
++        opts: Dict[str, Any] = {
++            "endpointing": {
++                "mode": th.endpointing_mode,
++                "min_delay": th.endpointing_min_delay,
++                "max_delay": th.endpointing_max_delay,
++            },
++            "interruption": {
++                "enabled": th.interruptions_enabled,
++                "min_duration": th.min_interruption_duration,
++                "min_words": th.min_interruption_words,
++                "false_interruption_timeout": th.false_interruption_timeout,
++                "resume_false_interruption": th.resume_false_interruption,
++            },
++            "preemptive_generation": {"enabled": th.preemptive_generation},
++        }
++        if th.interruption_mode is not None:
++            opts["interruption"]["mode"] = th.interruption_mode
++        if th.turn_detection == "turn_detector":
++            from livekit.agents import inference
++
++            kwargs: Dict[str, Any] = {}
++            if th.turn_detector_version:
++                kwargs["version"] = th.turn_detector_version
++            if th.unlikely_threshold is not None:
++                kwargs["unlikely_threshold"] = th.unlikely_threshold
++            opts["turn_detection"] = inference.TurnDetector(**kwargs)
++        else:
++            opts["turn_detection"] = th.turn_detection
++        return opts
++
++    # ---- tools ------------------------------------------------------------
++
++    def _make_tool(self, tool: Tool):
++        from livekit.agents import RunContext
++        from livekit.agents.llm import ToolError, function_tool
++
++        try:
++            full = tool.openai_schema
++            raw_schema = full.get("function", full)
++        except Exception:
++            raw_schema = {
++                "name": tool.name,
++                "description": getattr(tool, "short_desc", "") or "",
++                "parameters": {"type": "object", "properties": {}},
++            }
++        name = raw_schema["name"]
++        provider = self
++
++        async def _bridge(raw_arguments: dict, context: RunContext) -> str:
++            call_id = context.function_call.call_id or str(uuid.uuid4())
++            if name in provider._write_tools:
++                try:
++                    context.disallow_interruptions()
++                except Exception:
++                    pass
++            fut: asyncio.Future = asyncio.get_running_loop().create_future()
++            provider._pending_tools[call_id] = fut
++            provider._emit(
++                CascadedEventType.TOOL_CALL,
++                {
++                    "tool_call": ToolCall(
++                        id=call_id, name=name, arguments=dict(raw_arguments or {})
++                    )
++                },
++            )
++            try:
++                result, is_error = await fut
++            finally:
++                provider._pending_tools.pop(call_id, None)
++            if is_error:
++                raise ToolError(result)
++            return result
++
++        _bridge.__name__ = name
++        # `from __future__ import annotations` stringifies hints; LiveKit resolves them
++        # with get_type_hints() at call time, so attach the real objects explicitly.
++        _bridge.__annotations__ = {"raw_arguments": dict, "context": RunContext, "return": str}
++        return function_tool(_bridge, raw_schema=raw_schema)
++
++    def resolve_tool(self, call_id: str, result: str, is_error: bool = False) -> None:
++        fut = self._pending_tools.get(call_id)
++        if fut is None:
++            logger.warning(
++                f"tool result for unknown call_id={call_id} (already cancelled?)"
++            )
++            return
++        if not fut.done():
++            fut.set_result((result or "", bool(is_error)))
++
++    # ---- audio ------------------------------------------------------------
++
++    def push_audio(self, pcm16: bytes) -> None:
++        if not self._connected or not self.audio_in:
++            return
++        self.audio_in.push(pcm16)
++        self.pushed_audio_bytes += len(pcm16)
++        self.stt_audio_seconds_sent += len(pcm16) / (
++            self.config.tts_input_sample_rate * 2
++        )
++
++    def drain_output(self, tick_ms: int) -> List[Tuple[bytes, str, int]]:
++        if not self.audio_out:
++            return []
++        return self.audio_out.drain(tick_ms)
++
++    # ---- session events ---------------------------------------------------
++
++    def _register_session_events(self, session) -> None:
++        emit = self._emit
++        sidecar = self._sidecar
++
++        @session.on("user_input_transcribed")
++        def _on_transcribed(ev):
++            sidecar(ev)
++            emit(
++                CascadedEventType.TRANSCRIPT_FINAL
++                if ev.is_final
++                else CascadedEventType.TRANSCRIPT_PARTIAL,
++                {"transcript": ev.transcript},
++            )
++
++        @session.on("user_state_changed")
++        def _on_user_state(ev):
++            sidecar(ev)
++            if ev.new_state == "speaking":
++                emit(CascadedEventType.SPEECH_STARTED)
++            elif ev.old_state == "speaking":
++                emit(CascadedEventType.SPEECH_ENDED)
++
++        @session.on("agent_state_changed")
++        def _on_agent_state(ev):
++            sidecar(ev)
++            if ev.new_state == "thinking":
++                emit(CascadedEventType.LLM_STARTED)
++
++        for name in (
++            "agent_false_interruption",
++            "overlapping_speech",
++            "function_tools_executed",
++            "conversation_item_added",
++            "user_transcription_timeout",
++            "close",
++        ):
++
++            def _mk(n):
++                def _h(ev):
++                    sidecar(ev)
++
++                return _h
++
++            session.on(name, _mk(name))
++
++        @session.on("error")
++        def _on_error(ev):
++            sidecar(ev)
++            emit(
++                CascadedEventType.ERROR,
++                {
++                    "error": str(getattr(ev, "error", ev)),
++                    "stage": type(getattr(ev, "source", None)).__name__,
++                },
++            )
++
++    def _register_metrics(self) -> None:
++        cfg = self.config
++
++        def _llm(ev):
++            m = getattr(ev, "metrics", ev)
++            self._sidecar(ev)
++            self._emit(
++                CascadedEventType.USAGE,
++                {
++                    "component": "llm",
++                    "provider": cfg.llm.provider,
++                    "model": cfg.llm.model,
++                    "prompt_tokens": getattr(m, "prompt_tokens", None),
++                    "completion_tokens": getattr(m, "completion_tokens", None),
++                    "prompt_cached_tokens": getattr(m, "prompt_cached_tokens", None),
++                    "ttft": getattr(m, "ttft", None),
++                },
++            )
++
++        def _tts(ev):
++            m = getattr(ev, "metrics", ev)
++            self._sidecar(ev)
++            self._emit(
++                CascadedEventType.USAGE,
++                {
++                    "component": "tts",
++                    "provider": cfg.tts.provider,
++                    "model": cfg.tts.model,
++                    "characters": getattr(m, "characters_count", None),
++                    "ttfb": getattr(m, "ttfb", None),
++                },
++            )
++
++        def _stt(ev):
++            self._sidecar(ev)
++
++        for obj, cb in ((self._llm, _llm), (self._tts, _tts), (self._stt, _stt)):
++            try:
++                obj.on("metrics_collected", cb)
++            except Exception as e:
++                logger.debug(f"could not subscribe metrics on {obj}: {e}")
+diff --git a/src/tau2/voice/pricing.py b/src/tau2/voice/pricing.py
+index 7687f60..f8149f5 100644
+--- a/src/tau2/voice/pricing.py
++++ b/src/tau2/voice/pricing.py
+@@ -48,6 +48,8 @@ class Rates:
+ # Keyed by (provider, model). Lookup is exact match first, then longest
+ # key-is-prefix-of-model match (handles dated model snapshots).
+ PRICING: Dict[Tuple[str, str], Rates] = {
++    # Local / self-hosted OpenAI-compatible endpoints: free.
++    ("openai_compat", ""): Rates(input_text=0.0, output_text=0.0, cached_input_text=0.0),
+     # --- OpenAI Realtime (verified: developers.openai.com/api/docs/pricing) ---
+     ("openai", "gpt-realtime-1.5"): Rates(
+         input_text=4.00,
+diff --git a/src/tau2/voice/synthesis/synthesize.py b/src/tau2/voice/synthesis/synthesize.py
+index e9a7ab9..00ba232 100644
+--- a/src/tau2/voice/synthesis/synthesize.py
++++ b/src/tau2/voice/synthesis/synthesize.py
+@@ -21,6 +21,14 @@ def synthesize_voice(
+     """Synthesize voice from text using the specified configuration."""
+     if provider == "elevenlabs":
+         audio_data = tts_elevenlabs(text=text, config=provider_config)
++    elif provider == "kokoro":
++        from tau2.voice.utils.local_tts_utils import tts_kokoro
++
++        audio_data = tts_kokoro(text=text, persona_name=getattr(provider_config, "persona_name", None))
++    elif provider == "edge":
++        from tau2.voice.utils.local_tts_utils import tts_edge
++
++        audio_data = tts_edge(text=text, persona_name=getattr(provider_config, "persona_name", None))
+     else:
+         raise ValueError(f"Unsupported synthesis provider: {provider}")
+ 
+diff --git a/src/tau2/voice/utils/local_tts_utils.py b/src/tau2/voice/utils/local_tts_utils.py
+new file mode 100644
+index 0000000..fb30fae
+--- /dev/null
++++ b/src/tau2/voice/utils/local_tts_utils.py
+@@ -0,0 +1,193 @@
++"""Keyless TTS backends for the τ-bench voice user simulator.
++
++- ``kokoro``: fully local Kokoro (ONNX, CPU). American/British English voices only,
++  so the *accent* dimension of the ``regular`` speech complexity is weakened
++  (documented limitation). Model files (~330 MB) download once.
++- ``edge``: Microsoft Edge neural voices via ``edge-tts`` (network, no API key).
++  Offers accented English (en-IN, en-SG, en-HK, en-NG, fr-FR, zh-CN speaking
++  English), so personas keep an accent signal. Not local.
++
++Both return 16 kHz PCM16 mono ``AudioData`` — the same format as the ElevenLabs
++path (``DEFAULT_ELEVEN_LAB_AUDIO_FORMAT``) — so all downstream effects
++(noise, telephony, frame drops) apply unchanged.
++
++Persona → voice maps can be overridden with ``TAU2_KOKORO_VOICE_<PERSONA>`` /
++``TAU2_EDGE_VOICE_<PERSONA>`` (persona names upper-cased, e.g. PRIYA_PATIL).
++"""
++
++from __future__ import annotations
++
++import asyncio
++import io
++import os
++import re
++from pathlib import Path
++from typing import Optional
++
++import numpy as np
++from loguru import logger
++
++from tau2.data_model.audio import AudioData, AudioEncoding, AudioFormat
++
++# --- Force IPv4: on this machine IPv6 connections to model CDNs hang in SYN_SENT ---
++import socket as _socket
++
++_orig_getaddrinfo = _socket.getaddrinfo
++
++
++def _ipv4_first(*args, **kwargs):
++    res = _orig_getaddrinfo(*args, **kwargs)
++    v4 = [r for r in res if r[0] == _socket.AF_INET]
++    return v4 or res
++
++
++_socket.getaddrinfo = _ipv4_first
++
++TARGET_SR = 16000
++TARGET_FORMAT = AudioFormat(encoding=AudioEncoding.PCM_S16LE, sample_rate=TARGET_SR)
++
++# ElevenLabs v3 audio tags such as [cough] / [sneeze] / [pause] are not understood
++# by these engines; drop them (the vocal-tic *timing* effects are still applied by
++# the effects pipeline on the audio, only the spoken tic sound is lost).
++_TAG_RE = re.compile(r"\[[a-zA-Z _-]+\]")
++
++KOKORO_VOICES = {
++    # control (American)
++    "matt_delaney": "am_michael",
++    "lisa_brenner": "af_sarah",
++    # regular — Kokoro has no accented-English voices; use distinct US/UK voices
++    "mildred_kaplan": "bf_emma",
++    "arjun_roy": "am_fenrir",
++    "wei_lin": "af_nicole",
++    "mamadou_diallo": "bm_george",
++    "priya_patil": "af_alloy",
++}
++EDGE_VOICES = {
++    "matt_delaney": "en-US-GuyNeural",
++    "lisa_brenner": "en-US-AriaNeural",
++    "mildred_kaplan": "en-GB-SoniaNeural",
++    "arjun_roy": "en-IN-PrabhatNeural",  # Indian-subcontinent accent (closest to Bengali)
++    "wei_lin": "en-HK-YanNeural",  # Cantonese-accented English (closest to Sichuan Mandarin)
++    "mamadou_diallo": "fr-FR-HenriNeural",  # French voice reading English → French accent
++    "priya_patil": "en-IN-NeerjaNeural",
++}
++
++
++def _voice_for(persona_name: Optional[str], table: dict, env_prefix: str, default: str) -> str:
++    if persona_name:
++        env = os.environ.get(f"{env_prefix}_{persona_name.upper()}")
++        if env:
++            return env
++        return table.get(persona_name, default)
++    return default
++
++
++def _clean_text(text: str) -> str:
++    text = _TAG_RE.sub("", text)
++    return re.sub(r"\s{2,}", " ", text).strip()
++
++
++def _to_audio_data(samples: np.ndarray, sr: int) -> AudioData:
++    if sr != TARGET_SR:
++        n = int(len(samples) * TARGET_SR / sr)
++        samples = np.interp(np.linspace(0, len(samples) - 1, n), np.arange(len(samples)), samples)
++    pcm = (np.clip(samples.astype(np.float32), -1.0, 1.0) * 32767).astype("<i2").tobytes()
++    return AudioData(data=pcm, format=TARGET_FORMAT)
++
++
++# ---------------------------------------------------------------- Kokoro (local)
++_kokoro = None
++
++
++
++_HF_BASE = "https://huggingface.co/onnx-community/Kokoro-82M-v1.0-ONNX/resolve/main/"
++_HF_ENGLISH_VOICES = (
++    "af_alloy af_aoede af_bella af_heart af_jessica af_kore af_nicole af_nova af_river af_sarah af_sky "
++    "am_adam am_echo am_eric am_fenrir am_liam am_michael am_onyx am_puck "
++    "bf_alice bf_emma bf_isabella bf_lily bm_daniel bm_fable bm_george bm_lewis"
++).split()
++
++
++def ensure_kokoro_files(cache: Optional[Path] = None) -> tuple[Path, Path]:
++    """Return (model.onnx, voices.npz) paths, downloading from Hugging Face on first use.
++
++    Uses the onnx-community export (same weights as the kokoro-onnx GitHub release,
++    which is far slower to download from here) and builds the voices archive that
++    ``kokoro_onnx`` expects (npz keyed by voice name, arrays of shape (510, 1, 256)).
++    """
++    import urllib.request
++
++    cache = Path(cache or os.environ.get("KOKORO_CACHE", Path.home() / ".cache" / "kokoro-onnx"))
++    cache.mkdir(parents=True, exist_ok=True)
++    model, voices = cache / "kokoro-v1.0.onnx", cache / "voices-v1.0.bin"
++    if not model.exists() or model.stat().st_size < 100_000_000:
++        logger.info(f"downloading Kokoro model → {model}")
++        urllib.request.urlretrieve(_HF_BASE + "onnx/model.onnx", str(model) + ".part")
++        os.replace(str(model) + ".part", model)
++    try:
++        ok = voices.exists() and len(np.load(voices).files) >= 20
++    except Exception:
++        ok = False
++    if not ok:
++        logger.info(f"downloading Kokoro voices → {voices}")
++        vdir = cache / "hf_voices"
++        vdir.mkdir(exist_ok=True)
++        table = {}
++        for name in _HF_ENGLISH_VOICES:
++            p = vdir / f"{name}.bin"
++            if not p.exists() or p.stat().st_size < 100_000:
++                urllib.request.urlretrieve(_HF_BASE + f"voices/{name}.bin", p)
++            arr = np.fromfile(p, dtype=np.float32)
++            if arr.size % 256 == 0:
++                table[name] = arr.reshape(-1, 1, 256)
++        with open(voices, "wb") as fh:
++            np.savez(fh, **table)
++    return model, voices
++
++
++def _get_kokoro():
++    global _kokoro
++    if _kokoro is None:
++        from kokoro_onnx import Kokoro
++
++        model, voices = ensure_kokoro_files()
++        _kokoro = Kokoro(str(model), str(voices))
++    return _kokoro
++
++
++def tts_kokoro(text: str, persona_name: Optional[str] = None, speed: float = 1.0) -> AudioData:
++    voice = _voice_for(persona_name, KOKORO_VOICES, "TAU2_KOKORO_VOICE", "af_heart")
++    clean = _clean_text(text) or "."
++    samples, sr = _get_kokoro().create(clean, voice=voice, speed=speed, lang="en-us")
++    return _to_audio_data(np.asarray(samples), sr)
++
++
++# ---------------------------------------------------------------- Edge (keyless network)
++def tts_edge(text: str, persona_name: Optional[str] = None, rate: str = "+0%") -> AudioData:
++    import edge_tts
++    from pydub import AudioSegment
++
++    voice = _voice_for(persona_name, EDGE_VOICES, "TAU2_EDGE_VOICE", "en-US-AriaNeural")
++    clean = _clean_text(text) or "."
++
++    async def _run() -> bytes:
++        buf = io.BytesIO()
++        async for chunk in edge_tts.Communicate(clean, voice, rate=rate).stream():
++            if chunk["type"] == "audio":
++                buf.write(chunk["data"])
++        return buf.getvalue()
++
++    try:
++        loop = asyncio.get_running_loop()
++    except RuntimeError:
++        loop = None
++    if loop and loop.is_running():
++        # called from inside an event loop thread: run in a fresh thread
++        import concurrent.futures
++
++        with concurrent.futures.ThreadPoolExecutor(1) as ex:
++            mp3 = ex.submit(lambda: asyncio.run(_run())).result()
++    else:
++        mp3 = asyncio.run(_run())
++    seg = AudioSegment.from_file(io.BytesIO(mp3), format="mp3").set_channels(1).set_frame_rate(TARGET_SR).set_sample_width(2)
++    return AudioData(data=seg.raw_data, format=TARGET_FORMAT)
+diff --git a/src/tau2/voice_config.py b/src/tau2/voice_config.py
+index 2c4bdb3..06d2bff 100644
+--- a/src/tau2/voice_config.py
++++ b/src/tau2/voice_config.py
+@@ -30,7 +30,7 @@ def resolve_burst_noise_paths(filenames: list[str]) -> list[Path]:
+ 
+ 
+ # Voice Synthesis & Transcription
+-DEFAULT_VOICE_SYNTHESIS_PROVIDER = "elevenlabs"
++DEFAULT_VOICE_SYNTHESIS_PROVIDER = __import__("os").environ.get("TAU2_VOICE_SYNTHESIS_PROVIDER", "elevenlabs")
+ DEFAULT_TRANSCRIPTION_MODEL = "nova-3"
+ ASSUMED_TURNS_PER_MINUTE = 10
+ ELEVENLABS_ENABLE_AUDIO_TAGS = True
+diff --git a/tests/test_voice/test_livekit_session_adapter.py b/tests/test_voice/test_livekit_session_adapter.py
+new file mode 100644
+index 0000000..e11271a
+--- /dev/null
++++ b/tests/test_voice/test_livekit_session_adapter.py
+@@ -0,0 +1,278 @@
++"""Tests for the AgentSession-based cascaded provider.
++
++Pure tests (no network): tick-paced audio sinks and the adapter's event
++handling. Integration test (real Deepgram + OpenAI): skipped unless the API
++keys are present and ``TAU2_RUN_LIVEKIT_SESSION_TESTS=1``.
++"""
++
++from __future__ import annotations
++
++import asyncio
++import os
++
++import pytest
++
++pytest.importorskip("livekit.agents")
++
++from livekit import rtc  # noqa: E402
++
++from tau2.voice.audio_native.livekit.provider import CascadedEventType  # noqa: E402
++from tau2.voice.audio_native.livekit_session.session_provider import (  # noqa: E402
++    TickAudioInput,
++    TickAudioOutput,
++    TickTextOutput,
++)
++
++
++def _frame(n_samples: int, sr: int = 24000, value: int = 1) -> rtc.AudioFrame:
++    data = (value).to_bytes(2, "little", signed=True) * n_samples
++    return rtc.AudioFrame(
++        data=data, sample_rate=sr, num_channels=1, samples_per_channel=n_samples
++    )
++
++
++def test_tick_audio_input_splits_into_20ms_frames():
++    async def run():
++        inp = TickAudioInput(16000)
++        inp.push(b"\x00\x00" * 3200)  # 200 ms @ 16 kHz
++        frames = []
++        for _ in range(10):
++            frames.append(await asyncio.wait_for(inp.impl.__anext__(), 1))
++        assert all(f.samples_per_channel == 320 for f in frames)
++        assert all(f.sample_rate == 16000 for f in frames)
++        inp.close()
++        with pytest.raises(StopAsyncIteration):
++            await inp.impl.__anext__()
++
++    asyncio.run(run())
++
++
++def test_tick_audio_output_paces_and_reports_playback():
++    async def run():
++        events = []
++        out = TickAudioOutput(lambda t, d=None: events.append((t, d or {})))
++        sink = out.impl
++        finished = []
++        sink.on("playback_finished", lambda ev: finished.append(ev))
++
++        # one 500 ms segment @ 24 kHz pushed all at once, then flushed
++        await sink.capture_frame(_frame(12000))
++        sink.flush()
++        assert events[0][0] == CascadedEventType.TTS_STARTED
++        item = events[0][1]["item_id"]
++
++        # drain 200 ms at a time -> 3 drains (200, 200, 100)
++        d1 = out.drain(200)
++        assert len(d1) == 1 and len(d1[0][0]) == 200 * 48 and d1[0][1] == item
++        assert not finished
++        d2 = out.drain(200)
++        assert len(d2[0][0]) == 200 * 48
++        d3 = out.drain(200)
++        assert len(d3[0][0]) == 100 * 48
++        assert len(finished) == 1 and finished[0].interrupted is False
++        assert abs(finished[0].playback_position - 0.5) < 1e-6
++        assert any(t == CascadedEventType.TTS_COMPLETED for t, _ in events)
++        assert out.drain(200) == []
++
++        # interruption mid-segment: clear_buffer discards and reports interrupted
++        await sink.capture_frame(_frame(24000))  # 1 s
++        out.drain(200)
++        sink.clear_buffer()
++        assert len(finished) == 2 and finished[1].interrupted is True
++        assert abs(finished[1].playback_position - 0.2) < 1e-6
++        assert events[-1][0] == CascadedEventType.INTERRUPTED
++        assert out.drain(200) == []
++
++        # pause/resume gates draining (false-interruption handling)
++        await sink.capture_frame(_frame(4800))
++        sink.pause()
++        assert out.drain(200) == []
++        sink.resume()
++        assert len(out.drain(200)) == 1
++
++    asyncio.run(run())
++
++
++def test_tick_text_output_segments():
++    events = []
++    txt = TickTextOutput(lambda t, d=None: events.append((t, d or {})))
++
++    async def run():
++        await txt.impl.capture_text("Hello ")
++        await txt.impl.capture_text("there.")
++        txt.impl.flush()
++        await txt.impl.capture_text("Second.")
++        txt.impl.flush()
++
++    asyncio.run(run())
++    tokens = [
++        (d["item_id"], d["token"])
++        for t, d in events
++        if t == CascadedEventType.LLM_TOKEN
++    ]
++    assert tokens == [("utt_1", "Hello "), ("utt_1", "there."), ("utt_2", "Second.")]
++    assert [
++        d["item_id"] for t, d in events if t == CascadedEventType.LLM_COMPLETED
++    ] == ["utt_1", "utt_2"]
++
++
++@pytest.mark.skipif(
++    not (
++        os.getenv("TAU2_RUN_LIVEKIT_SESSION_TESTS")
++        and os.getenv("DEEPGRAM_API_KEY")
++        and os.getenv("OPENAI_API_KEY")
++    ),
++    reason="needs DEEPGRAM_API_KEY, OPENAI_API_KEY and TAU2_RUN_LIVEKIT_SESSION_TESTS=1",
++)
++def test_adapter_end_to_end_with_tool(tmp_path):
++    """Feed one synthesized utterance, expect a transcript, a tool call, and agent audio."""
++    from tau2.environment.tool import Tool
++    from tau2.voice.audio_native.audio_converter import pcm16_to_telephony
++    from tau2.voice.audio_native.livekit_session.config import SESSION_CONFIGS
++    from tau2.voice.audio_native.livekit_session.discrete_time_adapter import (
++        LiveKitSessionAdapter,
++    )
++
++    def lookup_weather(city: str) -> str:
++        """Look up the weather for a city.
++
++        Args:
++            city: City name.
++        """
++        return "sunny"
++
++    tool = Tool(lookup_weather)
++    cfg = SESSION_CONFIGS["cascaded-session-vad"]
++    adapter = LiveKitSessionAdapter(
++        tick_duration_ms=200, session_config=cfg, sidecar_path=tmp_path / "ev.jsonl"
++    )
++    adapter.connect(
++        "You are a voice assistant. Always call lookup_weather when asked about weather, then answer in one sentence.",
++        [tool],
++    )
++    try:
++        # synthesize the user utterance with the agent's own TTS (no ElevenLabs needed)
++        from livekit.plugins import deepgram
++
++        async def synth():
++            tts = deepgram.TTS(model="aura-asteria-en")
++            pcm = bytearray()
++            async for ev in tts.synthesize("What is the weather in Tokyo?"):
++                pcm += bytes(ev.frame.data)
++            await tts.aclose()
++            return bytes(pcm), 24000
++
++        pcm, sr = asyncio.run(synth())
++        tel, _ = pcm16_to_telephony(pcm, sr)
++        silence = b"\x7f" * 1600
++        chunks = [tel[i : i + 1600] for i in range(0, len(tel), 1600)]
++        got_transcript = got_tool = got_audio = False
++        tick = 0
++        for i in range(len(chunks) + 150):  # ~30 s budget
++            audio = chunks[i] if i < len(chunks) else silence
++            res = adapter.run_tick(audio.ljust(1600, b"\x7f"), tick_number=tick)
++            tick += 1
++            if any(e.type == CascadedEventType.TRANSCRIPT_FINAL for e in res.events):
++                got_transcript = True
++            if res.tool_calls:
++                got_tool = True
++                for tc in res.tool_calls:
++                    adapter.send_tool_result(
++                        tc.id, "sunny with a temperature of 70 degrees"
++                    )
++            if res.agent_audio_bytes > 0:
++                got_audio = True
++            if got_transcript and got_tool and got_audio:
++                break
++        assert got_transcript, "no final transcript from STT"
++        assert got_tool, "agent never called the tool"
++        assert got_audio, "agent produced no audio"
++        assert (tmp_path / "ev.jsonl").exists()
++        assert any(r.component == "llm" for r in adapter.get_usage_records())
++    finally:
++        adapter.disconnect()
++
++
++def _local_up(url: str) -> bool:
++    import urllib.request
++
++    try:
++        urllib.request.urlopen(url, timeout=2)
++        return True
++    except Exception:
++        return False
++
++
++@pytest.mark.skipif(
++    not (
++        _local_up("http://localhost:8000/health")
++        and _local_up("http://localhost:8880/health")
++        and _local_up("http://localhost:11434/api/version")
++    ),
++    reason="needs the local stack (scripts/local_stack.sh up): STT :8000, TTS :8880, Ollama :11434",
++)
++def test_adapter_end_to_end_local_stack(tmp_path):
++    """Fully local, keyless end-to-end tick loop: local Kokoro synthesizes the user
++    utterance, the AgentSession runs local whisper → Ollama llama3.1:8b → Kokoro,
++    and a τ-bench-style tool round-trips through the bridge."""
++    import json
++    import urllib.request
++
++    from tau2.environment.tool import Tool
++    from tau2.voice.audio_native.audio_converter import pcm16_to_telephony
++    from tau2.voice.audio_native.livekit_session.config import SESSION_CONFIGS
++    from tau2.voice.audio_native.livekit_session.discrete_time_adapter import (
++        LiveKitSessionAdapter,
++    )
++
++    def lookup_weather(city: str) -> str:
++        """Look up the current weather for a city.
++
++        Args:
++            city: City name.
++        """
++        return "sunny"
++
++    tool = Tool(lookup_weather)
++    adapter = LiveKitSessionAdapter(
++        tick_duration_ms=200,
++        session_config=SESSION_CONFIGS["local"],
++        sidecar_path=tmp_path / "ev.jsonl",
++    )
++    adapter.connect(
++        "You are a voice assistant. When asked about the weather you MUST call the "
++        "lookup_weather tool first, then answer in one short sentence.",
++        [tool],
++    )
++    try:
++        req = urllib.request.Request(
++            "http://localhost:8880/v1/audio/speech",
++            data=json.dumps(
++                {"input": "Hello. What is the weather like in Tokyo today?", "voice": "af_heart", "response_format": "pcm"}
++            ).encode(),
++            headers={"Content-Type": "application/json"},
++        )
++        pcm = urllib.request.urlopen(req, timeout=120).read()
++        tel, _ = pcm16_to_telephony(pcm, 24000)
++        silence = b"\x7f" * 1600
++        chunks = [tel[i : i + 1600] for i in range(0, len(tel), 1600)]
++        got_transcript = got_tool = got_audio = False
++        for i in range(len(chunks) + 300):  # up to ~60 s of ticks after the utterance
++            audio = chunks[i] if i < len(chunks) else silence
++            res = adapter.run_tick(audio.ljust(1600, b"\x7f"), tick_number=i + 1)
++            if any(e.type == CascadedEventType.TRANSCRIPT_FINAL for e in res.events):
++                got_transcript = True
++            if res.tool_calls:
++                got_tool = True
++                for tc in res.tool_calls:
++                    adapter.send_tool_result(tc.id, "sunny with a temperature of 70 degrees")
++            if res.agent_audio_bytes > 0:
++                got_audio = True
++            if got_transcript and got_tool and got_audio:
++                break
++        assert got_transcript, "no final transcript from local STT"
++        assert got_tool, "agent never called the tool"
++        assert got_audio, "agent produced no audio"
++        assert (tmp_path / "ev.jsonl").exists()
++    finally:
++        adapter.disconnect()
+diff --git a/tests/test_voice/test_livekit_session_adapter_stub.py b/tests/test_voice/test_livekit_session_adapter_stub.py
+new file mode 100644
+index 0000000..4ae7fd2
+--- /dev/null
++++ b/tests/test_voice/test_livekit_session_adapter_stub.py
+@@ -0,0 +1,166 @@
++"""Adapter tick-loop test with a stub provider (no LiveKit, no network).
++
++Exercises LiveKitSessionAdapter._async_run_tick end to end: audio conversion,
++event draining, tool-call surfacing, tool-result delivery on the next tick,
++per-tick audio capping/buffering, proportional transcripts and usage records.
++"""
++
++from __future__ import annotations
++
++from typing import List, Tuple
++
++import pytest
++
++pytest.importorskip("livekit.agents")
++
++from tau2.data_model.message import ToolCall  # noqa: E402
++from tau2.voice.audio_native.livekit.provider import (  # noqa: E402
++    CascadedEvent,
++    CascadedEventType,
++)
++from tau2.voice.audio_native.livekit_session import (
++    discrete_time_adapter as dta,  # noqa: E402
++)
++from tau2.voice.audio_native.livekit_session.config import SessionConfig  # noqa: E402
++
++
++class StubProvider:
++    """Emits a scripted event sequence; audio is 24 kHz PCM16 silence-ish."""
++
++    def __init__(self, config, event_queue, sidecar_path=None):
++        self.config = config
++        self.q = event_queue
++        self.session_id = "stub-session"
++        self.stt_audio_seconds_sent = 0.0
++        self.is_connected = False
++        self.pushed = 0
++        self.resolved: List[Tuple[str, str, bool]] = []
++        self._audio: List[Tuple[bytes, str, int]] = []
++        self._pending_audio_after_tool = False
++
++    async def connect(self, system_prompt, tools, write_tool_names=None):
++        self.is_connected = True
++        self.system_prompt = system_prompt
++        self.tools = tools
++        self.write_tool_names = write_tool_names
++
++    async def disconnect(self):
++        self.is_connected = False
++
++    def push_audio(self, pcm16: bytes):
++        self.pushed += 1
++        self.stt_audio_seconds_sent += len(pcm16) / 32000
++        if self.pushed == 1:
++            self.q.put_nowait(CascadedEvent(type=CascadedEventType.SPEECH_STARTED))
++        if self.pushed == 2:
++            self.q.put_nowait(
++                CascadedEvent(
++                    type=CascadedEventType.TRANSCRIPT_FINAL,
++                    data={"transcript": "weather in tokyo"},
++                )
++            )
++            self.q.put_nowait(CascadedEvent(type=CascadedEventType.SPEECH_ENDED))
++            self.q.put_nowait(
++                CascadedEvent(
++                    type=CascadedEventType.TOOL_CALL,
++                    data={
++                        "tool_call": ToolCall(
++                            id="call_1",
++                            name="lookup_weather",
++                            arguments={"city": "Tokyo"},
++                        )
++                    },
++                )
++            )
++
++    def resolve_tool(self, call_id, result, is_error=False):
++        self.resolved.append((call_id, result, is_error))
++        # LLM answers with text streamed to the transcript sink, then 600 ms of TTS audio
++        self.q.put_nowait(CascadedEvent(type=CascadedEventType.LLM_STARTED))
++        self.q.put_nowait(
++            CascadedEvent(type=CascadedEventType.TTS_STARTED, data={"item_id": "utt_1"})
++        )
++        for tok in ("It is ", "sunny ", "in Tokyo."):
++            self.q.put_nowait(
++                CascadedEvent(
++                    type=CascadedEventType.LLM_TOKEN,
++                    data={"item_id": "utt_1", "token": tok},
++                )
++            )
++        self.q.put_nowait(
++            CascadedEvent(
++                type=CascadedEventType.LLM_COMPLETED, data={"item_id": "utt_1"}
++            )
++        )
++        self.q.put_nowait(
++            CascadedEvent(
++                type=CascadedEventType.USAGE,
++                data={
++                    "component": "llm",
++                    "provider": "openai",
++                    "model": "gpt-4.1",
++                    "prompt_tokens": 100,
++                    "completion_tokens": 10,
++                },
++            )
++        )
++        self._audio = [(b"\x10\x00" * int(24000 * 0.6), "utt_1", 24000)]  # 600 ms
++
++    def drain_output(self, tick_ms: int):
++        if not self._audio:
++            return []
++        pcm, item, sr = self._audio[0]
++        budget = int(sr * 2 * tick_ms / 1000)
++        take, rest = pcm[:budget], pcm[budget:]
++        if rest:
++            self._audio[0] = (rest, item, sr)
++        else:
++            self._audio.clear()
++            self.q.put_nowait(
++                CascadedEvent(
++                    type=CascadedEventType.TTS_COMPLETED, data={"item_id": item}
++                )
++            )
++        return [(take, item, sr)]
++
++
++def test_adapter_tick_loop_with_stub(monkeypatch):
++    monkeypatch.setattr(dta, "SessionVoiceProvider", StubProvider)
++    adapter = dta.LiveKitSessionAdapter(
++        tick_duration_ms=200, session_config=SessionConfig()
++    )
++    adapter.connect("sys prompt", [], vad_config=None)
++    try:
++        silence = b"\x7f" * 1600  # 200 ms G.711
++        r1 = adapter.run_tick(silence, tick_number=1)
++        assert "speech_started" in r1.vad_events and not r1.tool_calls
++
++        r2 = adapter.run_tick(silence, tick_number=2)
++        assert [tc.name for tc in r2.tool_calls] == ["lookup_weather"]
++        assert "speech_stopped" in r2.vad_events
++        assert any(e.type == CascadedEventType.TRANSCRIPT_FINAL for e in r2.events)
++        assert r2.agent_audio_bytes == 0
++
++        adapter.send_tool_result("call_1", "sunny, 70 degrees")
++        r3 = adapter.run_tick(silence, tick_number=3)
++        assert adapter.provider.resolved == [("call_1", "sunny, 70 degrees", False)]
++        # 600 ms of TTS drained 200 ms per tick, capped to one tick of telephony audio
++        assert 0 < r3.agent_audio_bytes <= r3.bytes_per_tick
++        assert len(r3.get_played_agent_audio()) == r3.bytes_per_tick
++        assert r3.proportional_transcript  # part of "It is sunny in Tokyo."
++        assert any(u.component == "llm" for u in r3.usage_records)
++
++        texts = [r3.proportional_transcript]
++        audio = r3.agent_audio_bytes
++        for n in (4, 5, 6):
++            r = adapter.run_tick(silence, tick_number=n)
++            texts.append(r.proportional_transcript)
++            audio += r.agent_audio_bytes
++        assert abs(audio - 3 * 1600) <= 8  # 600 ms → ~4800 telephony bytes
++        assert "".join(texts).replace(" ", "") == "ItissunnyinTokyo."
++
++        recs = adapter.get_usage_records()
++        assert any(u.component == "stt" and u.semantics == "cumulative" for u in recs)
++    finally:
++        adapter.disconnect()
++    assert not adapter.is_connected

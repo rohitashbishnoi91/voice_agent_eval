@@ -1,0 +1,214 @@
+[
+  {
+    "task_id": "14",
+    "reward": 0.0,
+    "termination": "TerminationReason.AGENT_STOP",
+    "duration": 274.18190320799476,
+    "ticks": 972,
+    "agent_speech_ticks": 90,
+    "user_speech_ticks": 473,
+    "tool_calls": 8,
+    "tool_errors": 7,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 5,
+    "calls": [
+      {
+        "tick": 206,
+        "name": "get_order_details",
+        "arguments": {},
+        "id": "call_mhksl0kv",
+        "error": true
+      },
+      {
+        "tick": 468,
+        "name": "find_user_id_by_email",
+        "arguments": {
+          "email": "amaya.grcia.um2723 at example.com"
+        },
+        "id": "call_m6d53mb2",
+        "error": true
+      },
+      {
+        "tick": 617,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "first_name": "Amaya",
+          "last_name": "Grcia",
+          "zip": "umm"
+        },
+        "id": "call_x2e8z1b4",
+        "error": true
+      },
+      {
+        "tick": 688,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "#W0000000"
+        },
+        "id": "call_ym1zpubf",
+        "error": true
+      },
+      {
+        "tick": 759,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "#W0000000"
+        },
+        "id": "call_cy0d0wmu",
+        "error": true
+      },
+      {
+        "tick": 815,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "#W0000000"
+        },
+        "id": "call_rab41xdt",
+        "error": true
+      },
+      {
+        "tick": 893,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "#W0000000"
+        },
+        "id": "call_7dk4xgyt",
+        "error": true
+      },
+      {
+        "tick": 971,
+        "name": "transfer_to_human_agents",
+        "arguments": {
+          "summary": "customer wants to reconnect with human agent"
+        },
+        "id": "call_mwlgmo6w",
+        "error": false
+      }
+    ]
+  },
+  {
+    "task_id": "6",
+    "reward": 0.0,
+    "termination": "TerminationReason.AGENT_STOP",
+    "duration": 350.4900323750044,
+    "ticks": 1240,
+    "agent_speech_ticks": 141,
+    "user_speech_ticks": 590,
+    "tool_calls": 10,
+    "tool_errors": 9,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 16,
+    "calls": [
+      {
+        "tick": 168,
+        "name": "exchange_delivered_order_items",
+        "arguments": {
+          "new_item_ids": "['1008292232', '1008292233']",
+          "payment_method_id": "gift_card_0000000",
+          "order_id": "#W0000000",
+          "item_ids": "['1008292230', '1008292231']"
+        },
+        "id": "call_kwcgqdv9",
+        "error": true
+      },
+      {
+        "tick": 315,
+        "name": "exchange_delivered_order_items",
+        "arguments": {
+          "new_item_ids": "['1008292232', '1008292233']",
+          "item_ids": "['1008292230', '1008292231']",
+          "payment_method_id": "gift_card_0000000",
+          "order_id": "#W0000000"
+        },
+        "id": "call_phrtam7t",
+        "error": true
+      },
+      {
+        "tick": 399,
+        "name": "exchange_delivered_order_items",
+        "arguments": {
+          "order_id": "#W0000000",
+          "item_ids": "['1008292230', '1008292231']",
+          "new_item_ids": "['1008292232', '1008292233']",
+          "payment_method_id": "gift_card_0000000"
+        },
+        "id": "call_b4tcjabv",
+        "error": true
+      },
+      {
+        "tick": 483,
+        "name": "exchange_delivered_order_items",
+        "arguments": {
+          "new_item_ids": "['not found']",
+          "order_id": "#W0000000",
+          "payment_method_id": "gift_card_0000000",
+          "item_ids": "['1008292230', '1008292231']"
+        },
+        "id": "call_bcpo7l8z",
+        "error": true
+      },
+      {
+        "tick": 541,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "#W0000000"
+        },
+        "id": "call_wua01q5r",
+        "error": true
+      },
+      {
+        "tick": 619,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "#W0000000"
+        },
+        "id": "call_0qluaqrf",
+        "error": true
+      },
+      {
+        "tick": 730,
+        "name": "exchange_delivered_order_items",
+        "arguments": {
+          "item_ids": "['6086499569', '6086499570']",
+          "new_item_ids": "['6086499580', '6086499581']",
+          "order_id": "#W0000000",
+          "payment_method_id": "gift_card_0000000"
+        },
+        "id": "call_spb2nlhc",
+        "error": true
+      },
+      {
+        "tick": 1030,
+        "name": "return_delivered_order_items",
+        "arguments": {
+          "order_id": "#W0000000",
+          "item_ids": "['6086499569', '6086499570']",
+          "payment_method_id": "gift_card_0000000"
+        },
+        "id": "call_827xe730",
+        "error": true
+      },
+      {
+        "tick": 1169,
+        "name": "exchange_delivered_order_items",
+        "arguments": {
+          "item_ids": "['6086499569', '6086499570']",
+          "new_item_ids": "['6086499580', '6086499581']",
+          "order_id": "#W0000000",
+          "payment_method_id": "gift_card_0000000"
+        },
+        "id": "call_u6s02gx6",
+        "error": true
+      },
+      {
+        "tick": 1239,
+        "name": "transfer_to_human_agents",
+        "arguments": {
+          "summary": "I am trying to exchange my water bottle and desk lamp for new items. I want a bigger water bottle and a desk lamp that is not as bright. I am still waiting for assistance with this exchange."
+        },
+        "id": "call_hh74cs77",
+        "error": false
+      }
+    ]
+  }
+]

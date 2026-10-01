@@ -1,0 +1,2057 @@
+▗ ▗   ▖ ▖  Claude Code v2.1.258
+           Fable 5.1 · Claude Max
+  ▘▘ ▝▝    ~/livekit-agent-evals
+
+  Get to finished work sooner with Opus 5.5. Update Claude Code to try it.
+  +1 more · /status
+
+❯ scrape this website https://docs.livekit.io/agents/ i dont want to you to     
+  perform any coding task for me. your job is to extract information from this  
+  site, cover these points: i know this is an open source framework for         
+  building voice agents, cover different ways in which these agents could be    
+  made, take notes of important points to consider while making these agents,   
+  the important topics used to enhance capbilities of these agents, how do you  
+  handle edge cases and anything specific that you find, create a claude.md     
+  file with these instructions, based upon this information extraction we will  
+  move forward. our main goal will not be to improve upon these agents but to   
+  build evals for these agents, what would be the benchmarking criteria, what   
+  model we will use will all depend upon the information extracted in this      
+  iteration.                                                                    
+
+⏺ I'll fetch the LiveKit Agents docs, map its sections, then fan out to extract
+  details and write a CLAUDE.md with the findings.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ The site has an llms.txt with markdown versions of every page. Let me grab the
+  full agents index.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Downloading the core conceptual pages as markdown now, plus checking the main
+  index for testing and evaluation pages since that is the end goal.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ There's a dedicated "Test & Evaluate" section with 21 pages, which is directly
+  relevant. Pulling that index plus all core conceptual pages in one go.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ All 88 pages are downloaded (1.26 MB of markdown). I'll fan out extraction
+  across three agents by theme and read the testing and evaluation pages myself,
+  since those drive the eval design.
+
+⏺ Agent(Extract getting-started + multimodality notes)
+  ⎿  Backgrounded agent (↓ to manage · ctrl+o to expand)
+
+⏺ Agent(Extract logic & structure notes)
+  ⎿  Backgrounded agent (↓ to manage · ctrl+o to expand)
+
+⏺ Agent(Extract server + models notes)
+  ⎿  Backgrounded agent (↓ to manage · ctrl+o to expand)
+
+⏺ Now I'll read the testing and evaluation pages myself while the agents work.
+
+  Read 1 file, ran 2 shell commands (ctrl+o to expand)
+
+⏺ API Error: No response from API
+
+✻ Sautéed for 10m 11s · done 5:13 PM
+
+⏺ Agent "Extract getting-started + multimodality notes" finished · 2m 21s
+
+⏺ The first agent's report on getting-started, prompting, and multimodality is
+  in. Reading the simulations pages now.
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Agent "Extract logic & structure notes" failed: Agent terminated early due to
+an API error: API Error: Connection dropped (ECONNRESET) (error type
+server_error)
+
+⏺ The logic-and-structure agent dropped on a connection error. Relaunching it as
+  two smaller agents so each finishes reliably.
+
+⏺ Agent(Extract sessions, workflows, tools notes)
+  ⎿  Backgrounded agent (↓ to manage · ctrl+o to expand)
+
+⏺ Agent(Extract turns, RAG, fallback, events notes)
+  ⎿  Backgrounded agent (↓ to manage · ctrl+o to expand)
+
+⏺ Meanwhile, reading the observability pages myself.
+
+  Read 3 files, ran 2 shell commands (ctrl+o to expand)
+⏺ I've got full coverage of the testing, simulation, and observability sections
+  now. While the remaining extraction agents finish up, I'll draft the
+  evaluation-focused portion of CLAUDE.md based on what I've read so far. 
+  · summarized
+
+  Made 1 scratchpad edit +118 (ctrl+o to expand)
+
+⏺ Agent "Extract server + models notes" finished · 13m 13s
+
+⏺ Two of four extraction reports are done (getting-started/multimodality and
+  server/models); still waiting on the other two before assembling CLAUDE.md.
+  I'll save the server/models notes to the scratchpad now so nothing's lost. 
+  · summarized
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+⏺ Agent "Extract sessions, workflows, tools notes" finished · 2m 57s
+
+⏺ Agent "Extract turns, RAG, fallback, events notes" finished · 2m 42s
+
+⏺ All four extraction reports are in—now assembling CLAUDE.md, which I'll place
+  inside a new ~/livekit-agent-evals/ folder so it scopes to the eval project
+  rather than your whole home directory. · summarized
+
+⏺ Write(CLAUDE.md)
+  ⎿  Wrote 360 lines to CLAUDE.md
+      1 # CLAUDE.md — LiveKit Agents: knowledge base for building EVALS
+      3 > Purpose of this file: a distilled, source-grounded reference ex
+        tracted from https://docs.livekit.io/agents/ (and the companion T
+        est & Evaluate section) on 2026-09-27.
+         voice agents. It is to build **evaluations / benchmarks** for ag
+        ents built on this framework. Everything below exists to inform (
+        vable, and (d) what LiveKit itself already measures — so the benc
+        hmarking criteria and judge/model choices in the next iteration a
+        re grounded in the framework's real behavior.
+      6 > Conventions: par
+     … +1013 lines (ctrl+o to expand)
+
+⏺ I'll finish up by spot-checking a few quoted claims against the source pages,
+  saving the raw extraction reports alongside CLAUDE.md as supporting material,
+  and recording a project memory. · summarized
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ All spot-checked claims are present in the source pages. Now saving the four
+  raw extraction reports as supporting notes in the project folder and recording
+  a project memory, all in one pass.
+
+⏺ Write(notes/01-getting-started-prompting-multimodality.md)
+  ⎿  Wrote 107 lines to notes/01-getting-started-prompting-multimodality.md
+       1 # Extraction notes 1 — Getting started, prompting guide, multimo
+       2 
+         ompting, telephony, frontend), agents/multimodality/** (17 pages
+       4 
+       6 
+       7 **LiveKit Agents** is a "realtime framework for voice, video, an
+         n LiveKit rooms as a full realtime participant, feed realtime me
+         lts back. Open source, Apache 2.0.
+       9 **Languages / SDKs / versions**
+         t.plugins.*`); uses `uv`.
+     … +262 lines (ctrl+o to expand)
+
+⏺ Write(notes/02-sessions-workflows-tools.md)
+  ⎿  Wrote 91 lines to notes/02-sessions-workflows-tools.md
+      1 # Extraction notes 2 — AgentSession, chat context, workflows, too
+      2 
+        patterns/*, tools/*, nodes, agents-handoffs}, agents/prebuilt/* (
+      4 
+      6 
+      7 Phases: Initializing (state `initializing`) → Starting (`start()`
+        peaking`) → Closing (drain pending speech, commit transcripts, cl
+      8 
+        ` (`speaking`/`listening`/`away`), `user_input_transcribed`, `use
+        added`
+     … +249 lines (ctrl+o to expand)
+
+⏺ Write(notes/03-turns-rag-fallback-events.md)
+  ⎿  Wrote 66 lines to notes/03-turns-rag-fallback-events.md
+      1 # Extraction notes 3 — Turn detection, interruptions, RAG, fallba
+      2 
+      3 Sources: agents/logic/turns/**, agents/logic/external-data, agent
+        ns, reference/agents/events (9 pages, rendered 2026-09-27).
+      4 
+      6 
+      7 `TurnHandlingOptions` keys: `turn_detection`, `endpointing`, `int
+      8 
+      9 `turn_detection`: `TurnDetector()` (recommended, default), `"stt"
+        altime server-side detection when the LLM is a realtime model.
+     … +194 lines (ctrl+o to expand)
+
+⏺ Write(notes/04-server-models.md)
+  ⎿  Wrote 72 lines to notes/04-server-models.md
+      1 # Extraction notes 4 — Agent server, models, LiveKit Inference, r
+      2 
+      3 Sources: agents/server/**, agents/models/** (overview, pipelines,
+        ealtime, avatar, llm/anthropic, llm/openai, realtime/plugins/{ope
+        , rendered 2026-09-27).
+      4 
+      6 
+      7 Model: agent server registers with LiveKit, waits for job request
+        ilable accepts and starts a process. Lifecycle: registration → jo
+         close (room closes when last non-agent pa
+     … +240 lines (ctrl+o to expand)
+
+  Ran 2 shell commands, wrote 1 memory (ctrl+o to expand)
+
+⏺ Done. The extraction is complete and the CLAUDE.md is written, with no agent
+  code touched.
+
+  What I created
+
+  - ~/livekit-agent-evals/CLAUDE.md (360 lines) — the distilled knowledge base.
+    I put it in a new project folder rather than your home directory so it only
+    loads for this eval project.
+  - ~/livekit-agent-evals/notes/01–04*.md — four raw per-topic extraction
+    reports backing the CLAUDE.md, for when you need more detail than the
+    summary.
+
+  How I sourced it
+
+  The docs site publishes every page as Markdown and ships an index at
+  docs.livekit.io/agents/llms.txt (225 pages) plus a separate Test & Evaluate
+  section at docs.livekit.io/testing/llms.txt (21 pages). I downloaded and read
+  88 core pages: all conceptual pages for building agents, the reference pages
+  for turn handling, events, and inference parameters, and the entire testing
+  and observability section. Per-provider plugin pages, deploy docs, and
+  telephony setup were skipped as low-value for evals and are listed in the
+  source index for on-demand pulls.
+
+  What the CLAUDE.md covers
+
+  1. Working rules for the project, framed around building evals rather than
+     agents.
+  2. Framework overview: SDKs, core objects, room and dispatch model, server
+     options.
+  3. Ways to build agents: the three pipeline architectures with the docs'
+     tradeoff table, seven delivery paths, and the control-flow patterns
+     (handoffs, tasks, task groups, supervisor, subagent delegation, prebuilt
+     tasks).
+  4. Capability-enhancing topics with exact defaults: tools and tool-loop
+     design, turn detection and interruption knobs, the full prompting guide,
+     RAG patterns, speech quality, fallback and error handling.
+  5. A consolidated edge-case checklist grouped by conversation, tools, models,
+     multimodality, and ops.
+  6. LiveKit's native testing stack in detail, which is the most important find
+     for your goal: the unit-test RunResult API, the eight built-in LLM judges
+     in livekit.agents.evals, Agent Simulations with scenario-writing rules, and
+     the audio-mode metrics LiveKit itself uses as a benchmarking rubric
+     (caller-perceived latency at p50/p95/p99, turn-taking failure taxonomy,
+     bidirectional WER/CER with entity recall, conversation-quality flags).
+  7. A proposed criteria matrix, eval tiers mirroring the framework's lifecycle,
+     and the open decisions for the next iteration: judge model, agent model
+     matrix, where evals run, scenario corpus format, determinism controls, and
+     scoring.
+
+  Things worth knowing before the next iteration
+
+  - LiveKit already ships most of the eval scaffolding. The framework's own
+    judges, simulation runner, and per-turn latency fields mean the benchmark
+    can be built on top of them rather than from scratch.
+  - Audio simulations and observability require a LiveKit Cloud project. Unit
+    tests and judge groups run anywhere without a room.
+  - Realtime speech-to-speech models lose several signals the cascaded pipeline
+    exposes (interim transcripts, LLM TTFT, TTS TTFB), so latency evals need
+    separate handling per architecture.
+  - The docs repeatedly state that agent behavior "varies between models and
+    between runs", which argues for reporting pass-rate variance across repeated
+    runs rather than single-shot scores.
+
+  I spot-checked the key quoted claims (recommended default model, tool-count
+  guidance, judge scoring, latency target, refusal-with-alternative rule)
+  against the source pages and they all match.
+
+✻ Cooked for 27m 1s · done 5:30 PM
+
+※ recap: Goal is building evals for LiveKit voice agents; I finished extracting the docs into ~/livekit-agent-evals/CLAUDE.md plus supporting notes. Next action is for you to review Part 7 and decide the benchmark criteria and judge model. (disable recaps in /config)
+
+❯ https://taubench.com/  this is a benchmark for voice agents. your job is      
+  again to extract information from this regarding which domains are available  
+  to benchmark, this is important because we will select a model from the list  
+  of agents of all the information we have exctracted and benchmark it against  
+  some of these tasks and then build evals for some behaviours where the base   
+  model is failing and then improve on those through propmt changes.            
+
+⏺ I'll fetch taubench.com, map its structure, and extract the domains, task
+  format, and scoring so it slots into the existing CLAUDE.md.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Fetch(https://taubench.com/)  ⎿  Received 15.6KB (200 OK)
+
+⏺ Fetch(https://taubench.com/leaderboard?benchmark=voice)
+  ⎿  Received 668 bytes (301 Moved Permanently)
+
+⏺ Fetch(https://sierra.ai/blog/tau-voice-benchmarking-real-time-voice-agents-on-
+       real-world-tasks)
+  ⎿  Received 570.1KB (200 OK)
+
+⏺ Fetch(https://github.com/sierra-research/tau2-bench)
+  ⎿  Received 395.5KB (200 OK)
+
+⏺ Fetch(https://arxiv.org/abs/2603.04370)
+  ⎿  Received 41.5KB (200 OK)
+
+⏺ Fetch(https://arxiv.org/abs/2603.13686)
+  ⎿  Received 41.4KB (200 OK)
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Fetch(http://taubench.com/leaderboard/?benchmark=voice)
+  ⎿  Received 60.8KB (200 OK)
+
+⏺ Fetch(https://taubench.com/blog/tau3-task-fixes.html)
+  ⎿  Received 41.5KB (200 OK)
+
+⏺ Fetch(https://taubench.com/blog/tau-knowledge.html)
+  ⎿  Received 113.7KB (200 OK)
+
+⏺ Fetch(https://arxiv.org/html/2603.04370)
+  ⎿  Received 777.5KB (200 OK)
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Fetch(https://arxiv.org/html/2603.13686)
+  ⎿  Received 1.3MB (200 OK)
+
+⏺ Fetch(https://sierra-research.github.io/hyper-tau-bench/)
+  ⎿  Received 11KB (200 OK)
+
+  Read 1 file, ran 6 shell commands (ctrl+o to expand)
+
+⏺ Fetch(https://taubench.com/blog/tau-voice-examples.html)
+  ⎿  Received 59.3KB (200 OK)
+
+⏺ I've gathered the domain list, task schema, scoring rules, voice paper
+  results, and interaction-metric definitions. Next I'll pull the live
+  leaderboard data, voice README, domain/knowledge READMEs, and sample tasks
+  from each domain. · summarized
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+⏺ Fetch(https://sierra.ai/blog/benchmarking-agents-in-collaborative-real-world-s
+       cenarios)
+  ⎿  Received 190KB (200 OK)
+
+  Ran 5 shell commands (ctrl+o to expand)
+⏺ I've gathered all the τ-bench data—domains, task schema, reward rules, voice
+  simulator metrics, paper results, and the live leaderboard from S3. Now
+  writing the τ-bench notes file, updating CLAUDE.md, and saving to project
+  memory. · summarized
+
+⏺ Write(notes/05-tau-bench.md)
+  ⎿  Wrote 183 lines to notes/05-tau-bench.md
+      1 # Extraction notes 5 — τ-bench (taubench.com) : domains, tasks, s
+        coring, voice track, leaderboard
+      3 Sources (fetched 2026-09-27): taubench.com (home, blog/tau3-task-
+        fixes, blog/tau-knowledge, blog/tau-voice-examples), S3 leaderboa
+        rd manifest + every `submission.json` (29 text, 21 voice, 16 lega
+        on.md, docs/interaction-metrics.md, docs/leaderboard-submission.m
+        d, docs/voice-personas.md, docs/running_simulations.md, src/tau2/
+        voice/README.md, src/tau2/domains/README.md, src/tau2/knowledge/R
+        /telecom-small/banking + tasks_voice.json), arXiv 2603.13686 (τ-V
+        oice),
+     … +476 lines (ctrl+o to expand)
+
+⏺ Update(CLAUDE.md)
+  ⎿  Added 34 lines
+      346  
+      347  ---
+      348  
+      349 +## PART 8 — τ-BENCH (taubench.com, Sierra Research) — the exte
+          +rnal benchmark we will run against                            
+      350 +                                                              
+      351 +Full notes with every number and table: `notes/05-tau-bench.md
+          +`. Summary:                                                   
+      352 +                                                              
+      353 +**What it is**: an agent (system under test) converses with an
+          + LLM user simulator, calls domain tools against a database, an
+          +d must follow a domain policy. Reward is verified against the 
+          +**final DB state** (plus required communicated strings), never
+          + on how the conversation sounded. `pass^k` = probability of su
+          +ccess in all k independent trials (k = 1..4 reported). Repo: g
+          +ithub.com/sierra-research/tau2-bench (`uv sync --extra voice`,
+          + `tau2 run ...`). Three leaderboards: τ²-bench (text), τ³-Bank
+          +ing (text + knowledge retrieval), τ³-Voice (full-duplex voice)
+          +.                                                             
+      354 +                                                              
+      355 +**Domains available**                                         
+      356 +                                                              
+      357 +| Domain | Tasks | Nature | Dual control (user tools) | Reward
+          + basis in data |                                              
+      358 +|---|---|---|---|---|                                         
+      359 +| `retail` | 114 | orders, returns, exchanges, cancellations, 
+          +modifications; identity via name+zip/email | no | `DB` + `NL_A
+          +SSERTION` (112), `DB` (2) |                                   
+      360 +| `airline` | 50 | flight change/cancel/upgrade/booking under 
+          +policy (24-h rule, insurance, refund method); many refusal tas
+          +ks | no | `DB` + `COMMUNICATE` (50) |                         
+      361 +| `telecom` | 114 base (2285 generated) | troubleshooting: `mm
+          +s_issue` 49, `mobile_data_issue` 36, `service_issue` 29; perso
+          +na difficulty None/Easy/Hard | **yes** (toggle roaming, reboot
+          +, status bar, speed test) | `DB` + env assertions on user devi
+          +ce state |                                                    
+      362 +| `banking_knowledge` | 97 | fintech support over 698 unstruct
+          +ured docs, 51 discoverable tools; avg 18.6 docs, 9.5 tool call
+          +s per task | yes (e.g. apply for card) | `DB` (88), `ACTION` (
+          +9); needs `--retrieval-config` |                              
+      363 +| `mock` | — | dev domain | — | — |                           
+      364 +                                                              
+      365 +Voice track (standard leaderboard) = retail + airline + teleco
+          +m = **278 tasks**, `--speech-complexity regular`, 1 trial; ban
+          +king voice exists as a custom track. Every domain ships `tasks
+          +_voice.json` with pre-sampled audio configs.                  
+      366 +                                                              
+      367 +**Task schema**: `user_scenario.instructions {reason_for_call,
+          + known_info, unknown_info, task_instructions}` scripts the sim
+          +ulated user (withheld facts, persona traits, reactions); `eval
+          +uation_criteria {actions (ONE reference trajectory, replayed t
+          +o derive target DB hash — not a requirement), communicate_info
+          +, nl_assertions, env_assertions, reward_basis}`; telecom adds 
+          +`ticket` + `initialization_actions`; banking adds `user_tools`
+          +, `required_documents`. Refusing correctly (no DB writes) scor
+          +es 1.0.                                                       
+      368 +                                                              
+      369 +**Voice user simulator** (v1.0 = GPT-4.1 temp 0 → ElevenLabs v
+          +3 TTS → noise mix → channel): 7 personas (2 American "control"
+          +: calm Matt Delaney, impatient Lisa Brenner; 5 "regular": elde
+          +rly Mildred Kaplan, Bengali Arjun Roy, Sichuan Wei Lin, French
+          +-accented Mamadou Diallo, Marathi Priya Patil). Regular condit
+          +ions: G.711 μ-law 8 kHz, background noise 15 dB SNR ± 3, burst
+          +s 1/min at −5..+10 dB, 2 % frame drops (~100 ms), 20 % mufflin
+          +g, vocal tics + non-directed phrases 0.7/min, LLM backchannels
+          +, interruptions on. 200 ms ticks, 600 s max, user waits 1.0 s 
+          +silence, interrupt/backchannel decisions every 2.0 s. Ablation
+          + presets isolate audio / accents / behavior. Providers with ad
+          +apters: openai, gemini, xai; custom agents implement `FullDupl
+          +exAgent.get_next_chunk()`.                                    
+      370 +                                                              
+      371 +**Interaction metrics** (computed offline from ticks, no judge
+          +s): response latency L_R, yield latency L_Y, response rate R_R
+          +, yield rate R_Y (within 2.0 s), agent-interruption rate I_A, 
+          +selectivity for backchannels / vocal tics / non-directed speec
+          +h (error = yields within 1.0 s or responds within 2.0 s).     
+      372 +                                                              
+      373 +**Headline numbers (2026-09-27)**: text ceiling GPT-5 85 % vs 
+          +GPT-4.1 54 % on the 278 tasks; τ²-bench text top Qwen3.5-397B 
+          +87.9 avg, Claude Opus 4.5 85.3, GPT-5.2 84.8. Voice top gpt-li
+          +ve-1 81.7 (78.9 / 82.0 / 84.2), Pine Voice Preview 75.4 (casca
+          +ded ASR→LLM→TTS + custom interaction model + background gemini
+          +-3.5-flash tool agent), grok-voice-think-fast-1.0 67.3, gemini
+          +-3.1-flash-live HIGH 43.8, gpt-realtime-2 42.4. **Cascaded bas
+          +eline (Deepgram nova-3 + gpt-4.1 + Deepgram Aura) = 31.2 avg (
+          +retail 28.9 / airline 48.0 / telecom 16.7), L_R 4.24 s, I_A 0.
+          +64** — the architectural twin of a default LiveKit STT-LLM-TTS
+          + agent. Banking text top 55.2 (Qwen 3.8 Max); banking voice 10
+          +–32.                                                          
+      374 +                                                              
+      375 +**Failure taxonomy from the τ-Voice paper** (79–90 % of failur
+          +es are agent-caused): Logical (policy misapplication, missed c
+          +onstraints), **Transcription** (spelled names, emails, IDs → a
+          +uthentication bottleneck), Hallucination (claims completion wi
+          +thout tool call), VAD/Unresponsive, Timeout; user-sim errors 1
+          +0–21 %. Ablations: accents hurt most on average (−1..−18 pp, p
+          +rovider-specific), turn-taking −14..+4 pp, noise −2..−4 pp. Kn
+          +owledge-domain failure modes: unwarranted assumptions instead 
+          +of clarifying (~23 %), multi-hop interdependencies (~14.5 %), 
+          +implicit subtask ordering (~5 %), over-trusting user claims (~
+          +4 %).                                                         
+      376 +                                                              
+      377 +**Plan hooks for the next iteration**                         
+      378 +- Pick domain by iteration cost vs. coverage: `airline` (50 ta
+          +sks, fastest, refusal-heavy) → `retail` (paper's primary) → `t
+          +elecom` (dual control; hardest for voice) → `banking_knowledge
+          +` (RAG).                                                      
+      379 +- Run text mode first (`tau2 run --domain X --agent-llm <model
+          +>`) to get the model's reasoning ceiling, then voice (`--audio
+          +-native` or a LiveKit `FullDuplexAgent` adapter) to measure th
+          +e voice gap; compare against the Cascaded-baseline row and the
+          + matching realtime row.                                       
+      380 +- Mine failures with the paper's taxonomy plus τ-bench's `part
+          +ial_action_reward`, `action_checks`, and interaction metrics; 
+          +turn recurring ones into LiveKit `scenarios.yaml` / `session.r
+          +un` evals; iterate on prompts (identity spelling/read-back, to
+          +ol-before-claim, multi-part request tracking, backchannel sele
+          +ctivity, policy checklists).                                  
+      381 +- Comparability rules: `base` split, all tasks, standard user 
+          +sim (text gpt-5.2 low; voice v1.0 gpt-4.1), tau2-bench ≥ 1.0.1
+          +; prompt changes make a submission "custom".                  
+      382 +                                                              
+      383  ## Source index (docs.livekit.io, rendered 2026-09-27)
+      384  
+      385  Get started: `/agents`, `/agents/start/voice-ai`, `/agents/sta
+           rt/builder`, `/agents/start/embed`, `/agents/start/prompting`,
+            `/agents/start/telephony`, `/agents/start/frontend`
+
+⏺ Update(CLAUDE.md)
+  ⎿  Added 2 lines
+      392  Test & Evaluate: `/testing`, `/testing/overview`, `/testing/ag
+           ent-console`, `/testing/debugger`, `/testing/unit-tests`, `/te
+           sting/simulations`, `/testing/simulations/write-a-scenario`, `
+           /testing/simulations/scenario-sets`, `/testing/simulations/der
+           ive-a-scenario`, `/testing/simulations/ci`, `/testing/observab
+           ility`, `/testing/observability/insights`, `/testing/observabi
+           lity/pii-redaction`, `/testing/observability/build`, `/testing
+           /observability/tracing`, `/testing/observability/data`, `/test
+           ing/observability/recording`, `/telephony/testing`
+      393  External: github.com/livekit/agents (examples: `frontdesk`, `h
+           otel_receptionist`, `voice_agents/otel_trace.py`), github.com/
+           livekit/eot-bench, huggingface.co/livekit (eot-evals), github.
+           com/livekit/agent-skills
+      394  Not yet extracted (per-provider plugin pages, deploy section, 
+           telephony section beyond testing): 130+ pages listed in `/agen
+           ts/llms.txt` — pull on demand.
+      395 +                                                              
+      396 +τ-bench (fetched 2026-09-27): taubench.com (+ `/blog/tau3-task
+          +-fixes.html`, `/blog/tau-knowledge.html`, `/blog/tau-voice-exa
+          +mples.html`), leaderboard data `https://sierra-tau-bench-publi
+          +c.s3.us-west-2.amazonaws.com/submissions/manifest.json` → `<id
+          +>/submission.json`, github.com/sierra-research/tau2-bench (REA
+          +DME, `docs/evaluation.md`, `docs/interaction-metrics.md`, `doc
+          +s/leaderboard-submission.md`, `docs/voice-personas.md`, `docs/
+          +running_simulations.md`, `src/tau2/{voice,domains,knowledge,ag
+          +ent}/README.md`, `data/tau2/domains/*/tasks*.json`), arXiv 260
+          +3.13686 (τ-Voice), 2603.04370 (τ-Knowledge), 2506.07982 (τ²), 
+          +2406.12045 (τ), sierra.ai blog posts, sierra-research.github.i
+          +o/hyper-tau-bench.                                            
+
+⏺ Update(CLAUDE.md)
+  ⎿  Added 2 lines, removed 2 lines
+      1  # CLAUDE.md — LiveKit Agents: knowledge base for building EVALS
+      2  
+      3 -> Purpose of this file: a distilled, source-grounded reference e
+        -xtracted from https://docs.livekit.io/agents/ (and the companion
+        - Test & Evaluate section) on 2026-09-27.                        
+      4 -> The goal of this project is **not** to build or improve LiveKi
+        -t voice agents. It is to build **evaluations / benchmarks** for 
+        -agents built on this framework. Everything below exists to infor
+        -m (a) what an agent can be, (b) what can go wrong, (c) what is o
+        -bservable, and (d) what LiveKit itself already measures — so the
+        - benchmarking criteria and judge/model choices in the next itera
+        -tion are grounded in the framework's real behavior.             
+      3 +> Purpose of this file: a distilled, source-grounded reference e
+        +xtracted from https://docs.livekit.io/agents/ (and the companion
+        + Test & Evaluate section) on 2026-09-27, plus τ-bench (taubench.
+        +com) as the external benchmark (Part 8).                        
+      4 +> The goal of this project is **not** to build or improve LiveKi
+        +t voice agents. It is to build **evaluations / benchmarks** for 
+        +agents built on this framework. Workflow agreed with the user: (
+        +1) pick a model/agent configuration from the extracted lists, (2
+        +) benchmark it on selected τ-bench tasks, (3) build LiveKit-nati
+        +ve evals for the behaviours where it fails, (4) improve those be
+        +haviours through prompt changes only. Everything below exists to
+        + inform (a) what an agent can be, (b) what can go wrong, (c) wha
+        +t is observable, and (d) what LiveKit itself already measures — 
+        +so the benchmarking criteria and judge/model choices in the next
+        + iteration are grounded in the framework's real behavior.       
+      5  >
+      6  > Conventions: parameter names, defaults, and version numbers ar
+         e quoted from the docs. "Python only" / "Node only" flags are pr
+         eserved. Every page used is listed in the Source Index at the en
+         d; append `.md` to any docs URL for clean Markdown, or use `http
+         s://docs.livekit.io/agents/llms.txt` (225 pages) and `https://do
+         cs.livekit.io/testing/llms.txt` (21 pages).
+      7  
+
+  Wrote 1 memory (ctrl+o to expand)
+
+⏺ Nearly done. One last check on the telecom reward basis, which was truncated
+  in my earlier output, so the CLAUDE.md doesn't state it loosely.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Update(CLAUDE.md)
+  ⎿  Added 1 line, removed 1 line
+      358  |---|---|---|---|---|
+      359  | `retail` | 114 | orders, returns, exchanges, cancellations, 
+           modifications; identity via name+zip/email | no | `DB` + `NL_A
+           SSERTION` (112), `DB` (2) |
+      360  | `airline` | 50 | flight change/cancel/upgrade/booking under 
+           policy (24-h rule, insurance, refund method); many refusal tas
+           ks | no | `DB` + `COMMUNICATE` (50) |
+      361 -| `telecom` | 114 base (2285 generated) | troubleshooting: `mm
+          -s_issue` 49, `mobile_data_issue` 36, `service_issue` 29; perso
+          -na difficulty None/Easy/Hard | **yes** (toggle roaming, reboot
+          -, status bar, speed test) | `DB` + env assertions on user devi
+          -ce state |                                                    
+      361 +| `telecom` | 114 base (2285 generated) | troubleshooting: `mm
+          +s_issue` 49, `mobile_data_issue` 36, `service_issue` 29; perso
+          +na difficulty None/Easy/Hard | **yes** (toggle roaming, reboot
+          +, status bar, speed test) | `ENV_ASSERTION` on user device sta
+          +te (18 of the 20-task `small` set), `ENV_ASSERTION` + `ACTION`
+          + (2) |                                                        
+      362  | `banking_knowledge` | 97 | fintech support over 698 unstruct
+           ured docs, 51 discoverable tools; avg 18.6 docs, 9.5 tool call
+           s per task | yes (e.g. apply for card) | `DB` (88), `ACTION` (
+           9); needs `--retrieval-config` |
+      363  | `mock` | — | dev domain | — | — |
+      364  
+
+⏺ Update(notes/05-tau-bench.md)
+  ⎿  Added 1 line, removed 1 line
+      22  |---|---|---|---|---|---|
+      23  | `retail` | **114** | base 114 (+train/test) | Order managemen
+          t: returns, exchanges, cancellations, modify pending orders, pr
+          oduct inquiries; identity via name+zip/email | none | `[DB, NL_
+          ASSERTION]` ×112, `[DB]` ×2 |
+      24  | `airline` | **50** | base 50, train 30, test 20 | Flight chan
+          ges, cancellations, seat/cabin upgrades, bookings, refunds/comp
+          ensation under policy (e.g. 24-h rule, insurance) | none | `[DB
+          , COMMUNICATE]` ×50 |
+      25 -| `telecom` | **114** (`full` 2285 generated, `small` 20) | bas
+         -e = 114 (categories: `mms_issue` 49, `mobile_data_issue` 36, `s
+         -ervice_issue` 29; persona difficulty None 40 / Easy 38 / Hard 3
+         -6) | Troubleshooting with a compositional task generator: fix b
+         -roken data, MMS, network mode, roaming, data refuel; agent work
+         -s backend tools, **user** performs device actions (toggle roami
+         -ng, reboot, check status bar, run speed test) | yes (`toggle_ro
+         -aming`, `get_status_bar`, `can_send_mms`, speed test …) | `env_
+         -assertions` on user device state (e.g. `assert_mobile_data_stat
+         -us`, `assert_internet_speed`) + actions with `requestor: user` 
+         -|                                                              
+      25 +| `telecom` | **114** (`full` 2285 generated, `small` 20) | bas
+         +e = 114 (categories: `mms_issue` 49, `mobile_data_issue` 36, `s
+         +ervice_issue` 29; persona difficulty None 40 / Easy 38 / Hard 3
+         +6) | Troubleshooting with a compositional task generator: fix b
+         +roken data, MMS, network mode, roaming, data refuel; agent work
+         +s backend tools, **user** performs device actions (toggle roami
+         +ng, reboot, check status bar, run speed test) | yes (`toggle_ro
+         +aming`, `get_status_bar`, `can_send_mms`, speed test …) | `[ENV
+         +_ASSERTION]` ×18, `[ENV_ASSERTION, ACTION]` ×2 in the 20-task `
+         +small` set (assertions on user device state, e.g. `assert_mobil
+         +e_data_status`, `assert_internet_speed`; actions with `requesto
+         +r: user`); no `communicate_info` |                             
+      26  | `banking_knowledge` (τ³-Banking) | **97** | base | Fintech su
+          pport over an **unstructured KB of 698 docs / 21 product catego
+          ries / ~195K tokens**, 51 *discoverable* tools (must be unlocke
+          d by reading the KB); avg 18.6 docs and 9.5 tool calls per task
+           (1–33) | yes (e.g. `apply_for_credit_card`) | `[DB]` ×88, `[AC
+          TION]` ×9 |
+      27  | `mock` | — | — | Lightweight dev domain | — | — |
+      28  
+
+⏺ Done. The τ-bench extraction is complete and folded into the project files.
+
+  What I added
+
+  - ~/livekit-agent-evals/CLAUDE.md now has a Part 8 on τ-bench, an updated
+    purpose statement capturing the agreed workflow (pick model → benchmark on
+    τ-bench tasks → build evals for failures → fix via prompts), and τ-bench
+    sources in the index.
+  - ~/livekit-agent-evals/notes/05-tau-bench.md holds the full detail: task
+    schema, scoring rules, the voice simulator configuration, all eight
+    interaction-metric definitions, paper results, and the complete live
+    leaderboard tables.
+
+  Domains available to benchmark
+
+  Domain: airline
+  Tasks: 50
+  What it tests: Flight changes, cancellations, upgrades, refunds under policy
+  Notes: Smallest and fastest to iterate; many refusal tasks
+  ────────────────────────────────────────
+  Domain: retail
+  Tasks: 114
+  What it tests: Orders, returns, exchanges, modifications
+  Notes: The τ-Voice paper's primary domain
+  ────────────────────────────────────────
+  Domain: telecom
+  Tasks: 114
+  What it tests: Troubleshooting with dual control: the user must run device
+  actions the agent asks for
+  Notes: Hardest for voice in the paper
+  ────────────────────────────────────────
+  Domain: banking_knowledge
+  Tasks: 97
+  What it tests: Support over 698 unstructured documents with tools that must be
+
+  discovered by reading the knowledge base
+  Notes: Best text models score about 50 percent; voice about 10 to 32
+
+  The standard voice track uses retail, airline, and telecom together, 278 tasks
+  in total. Every task is scored on the final database state, plus required
+  communicated strings, using pass^k across repeated trials. Refusing correctly
+  counts as a pass.
+
+  Findings that shape the next iteration
+
+  - The τ-Voice paper attributes 79 to 90 percent of voice failures to agent
+    behavior, not audio. The dominant categories are logical errors (policy
+    misapplication), transcription of spelled names, emails, and IDs during
+    authentication, hallucinated completions without a tool call, multi-step
+    request amnesia, and unresponsiveness. These are exactly the behaviors
+    prompt changes can target.
+  - The leaderboard has a cascaded STT-LLM-TTS baseline row (Deepgram nova-3,
+    gpt-4.1, Deepgram Aura) at 31.2 average with 4.2 second response latency.
+    That row is the architectural twin of a default LiveKit pipeline agent and
+    is our natural reference point. Pine AI's cascaded production system reaches
+    75.4, so the architecture is not the ceiling.
+  - Top of the voice board is gpt-live-1 at 81.7; native realtime models from
+    OpenAI have near-zero selectivity, meaning they react to every backchannel
+    and cough.
+  - Accents hurt more than noise in the ablations, and the effect is
+    provider-specific.
+
+  How τ-bench can plug into a LiveKit agent
+
+  The repo exposes a tick-based FullDuplexAgent interface that a LiveKit session
+  can be bridged to, or the tasks can be ported into LiveKit's own
+  scenarios.yaml format at the cost of leaderboard comparability. Both options
+  are written up in the notes file.
+
+  One caveat: voice runs require creating your own ElevenLabs persona voices,
+  since Sierra's voice IDs are internal, and results will differ slightly from
+  published numbers.
+
+✻ Worked for 12m 58s · done 6:05 PM
+
+❯ based upon both the information extracted give me 6 behaviours i can build    
+  evals aroudn, 5 options of models to choose from with their respective        
+  domains from tau benchmarks                                                   
+
+⏺ Here is my recommendation, grounded in the τ-Voice failure taxonomy, the
+  leaderboard rows, and what LiveKit can measure natively.
+
+  Six behaviours to build evals around
+
+  #: 1
+  Behaviour: Identifier capture and read-back: spelled names, emails, order or
+  reservation IDs, zip codes, card digits
+  Why it matters (evidence): Transcription errors were the second-largest agent
+  failure class in τ-Voice (10 of 34 voice-fragile, 16 of 43 noise-fragile) and
+   the paper calls authentication "the dominant bottleneck". Accents hurt most
+  in ablations.
+  How to measure it: τ-bench DB end state on lookup tasks; LiveKit audio-sim
+  entity recall (recognized vs recognized-then-lost); scenario GROUND TRUTH
+  blocks with a corrected value; --low-quality-microphone and
+  --background-noise runs
+  ────────────────────────────────────────
+  #: 2
+  Behaviour: Tool-before-claim grounding: never state a booking, refund, or
+  change happened without a successful tool call
+  Why it matters (evidence): "Hallucinated completions without tool calls" is a
+  named τ-Voice failure (6 per cohort); LiveKit's accuracy_judge and
+  tool_use_judge exist for exactly this
+  How to measure it: RunResult asserts that a write tool call precedes the
+  confirmation message; accuracy_judge; τ-bench partial_action_reward split by
+  WRITE tools
+  ────────────────────────────────────────
+  #: 3
+  Behaviour: Policy adherence with correct refusal plus alternative: 24-hour
+  rules, insurance, refund method, basic-economy limits, 30-night caps
+  Why it matters (evidence): Logical errors were the largest agent failure class
+
+  (13 and 16); airline is refusal-heavy and its reward rewards "no DB write";
+  LiveKit says "an agent that refuses and abandons the caller still fails"
+  How to measure it: Airline refusal tasks (reward 1.0 on zero writes);
+  safety_judge; scenario expectations that name the fail case explicitly
+  ────────────────────────────────────────
+  #: 4
+  Behaviour: Multi-part request tracking and mid-flow corrections: three orders
+  to modify, a date changed during read-back, a name changed after confirmation
+  Why it matters (evidence): τ-Voice lists "multi-step request amnesia"; retail
+  task 3 style tasks have 10+ steps; LiveKit warns that new agents or tasks
+  start with empty context
+  How to measure it: task_completion_judge over full history; final-state
+  grading
+  with expected_state; τ-bench retail modify-order tasks
+  ────────────────────────────────────────
+  #: 5
+  Behaviour: Dual-control guidance and not over-trusting the user: instruct the
+  user to run device steps, wait for their tool result, verify claims against
+  system state
+  Why it matters (evidence): τ²-bench showed up to 25 points drop moving to dual
+
+  control; τ-Knowledge names "overtrusting user assertions" (~4 %) and
+  "unwarranted assumptions" (~23 %)
+  How to measure it: Telecom tasks with env_assertions on device state; LiveKit
+  unit tests where the mocked tool contradicts the user's claim
+  ────────────────────────────────────────
+  #: 6
+  Behaviour: Turn-taking selectivity and responsiveness: ignore backchannels,
+  coughs, and "hold on a second", yield within 2 s on real interruptions, never
+   go silent after a failed step
+  Why it matters (evidence): OpenAI realtime rows score 0.01 to 0.13
+  selectivity;
+  the cascaded baseline interrupts the user 0.64 times per turn with 4.2 s
+  latency; "unresponsive after repeated failures" is a named failure
+  How to measure it: τ-bench interaction metrics (L_R, R_R, R_Y, I_A, S_BC,
+  S_VT,
+  S_ND); LiveKit audio-sim turn-taking score, agent_false_interruption,
+  overlapping_speech, e2e_latency
+
+  Behaviours 1 to 5 can be evaluated in text mode first. Behaviour 6 needs audio
+  runs.
+
+  Five model options and the τ-bench domain to start each on
+
+  #: 1
+  Model and LiveKit path: gpt-4.1 in a cascaded pipeline (Deepgram nova-3 STT,
+  openai/gpt-4.1 via Inference or plugin, Deepgram TTS)
+  Reference numbers on τ-bench: Voice cascaded baseline: retail 28.9, airline
+  48.0, telecom 16.7, latency 4.24 s. Text: 74.0 / 56.0 / 34.0
+  Suggested domain: Retail, then airline
+  Rationale: Only leaderboard row that matches a LiveKit pipeline component for
+  component. You can reproduce it, then show gains from prompt changes. Retail
+  is the paper's primary domain with the richest per-condition numbers.
+  ────────────────────────────────────────
+  #: 2
+  Model and LiveKit path: google/gemma-4-31b-it (LiveKit's recommended default,
+  Inference, zero data retention)
+  Reference numbers on τ-bench: None on τ-bench
+  Suggested domain: Airline (50 tasks)
+  Rationale: Cheapest and lowest-latency loop; charts the quickstart default
+  that
+  most LiveKit agents ship with. Airline's refusal-heavy tasks stress behaviour
+   3 with the fewest runs.
+  ────────────────────────────────────────
+  #: 3
+  Model and LiveKit path: Claude Sonnet 4.5 via the Anthropic plugin (plugin
+  default is 4.6, which has no τ numbers yet)
+  Reference numbers on τ-bench: Text: retail 72.4, airline 72.0, telecom 84.9;
+  banking 25.3 with terminal retrieval
+  Suggested domain: Telecom
+  Rationale: Strongest mid-tier score on dual control, so it isolates
+  voice-and-prompt effects on behaviour 5 rather than reasoning limits.
+  ────────────────────────────────────────
+  #: 4
+  Model and LiveKit path: GPT-5.2 (openai/gpt-5.2 on Inference, reasoning_effort
+
+  knob)
+  Reference numbers on τ-bench: Text: 81.6 / 83.0 / 89.7 with reasoning; 75.0 /
+  52.5 / 57.2 with reasoning none. Banking 32.2
+  Suggested domain: Airline, optionally banking_knowledge
+  Rationale: Near the text ceiling, so failures in voice are attributable to the
+
+  pipeline and prompts. The reasoning-none row gives you a
+  latency-versus-accuracy trade-off inside one model.
+  ────────────────────────────────────────
+  #: 5
+  Model and LiveKit path: OpenAI realtime (gpt-realtime-2 via
+  openai.realtime.RealtimeModel, or GPT-Live via GPTLiveModel)
+  Reference numbers on τ-bench: Voice: gpt-realtime-2 47.4 / 58.0 / 21.9;
+  gpt-live-1 78.9 / 82.0 / 84.2; selectivity 0.01 to 0.13
+  Suggested domain: Retail
+  Rationale: Covers the speech-to-speech architecture LiveKit supports. Its
+  near-zero backchannel selectivity makes it the best subject for behaviour 6,
+  and it has no interim transcripts so behaviour 1 evals need the
+  caller-perceived metrics.
+
+  If you want a Google option instead of one of these, Gemini 3 Flash
+  (google/gemini-3-flash-preview) has text scores of 76.8, 82.5, and 91.2 and is
+  the best fit for banking_knowledge.
+
+  My recommendation is to start with option 1 on retail. It is the only
+  configuration with a directly comparable published row, so a before-and-after
+  on prompt changes is defensible. Keep the user simulator standard (gpt-5.2 low
+  for text, the v1.0 gpt-4.1 pipeline for voice) so numbers stay comparable
+  with the leaderboard. Any prompt change makes a formal submission "custom",
+  which is fine for internal evals.
+
+✻ Worked for 57s · done 6:08 PM
+
+※ recap: We're building evals for LiveKit voice agents using τ-bench as the benchmark, and I just delivered six target behaviours and five model options. Next: you pick a model and domain so I can set up the first baseline run. (disable recaps in /config)
+
+❯ no no i need voice agents only. so keep behaviour options, model selection    
+  and domain options around it                                                  
+
+⏺ Understood. Everything below is restricted to the τ³-Voice track (full-duplex,
+  regular speech complexity) and to voice agents you can build in LiveKit.
+
+  Six voice behaviours to build evals around
+
+  #: 1
+  Behaviour: Identifier capture under accent and noise: spelled names, emails,
+  order or reservation IDs, zip codes
+  Voice evidence: Transcription was the second-largest agent failure class (10
+  and 16 per cohort); accents were the most damaging ablation (up to −18 pp);
+  the paper calls authentication the dominant bottleneck
+  How to measure: τ-bench DB end state on lookup tasks with the five accented
+  personas; LiveKit audio-sim entity recall; scenarios that spell an uncommon
+  name and insist on it; --low-quality-microphone, --background-noise
+  ────────────────────────────────────────
+  #: 2
+  Behaviour: Selectivity: talk through "mm-hmm", coughs, and "hold on a second"
+  instead of stopping or answering them
+  Voice evidence: OpenAI realtime rows score 0.01 to 0.13 backchannel
+  selectivity; Gemini and Grok 0.66 to 0.94
+  How to measure: τ-bench S_BC, S_VT, S_ND (yield within 1 s or respond within 2
+
+  s counts as an error); LiveKit overlapping_speech and InterruptionMetrics
+  (num_backchannels)
+  ────────────────────────────────────────
+  #: 3
+  Behaviour: Barge-in handling: yield within 2 s on a real interruption, do not
+  talk over the caller, resume correctly after a false interruption
+  Voice evidence: Cascaded baseline interrupts 0.64 times per user turn; Gemini
+  yields on only about half of interruptions
+  How to measure: τ-bench R_Y, L_Y, I_A; LiveKit audio-sim time-to-yield and
+  overlap share; agent_false_interruption.resumed
+  ────────────────────────────────────────
+  #: 4
+  Behaviour: Responsiveness and silence: answer every caller turn, keep
+  perceived
+  latency near 1 s, never go quiet after a failed tool call
+  Voice evidence: Cascaded baseline latency 4.24 s with 0.79 response rate;
+  "unresponsive after repeated failures" and VAD/unresponsive are named failure
+   classes
+  How to measure: τ-bench L_R, R_R; LiveKit caller-perceived p50/p95 latency,
+  unfilled silences, unanswered turns, e2e_latency
+  ────────────────────────────────────────
+  #: 5
+  Behaviour: Spoken read-back and confirmation: repeat key values in spoken form
+
+  (digits, spelled codes), confirm before any write, take the corrected value
+  when the caller self-corrects mid-sentence
+  Voice evidence: τ-Voice examples show "verbally encoded characters trip up the
+
+  agent"; LiveKit scenario guidance requires read-backs and corrected-value
+  capture
+  How to measure: Scenarios with GROUND TRUTH and a same-breath correction;
+  final-state grading; deterministic judge for digits or markdown in TTS text
+  ────────────────────────────────────────
+  #: 6
+  Behaviour: Grounded completion over a long call: no hallucinated "done"
+  without
+  a tool call, no policy misapplication, no forgetting later parts of a
+  multi-step request
+  Voice evidence: Logical errors were the largest voice failure class (13 and
+  16), hallucination 6 per cohort, plus "multi-step request amnesia" over
+  six-minute calls
+  How to measure: τ-bench DB reward and partial_action_reward on WRITE tools;
+  LiveKit accuracy_judge, task_completion_judge; retail multi-order tasks
+
+  One caveat for the prompt-only plan: behaviours 2 to 4 are driven mostly by
+  the model and by LiveKit turn-handling settings (turn detector, adaptive
+  interruption, endpointing), so prompts will move them least. Behaviours 1, 5,
+  and 6 are where prompt changes have the most leverage.
+
+  Five voice agent options and the domain to start each on
+
+  #: 1
+  Voice agent (LiveKit path): Cascaded pipeline: Deepgram nova-3 STT + gpt-4.1 +
+
+  Deepgram Aura TTS, AgentSession with LiveKit turn detector
+  τ³-Voice reference (retail / airline / telecom, pass^1): 28.9 / 48.0 / 16.7,
+  latency 4.24 s, interruption rate 0.64
+  Start domain: Retail
+  Rationale: The only leaderboard row that matches a LiveKit pipeline component
+  for component. Retail is where the paper ran all ablations, so per-condition
+  comparisons exist. Reproduce first, then improve.
+  ────────────────────────────────────────
+  #: 2
+  Voice agent (LiveKit path): OpenAI GPT-Live via
+  openai.realtime.GPTLiveModel(voice="marin")
+  τ³-Voice reference (retail / airline / telecom, pass^1): gpt-live-1: 78.9 /
+  82.0 / 84.2 (leaderboard top)
+  Start domain: Telecom
+  Rationale: Best available on dual control, so it shows what a strong voice
+  agent looks like on the hardest domain and gives a ceiling for the others.
+  ────────────────────────────────────────
+  #: 3
+  Voice agent (LiveKit path): OpenAI Realtime gpt-realtime-2 via
+  openai.realtime.RealtimeModel
+  τ³-Voice reference (retail / airline / telecom, pass^1): 47.4 / 58.0 / 21.9
+  (xhigh), selectivity near zero
+  Start domain: Airline
+  Rationale: Its best domain, and airline's 50 tasks keep runs cheap. Prime
+  subject for behaviour 2. Supports LiveKit client-side turn taking, so you can
+   compare server VAD against the LiveKit detector.
+  ────────────────────────────────────────
+  #: 4
+  Voice agent (LiveKit path): Gemini Live 3.1 Flash via the Google realtime
+  plugin, thinking HIGH
+  τ³-Voice reference (retail / airline / telecom, pass^1): 45.6 / 64.0 / 21.9
+  (HIGH); 26.3 / 42.0 / 17.5 (MINIMAL); latency 3.15 s
+  Start domain: Airline
+  Rationale: Its strongest domain with a large gap to GPT-Live on the same
+  tasks.
+  Thinking level gives a latency-versus-accuracy knob. Gemini Live does not
+  support LiveKit client-side turn taking.
+  ────────────────────────────────────────
+  #: 5
+  Voice agent (LiveKit path): xAI Grok Voice via the SpaceXAI realtime plugin
+  τ³-Voice reference (retail / airline / telecom, pass^1):
+  grok-voice-think-fast-1.0:
+  62.3 / 66.0 / 73.7; 2.0: 59.6 / 56.0 / 71.9
+  Start domain: Telecom
+  Rationale: Second-best native model on telecom with good selectivity, so it is
+
+  a fair contrast with GPT-Live on dual control. Note the July 2026 submission
+  needed explicit server VAD settings to detect user speech at all.
+
+  Banking is not on the standard voice track. Voice runs on it exist only as
+  custom submissions scoring 10 to 32, so I would leave it out unless retrieval
+  is in scope.
+
+  If you want a sixth alternative, a cascaded pipeline with a stronger LLM
+  (GPT-5.2 or Claude Sonnet) has no published voice row, but Pine's cascaded
+  production system scored 75.4, which shows the architecture can compete with
+  native models.
+
+  My recommendation remains option 1 on retail as the base configuration, with
+  option 2 on telecom as the ceiling reference. Keep the standard v1.0 user
+  simulator (gpt-4.1) so numbers stay comparable with the leaderboard.
+
+✻ Crunched for 54s · done 6:31 PM
+
+❯ add these behaviours and model options to the claude.md                       
+
+⏺ Update(CLAUDE.md)
+  ⎿  Added 31 lines
+      380  - Mine failures with the paper's taxonomy plus τ-bench's `part
+           ial_action_reward`, `action_checks`, and interaction metrics; 
+           turn recurring ones into LiveKit `scenarios.yaml` / `session.r
+           un` evals; iterate on prompts (identity spelling/read-back, to
+           ol-before-claim, multi-part request tracking, backchannel sele
+           ctivity, policy checklists).
+      381  - Comparability rules: `base` split, all tasks, standard user 
+           sim (text gpt-5.2 low; voice v1.0 gpt-4.1), tau2-bench ≥ 1.0.1
+           ; prompt changes make a submission "custom".
+      382  
+      383 +## PART 9 — SELECTED EVAL BEHAVIOURS AND VOICE AGENT CANDIDATE
+          +S (decided 2026-09-27)                                        
+      384 +                                                              
+      385 +Scope decision: **voice agents only**. Benchmark track = τ³-Vo
+          +ice (full-duplex, `--speech-complexity regular`, standard v1.0
+          + user simulator = gpt-4.1). Domains in scope = retail (114), a
+          +irline (50), telecom (114). Banking is excluded (voice runs ex
+          +ist only as custom submissions scoring 10–32). Improvement lev
+          +er = **prompt changes only**.                                 
+      386 +                                                              
+      387 +### 9.1 Six voice behaviours to build evals around            
+      388 +                                                              
+      389 +| # | Behaviour | Voice evidence | How to measure |           
+      390 +|---|---|---|---|                                             
+      391 +| 1 | **Identifier capture under accent and noise** — spelled 
+          +names, emails, order/reservation IDs, zip codes | Transcriptio
+          +n = second-largest agent failure class in τ-Voice (10 and 16 p
+          +er cohort); accents the most damaging ablation (up to −18 pp);
+          + authentication is "the dominant bottleneck" | τ-bench DB end 
+          +state on lookup tasks with the five accented personas; LiveKit
+          + audio-sim entity recall (recognized vs recognized-then-lost);
+          + scenarios that spell an uncommon name and insist on it; `--lo
+          +w-quality-microphone`, `--background-noise` |                 
+      392 +| 2 | **Selectivity** — talk through "mm-hmm", coughs, "hold o
+          +n a second" instead of stopping or answering them | OpenAI rea
+          +ltime rows score 0.01–0.13 backchannel selectivity; Gemini/Gro
+          +k 0.66–0.94 | τ-bench S_BC, S_VT, S_ND (yield within 1 s or re
+          +spond within 2 s = error); LiveKit `overlapping_speech`, `Inte
+          +rruptionMetrics.num_backchannels` |                           
+      393 +| 3 | **Barge-in handling** — yield within 2 s on a real inter
+          +ruption, don't talk over the caller, resume after a false inte
+          +rruption | Cascaded baseline interrupts 0.64×/user turn; Gemin
+          +i yields on ~half of interruptions | τ-bench R_Y, L_Y, I_A; Li
+          +veKit audio-sim time-to-yield and overlap share; `agent_false_
+          +interruption.resumed` |                                       
+      394 +| 4 | **Responsiveness and silence** — answer every caller tur
+          +n, perceived latency ≈ 1 s, never go quiet after a failed tool
+          + call | Cascaded baseline L_R 4.24 s, R_R 0.79; "unresponsive 
+          +after repeated failures" and VAD/unresponsive are named failur
+          +e classes | τ-bench L_R, R_R; LiveKit caller-perceived p50/p95
+          + latency, unfilled silences, unanswered turns, `e2e_latency` |
+      395 +| 5 | **Spoken read-back and confirmation** — repeat key value
+          +s in spoken form (digits, spelled codes), confirm before any w
+          +rite, keep the corrected value on a same-breath self-correctio
+          +n | τ-Voice examples: "verbally encoded characters trip up the
+          + agent"; LiveKit scenario guidance requires read-backs and cor
+          +rected-value capture | Scenarios with `GROUND TRUTH` + same-br
+          +eath correction; final-state grading; deterministic judge for 
+          +digits/markdown in TTS text |                                 
+      396 +| 6 | **Grounded completion over a long call** — no hallucinat
+          +ed "done" without a tool call, no policy misapplication, no fo
+          +rgetting later parts of a multi-step request | Logical errors 
+          += largest voice failure class (13 and 16), hallucination 6 per
+          + cohort, "multi-step request amnesia" over six-minute calls | 
+          +τ-bench DB reward, `partial_action_reward` on WRITE tools; Liv
+          +eKit `accuracy_judge`, `task_completion_judge`; retail multi-o
+          +rder tasks |                                                  
+      397 +                                                              
+      398 +Prompt-leverage note: behaviours 2–4 are driven mostly by the 
+          +model and LiveKit turn-handling settings (turn detector, adapt
+          +ive interruption, endpointing); prompts move them least. Behav
+          +iours 1, 5, 6 are where prompt changes have the most leverage.
+          + Behaviours 1, 5, 6 can be pre-screened in text mode; 2–4 need
+          + audio runs.                                                  
+      399 +                                                              
+      400 +### 9.2 Five voice agent candidates and the domain to start ea
+          +ch on                                                         
+      401 +                                                              
+      402 +| # | Voice agent (LiveKit path) | τ³-Voice reference, pass^1 
+          +retail / airline / telecom | Start domain | Rationale |       
+      403 +|---|---|---|---|---|                                         
+      404 +| 1 | **Cascaded pipeline**: Deepgram nova-3 STT + gpt-4.1 + D
+          +eepgram Aura TTS, `AgentSession` with LiveKit turn detector | 
+          +28.9 / 48.0 / 16.7; L_R 4.24 s; I_A 0.64 | **Retail** | Only l
+          +eaderboard row matching a LiveKit pipeline component for compo
+          +nent; retail is where the paper ran all ablations. Reproduce f
+          +irst, then improve. **Default base configuration.** |         
+      405 +| 2 | **OpenAI GPT-Live** via `openai.realtime.GPTLiveModel(vo
+          +ice="marin")` | gpt-live-1: 78.9 / 82.0 / 84.2 (leaderboard to
+          +p) | **Telecom** | Best on dual control; serves as the ceiling
+          + reference. |                                                 
+      406 +| 3 | **OpenAI Realtime** `gpt-realtime-2` via `openai.realtim
+          +e.RealtimeModel` | 47.4 / 58.0 / 21.9 (xhigh); selectivity ≈ 0
+          + | **Airline** | Its best domain; 50 tasks keep runs cheap; pr
+          +ime subject for behaviour 2; supports LiveKit client-side turn
+          + taking (compare server VAD vs LiveKit detector). |           
+      407 +| 4 | **Gemini Live 3.1 Flash** via the Google realtime plugin
+          +, thinking HIGH | 45.6 / 64.0 / 21.9 (HIGH); 26.3 / 42.0 / 17.
+          +5 (MINIMAL); L_R 3.15 s | **Airline** | Strongest domain with 
+          +a large gap to GPT-Live on identical tasks; thinking level = l
+          +atency/accuracy knob. Does **not** support LiveKit client-side
+          + turn taking. |                                               
+      408 +| 5 | **xAI Grok Voice** via the SpaceXAI realtime plugin | gr
+          +ok-voice-think-fast-1.0: 62.3 / 66.0 / 73.7; 2.0: 59.6 / 56.0 
+          +/ 71.9 | **Telecom** | Second-best native model on telecom wit
+          +h good selectivity; fair contrast with GPT-Live on dual contro
+          +l. July 2026 submission needed explicit server VAD settings (t
+          +hreshold 0.1, silence 1200 ms, prefix 600 ms) to detect user s
+          +peech. |                                                      
+      409 +                                                              
+      410 +Alternate (no published voice row): cascaded pipeline with a s
+          +tronger LLM (GPT-5.2 or Claude Sonnet); Pine's cascaded produc
+          +tion system scored 75.4, showing the architecture can compete 
+          +with native models.                                           
+      411 +                                                              
+      412 +Recommended pairing: candidate 1 on retail as the base, candid
+          +ate 2 on telecom as the ceiling. Keep the standard v1.0 user s
+          +imulator so numbers remain comparable with the leaderboard; an
+          +y prompt change makes a formal submission "custom", which is a
+          +cceptable for internal evals.                                 
+      413 +                                                              
+      414  ## Source index (docs.livekit.io, rendered 2026-09-27)
+      415  
+      416  Get started: `/agents`, `/agents/start/voice-ai`, `/agents/sta
+           rt/builder`, `/agents/start/embed`, `/agents/start/prompting`,
+            `/agents/start/telephony`, `/agents/start/frontend`
+
+  Wrote 1 memory (ctrl+o to expand)
+
+⏺ Added. The CLAUDE.md now has a Part 9 with the voice-only scope decision, the
+  six behaviours table with evidence and measurement methods, the five voice
+  agent candidates with their τ³-Voice reference scores and start domains, the
+  prompt-leverage note, and the recommended base-plus-ceiling pairing. The
+  project memory was updated to match so the decision carries into future
+  sessions.
+
+✻ Cooked for 34s · done 6:32 PM
+
+❯ i have gone through these behaviour options, make a plan to build evals for 3 
+  behaviours, the behaviour i want are 1, 2 and 3 to start with.choose the      
+  option1 that is cascaded pipeline as the agent with domain as : retail.       
+
+⏺ I'll plan this properly. First, some read-only exploration of the pieces the
+  plan depends on: how τ-bench's cascaded baseline was run, the τ-bench
+  full-duplex agent contract we'd bridge a LiveKit agent into, and LiveKit's
+  custom audio I/O support.
+
+  Ran 1 shell command (ctrl+o to expand)
+⏺ Fetch(https://raw.githubusercontent.com/sierra-research/tau2-bench/main/src/ta
+       u2/voice/audio_native/README.md)
+  ⎿  Received 3KB (200 OK)
+
+⏺ Fetch(https://docs.livekit.io/agents/logic/sessions.md)
+  ⎿  Received 0 bytes (404 Not Found)
+
+⏺ Found it: the τ-bench "Cascaded baseline" trajectories are named
+  retail_regular_livekit, matching an existing livekit adapter under
+  audio_native/, so the LiveKit-to-τ-bench bridge is already built. I'll pull
+  its source and config next. · summarized
+
+  Read 1 file, ran 6 shell commands (ctrl+o to expand)
+
+⏺ Background command "Read the LiveKit cascaded adapter README tail, its config,
+and the provider structure" completed (exit code 0)
+
+⏺ Fetch(https://docs.livekit.io/reference/python/livekit/agents/voice/io.html.md
+       )
+  ⎿  Received 0 bytes (404 Not Found)
+
+⏺ I've confirmed τ-bench's cascaded baseline uses LiveKit plugins directly with
+  Deepgram's VAD rather than a full AgentSession, which impacts how behaviours 2
+  and 3 are measured. Next I'll check LiveKit's custom audio I/O interface and
+  τ-bench's built-in review/authentication classifiers before drafting a plan
+  and confirming two scope choices with you. · summarized
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ I have what I need to draft the plan. Two findings shape it, so I want to
+  confirm direction with you before writing it up.
+
+⏺ User answered Claude's questions:
+  ⎿  · τ-bench's 'Cascaded baseline' uses LiveKit *plugins* (Deepgram STT/TTS, 
+     OpenAI LLM) with Deepgram's own VAD for turn-taking, not a full LiveKit 
+     AgentSession (no LiveKit turn detector or adaptive interruption). 
+     Behaviours 2 and 3 (selectivity, barge-in) are governed by those 
+     AgentSession components. Which agent should be the system under test? → 
+     Real LiveKit AgentSession, bridged into τ-bench (Recommended)
+     · How much of τ-bench retail should each evaluation run cover? Audio runs 
+     execute near real time (calls up to 10 minutes) and bill Deepgram, OpenAI, 
+     and ElevenLabs per turn. → Full 114 tasks, 1 trial, for baseline; ~30-task 
+     subset for iteration (Recommended)
+     · Which infrastructure do you already have or are willing to set up? 
+     (Select all that apply.) → can a huggingface or equivalent free api keys be
+     used ??
+
+⏺ Good question. Let me verify what τ-bench's voice simulator and LiveKit's
+  plugins actually require before answering it, since some of the pieces are
+  hard dependencies.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Fetch(https://docs.livekit.io/agents/models/tts/kokoro.md)
+  ⎿  Received 0 bytes (404 Not Found)
+
+⏺ Free keys can cover the LLM roles but not the speech side: τ-bench's
+  user-simulator TTS only supports ElevenLabs (needed for the accented
+  personas), and the agent's Deepgram STT/TTS would need signup credits or an
+  alternative that breaks comparability with the baseline. I'll let you choose
+  how to proceed given these tradeoffs. · summarized
+
+⏺ User answered Claude's questions:
+  ⎿  · Given that ElevenLabs is a hard dependency of τ-bench's voice simulator 
+     and free LLM keys break comparability with the gpt-4.1 baseline row, which 
+     key setup should the plan assume? → Paid keys: OpenAI + Deepgram + 
+     ElevenLabs (Recommended)
+
+⏺ Updated plan
+  ⎿  /plan to preview
+
+⏺ The plan is written to the plan file. Nothing else is pending: the remaining
+  step is your approval.
+
+⏺ User approved Claude's plan
+  ⎿  Plan saved to: ~/.claude/plans/i-have-gone-through-groovy-tower.md · /plan 
+     to edit
+     Plan: evals for behaviours 1–3 on a LiveKit cascaded agent, τ-bench retail
+
+     Context
+
+     Project goal (see ~/livekit-agent-evals/CLAUDE.md, Parts 7–9): benchmark a
+     LiveKit voice agent on τ-bench, build evals for behaviours where it fails,
+     improve via prompt changes only. Decisions taken this session:
+
+     - Behaviours: (1) identifier capture under accent/noise, (2) selectivity to
+       backchannels / vocal tics / non-directed speech, (3) barge-in handling.
+     - Agent: cascaded pipeline — Deepgram nova-3 STT, OpenAI gpt-4.1, Deepgram
+       Aura TTS — built as a real LiveKit AgentSession (LiveKit turn detector +
+       adaptive interruption), bridged into τ-bench's full-duplex harness. Not
+       τ-bench's built-in livekit provider, which uses LiveKit plugins with
+       Deepgram VAD only and therefore doesn't exercise the LiveKit components
+       that govern behaviours 2 and 3.
+     - Domain: τ-bench retail (114 tasks). Full 114-task, 1-trial baseline under
+       --speech-complexity regular; a fixed ~30-task subset for every prompt
+       iteration.
+     - Keys: paid OpenAI + Deepgram + ElevenLabs (ElevenLabs is a hard
+       dependency of τ-bench's user-simulator synthesis:
+       src/tau2/voice/synthesis/synthesize.py only supports provider == 
+       "elevenlabs"). Anthropic optional; the hallucination reviewer and tau2 
+       review judge can be pointed at an OpenAI model.
+
+     Reference row to beat: τ³-Voice "Cascaded baseline" — retail 28.9 pass^1,
+     L_R 4.24 s, R_R 0.79, I_A 0.64, S_BC 0.67, S_VT 0.49, S_ND 0.58
+     (trajectories retail_regular_livekit).
+
+     Key facts from exploration (what we reuse)
+
+     - τ-bench full-duplex contract: FullDuplexAgent.get_next_chunk(state, 
+       participant_chunk, tool_results) driven in 200 ms ticks; provider
+       adapters subclass DiscreteTimeAdapter
+       (src/tau2/voice/audio_native/adapter.py) and implement
+       connect(system_prompt, tools, ...), run_tick(...),
+       send_tool_result(call_id, result, is_error), get_usage_records(),
+       disconnect(). The existing cascaded adapter to model on:
+       src/tau2/voice/audio_native/livekit/{provider.py, 
+       discrete_time_adapter.py, config.py} (registered in adapter.py +
+       config.py, CLI choice --audio-native-provider livekit --cascaded-config 
+       default). It already handles G.711 8 kHz ↔ PCM conversion
+       (audio_converter.py), tick buffering/capping, barge-in buffer clearing,
+       proportional transcript distribution, tool-result queuing, and LLM usage
+       records — copy these, replace the plugin-level pipeline with an
+       AgentSession.
+     - Agent prompt used by all τ-voice cascaded runs:
+       CASCADED_MODEL_INSTRUCTION + retail policy.md, formatted by
+       AUDIO_NATIVE_SYSTEM_PROMPT_PLAIN
+       (src/tau2/agent/discrete_time_audio_native_agent.py, --xml-prompt
+       optional). This is prompt v0; it already instructs letter-by-letter
+       spelling on auth failure.
+     - LiveKit custom I/O: livekit.agents.voice.io.AudioInput (async iterator of
+       rtc.AudioFrame, on_attached/on_detached) and AudioOutput (abstract
+       capture_frame, flush, clear_buffer; on_playback_started/finished,
+       wait_for_playout), attached via session.input.audio = ... /
+       session.output.audio = ...; session.start(agent) works without a room.
+       Tools are @function_tool methods; AgentSession emits agent_state_changed,
+       user_input_transcribed, function_tools_executed, overlapping_speech,
+       agent_false_interruption, per-plugin metrics_collected,
+       ChatMessage.metrics (e2e_latency, transcription_delay,
+       end_of_turn_delay).
+     - τ-bench metric code to reuse as-is:
+       src/tau2/metrics/voice_interaction_metrics.py
+       (compute_interaction_metrics_for_experiment, extract_interruption_events,
+       extract_voice_quality_events_from_simulation; CLI tau2 submit 
+       interaction-metrics <dir>), src/tau2/evaluator/auth_classifier.py (LLM
+       classifier: authentication succeeded / failed / not needed), tau2 review
+       (review_llm_judge.py: per-error source, error_type content|interruption,
+       error_tags, severity, tick_start/end, correct_behavior),
+       src/tau2/metrics/break_down_metrics.py (analyze_reward, get_write_tools),
+       src/tau2/scripts/per_task_summary.py.
+     - Sierra's own retail voice-fragile task list (passes text, fails clean
+       voice): ids 6, 7, 8, 14, 19, 22, 23, 24, 25, 28, 31, 33, 35, 36, 51, 56,
+       59, 79, 87, 106 (from per_task_summary.py docstring). Seed of our
+       iteration subset.
+     - Voice user-sim conditions per task are pre-sampled in
+       data/tau2/domains/retail/tasks_voice.json (base_seed 42; presets control,
+       regular, control_audio, control_accents, control_behavior, pairwise).
+       regular = G.711 8 kHz, noise 15 dB SNR, bursts 1/min, 2 % frame drops, 20
+       % muffling, tics + non-directed 0.7/min, LLM backchannels, interruptions
+       on, 5 accented personas. Turn-taking thresholds are CLI flags
+       (--yield-when-interrupted 1.0, --yield-when-interrupting 5.0,
+       --interruption-check-interval 2.0).
+     - Versions: tau2-bench needs Python ≥ 3.12 < 3.14, uv sync --extra voice
+       (pulls livekit-agents>=1.5.0, livekit-plugins-deepgram/openai,
+       elevenlabs, deepgram-sdk, pyaudio, needs brew install portaudio ffmpeg).
+       Persona voices: python -m tau2.voice.scripts.setup_voices (7 voices,
+       seed 42) → TAU2_VOICE_ID_* env vars.
+
+     Repository layout (all new, under ~/livekit-agent-evals/)
+
+     external/tau2-bench/                  # git clone (pinned tag ≥ v1.0.1);
+     our adapter lives inside it
+       src/tau2/voice/audio_native/livekit_session/   # NEW provider:
+     AgentSession bridge
+         __init__.py, config.py, session_provider.py, discrete_time_adapter.py,
+     README.md
+       (edits) src/tau2/voice/audio_native/adapter.py  # register
+     "livekit_session" in factory
+       (edits) src/tau2/config.py                      # provider choice,
+     default model "cascaded-session"
+       (edits) src/tau2/cli.py                         # add "livekit_session"
+     to --audio-native-provider choices;
+                                                       # add --agent-prompt-file
+     to override CASCADED_MODEL_INSTRUCTION
+     agent/
+       retail_agent.py        # builds the AgentSession: Deepgram nova-3,
+     openai.LLM("gpt-4.1"), deepgram.TTS("aura-asteria-en"),
+                              # inference.TurnDetector() / local v1-mini,
+     TurnHandlingOptions(interruption mode adaptive|vad)
+       prompts/v0_tau_cascaded.md   # verbatim CASCADED_MODEL_INSTRUCTION
+     (baseline)
+       prompts/v1_*.md ...          # iterations, one file per hypothesis
+     evals/
+       subsets/retail_iter30.json   # fixed 30-task iteration subset (see Phase
+     3)
+       b1_identifiers.py            # behaviour-1 metrics from τ-bench
+     trajectories
+       b2_selectivity.py            # behaviour-2 metrics (wraps
+     voice_interaction_metrics)
+       b3_bargein.py                # behaviour-3 metrics (wraps
+     voice_interaction_metrics + LiveKit events)
+       report.py                    # one comparison table across runs (baseline
+     vs prompt vN)
+       text/test_b1_spelling.py     # LiveKit text-mode unit tests (session.run
+     + custom Judge) as cheap pre-screen
+     runs/                          # tau2 simulation output dirs + exported
+     metrics JSON (gitignored)
+     scripts/run_retail.sh          # canonical invocations (smoke / subset /
+     full)
+     CLAUDE.md                      # add Part 10: implementation status + how
+     to run
+
+     Phase 0 — Environment (½ day)
+
+     1. Clone tau2-bench into external/, uv sync --extra voice, system deps,
+        .env with OPENAI_API_KEY, DEEPGRAM_API_KEY, ELEVENLABS_API_KEY (+
+        ANTHROPIC_API_KEY if available, else set the hallucination-reviewer /
+        review model to gpt-4.1 via config).
+     2. Create persona voices: python -m tau2.voice.scripts.setup_voices → paste
+        TAU2_VOICE_ID_* into .env. Verify with python 
+        src/tau2/voice/synthesis/cli.py synthesize "..." --play.
+     3. Sanity run of the built-in provider on 2 tasks in control to prove the
+        harness works end to end and to calibrate per-task cost/time: tau2 run 
+        --domain retail --audio-native --audio-native-provider livekit 
+        --speech-complexity control --task-ids 6 14 --verbose-logs --save-to 
+        smoke_builtin. (Calibration only; not the system under test.)
+
+     Phase 1 — LiveKit AgentSession bridge adapter (2–3 days)
+
+     Create livekit_session/ by copying the livekit/ provider package and
+     replacing the pipeline:
+
+     - config.py: SessionConfig with stt (nova-3, language="en-US"), llm
+       (gpt-4.1, temperature, parallel_tool_calls), tts (aura-asteria-en, 24
+       kHz), turn_detection ("turn_detector" | "vad" | "stt"), interruption_mode
+       ("adaptive" | "vad"), min_interruption_duration,
+       endpointing_min/max_delay, preemptive_generation, prompt_file. Presets:
+       "cascaded-session" (defaults above, LiveKit turn detector + adaptive) and
+       "cascaded-session-vad" (VAD turn detection + vad interruption) for a
+       config ablation.
+     - session_provider.py: SessionVoiceProvider — builds AgentSession with a
+       TickAudioInput(AudioInput) (queue fed by push_audio(pcm16 @ 16 kHz)) and
+       TickAudioOutput(AudioOutput) (accumulates synthesized frames;
+       clear_buffer() on interruption; reports playback started/finished).
+       Tools: build one function_tool per τ-bench Tool whose body enqueues a
+       ToolCall on the provider event stream and awaits an asyncio.Future
+       resolved by send_tool_result() (mirrors how CascadedVoiceProvider emits
+       TOOL_CALL events and receives results next tick; note τ-bench tool
+       results arrive ≥ 1 tick later, so tool futures must survive across ticks
+       and the AgentSession tool must not be cancelled by user speech — use
+       ctx.disallow_interruptions() for write tools only). Subscribe to session
+       events and convert to CascadedEvent-style events: user_input_transcribed
+       → TRANSCRIPT_*, agent_state_changed → SPEECH/LLM states,
+       function_tools_executed, agent_false_interruption, overlapping_speech,
+       metrics_collected (LLM usage → UsageRecord, EOUMetrics/TTSMetrics kept
+       for per-turn latency). Record ChatMessage.metrics and interruption events
+       into a per-simulation sidecar JSON (artifacts/.../livekit_events.json)
+       so behaviour evals can use LiveKit-side signals.
+     - discrete_time_adapter.py: LiveKitSessionAdapter(DiscreteTimeAdapter) —
+       same tick contract as LiveKitCascadedAdapter.run_tick: convert incoming
+       G.711 tick → PCM (reuse audio_converter.py), push_audio, drain output
+       frames produced during the tick, cap to tick length, map events to
+       TickResult, queue tool results. Wall-clock alignment: the AgentSession
+       runs in real time; keep the same background-loop + deadline pattern as
+       the existing adapter (_start_background_loop, tick deadline +
+       DEFAULT_AUDIO_NATIVE_TICK_TIMEOUT_BUFFER).
+     - Registration: adapter.py factory case "livekit_session", config.py
+       defaults/choices, cli.py choices + --agent-prompt-file (reads a prompt
+       file and substitutes agent_instruction in
+       AUDIO_NATIVE_SYSTEM_PROMPT_PLAIN; default = CASCADED_MODEL_INSTRUCTION).
+       Keep every other τ-bench file byte-identical (documented as a "custom"
+       submission type if ever submitted).
+     - agent/retail_agent.py exposes build_session(config) -> AgentSession so
+       the same agent object is used by the adapter and by LiveKit-native tests.
+
+     Phase 2 — Baseline runs (1 day compute)
+
+     1. Smoke: 2 tasks, control, --verbose-logs --audio-debug; inspect both.wav,
+        label files, livekit_events.json; confirm tool calls round-trip and DB
+        reward computes.
+     2. Same 5 tasks with built-in livekit provider vs livekit_session (both
+        regular) — sanity that pass rates and L_R are in the same ballpark;
+        investigate if the session adapter is > 1 s slower on L_R (adapter
+        overhead vs. LiveKit endpointing).
+     3. Full baseline: tau2 run --domain retail --audio-native 
+        --audio-native-provider livekit_session --cascaded-config 
+        cascaded-session --speech-complexity regular --num-trials 1 
+        --verbose-logs --max-concurrency 4 --save-to 
+        retail_regular_lksession_v0. Also run the 30-task subset in control and
+        in control_accents (needed for behaviour 1 attribution).
+     4. Post-process every run: tau2 submit interaction-metrics <dir> --output 
+        interaction.json, tau2 review <dir> --mode full, python 
+        src/tau2/scripts/per_task_summary.py --domain retail, and our
+        evals/report.py.
+
+     Phase 3 — Behaviour evals (2–3 days)
+
+     Iteration subset (evals/subsets/retail_iter30.json): the 20 voice-fragile
+     ids above + 10 more chosen after the baseline: tasks whose user_scenario
+     has unknown_info (e.g. "does not remember email" → name+zip lookup), tasks
+     with ≥ 2 write actions, stratified so all 5 regular personas appear ≥ 5
+     times (persona per task is fixed in tasks_voice.json). Freeze it before
+     prompt iteration begins.
+
+     Behaviour 1 — identifier capture (evals/b1_identifiers.py):
+     - Ground truth per task: entities from
+       user_scenario.instructions.known_info (name, zip, email) plus
+       order/product ids appearing in the user-sim's generated text (from
+       llm_debug / user turns in sim_*.json).
+     - Signals: (a) auth_classifier outcome per simulation; (b) entity-level
+       match between what the user-sim said and what the agent heard
+       (user_input_transcribed finals in livekit_events.json) and what the agent
+       used in tool arguments (find_user_id_by_name_zip, find_user_id_by_email,
+       get_order_details args) — report entity recall split into
+       never-recognized vs recognized-then-lost, WER/CER on identifier spans;
+       (c) number of turns spent before authentication succeeds; (d) whether the
+       agent asked for spelling / performed a read-back (regex on agent
+       transcript for letter-by-letter patterns, plus tau2 review error tags).
+     - Conditions: subset under control, control_accents, regular → attribute
+       failures to accent vs noise vs both. Pass criterion per task: auth
+       success AND correct identifiers in the first write-tool call.
+
+     Behaviour 2 — selectivity (evals/b2_selectivity.py): wrap
+     compute_interaction_metrics_for_experiment to emit S_BC, S_VT, S_ND with
+     event counts per persona and per environment (indoor/outdoor); cross-check
+     against LiveKit-side overlapping_speech (is_interruption, probability) and
+     InterruptionMetrics.num_backchannels to see whether adaptive interruption
+     classified the event correctly but the agent still stopped (config problem)
+     or never saw it (VAD problem). Targets: ≥ the xAI/Gemini band (S_BC ≥
+     0.85, S_VT ≥ 0.5, S_ND ≥ 0.4); baseline cascaded row is 0.67 / 0.49 / 0.58.
+
+     Behaviour 3 — barge-in (evals/b3_bargein.py): R_Y, L_Y, I_A from the same
+     function, plus LiveKit agent_false_interruption (resumed), share of user
+     turns where agent segment starts during user speech, and time-to-yield
+     distribution (p50/p95). Targets: R_Y ≥ 0.95, L_Y ≤ 0.6 s, I_A ≤ 0.2
+     (baseline row: 0.99 / 0.87 / 0.64).
+
+     Cheap pre-screen for behaviour 1 (evals/text/test_b1_spelling.py, LiveKit
+     session.run in text mode with mock_tools): feed transcripts with realistic
+     ASR corruptions of names/emails/zips (e.g. "yusuf rosi one nine one two
+     two"), assert the agent asks for spelling or confirms before calling the
+     lookup tool; custom Judge subclass checks a read-back containing every
+     digit. Runs in seconds; gates prompt candidates before any audio spend.
+
+     evals/report.py: one table per run — pass^1 (subset + full when available),
+     b1 metrics, S_BC/S_VT/S_ND, R_Y/L_Y/I_A, L_R/R_R, cost from
+     get_usage_records; diff vs baseline v0.
+
+     Phase 4 — Failure mining and prompt iteration (ongoing loop)
+
+     1. From baseline: cluster tau2 review error_tags + auth_classifier failures
+        + interaction events; write runs/analysis/v0_findings.md (top failure
+        patterns per behaviour with task ids and tick ranges; open both.wav at
+        the tick for the worst 5).
+     2. Prompt hypotheses (behaviour 1 has most leverage; 2–3 are mostly
+        config): e.g. mandatory spell-back with NATO/letter-by-letter and
+        digit-by-digit read-back before any lookup; treat single-word
+        acknowledgements as non-turns ("if the caller only says mm-hmm/okay,
+        keep going"); explicit "if you're interrupted, stop and ask what they'd
+        like to change" wording; never claim a lookup succeeded without the tool
+        result. One hypothesis per prompt version file.
+     3. Loop per version: text pre-screen → 30-task subset in regular (1 trial;
+        repeat ×2 for the winner to estimate variance) → report.py diff → keep
+        or discard. Re-run full 114 only for accepted versions.
+     4. Config ablation once (not a prompt change, but needed to interpret
+        behaviours 2–3): cascaded-session-vad preset vs cascaded-session on the
+        subset, to quantify how much of S_* / R_Y / I_A is prompt-addressable.
+
+     Verification
+
+     - Adapter unit test
+       (external/tau2-bench/tests/test_voice/test_livekit_session_adapter.py):
+       feed a synthesized user utterance (ElevenLabs or a WAV fixture) through
+       run_tick for N ticks with a mocked τ-bench tool; assert transcript events
+       appear, a tool call is emitted, a result sent via send_tool_result is
+       consumed, agent audio ticks are ≤ tick length, and clear_buffer is called
+       on barge-in.
+     - End-to-end: tau2 run ... --task-ids 6 --verbose-logs produces
+       results.json with a reward, artifacts/.../audio/both.wav, and
+       livekit_events.json; tau2 view shows the trajectory; tau2 submit 
+       interaction-metrics succeeds (proves ticks carry contains_speech).
+     - Metrics scripts have fixture tests on one recorded simulation (golden
+       JSON) so a refactor can't silently change b1–b3 numbers.
+     - Regression guard: report.py --compare runs/v0 runs/vN must show subset
+       pass^1 not decreasing and no behaviour metric regressing beyond noise
+       (estimated from the ×2 repeat).
+
+     Out of scope / deferred
+
+     LiveKit Cloud simulations and Agent Insights (not confirmed available);
+     behaviours 4–6; other domains; leaderboard submission (our prompt/adapter
+     changes make it "custom"); any change to τ-bench tasks, policy, user
+     simulator, or evaluator.
+
+     Risks
+
+     - Real-time coupling: AgentSession streams in wall-clock time while τ-bench
+       advances 200 ms ticks; the existing livekit adapter proves it works but
+       expect tick-deadline tuning (DEFAULT_AUDIO_NATIVE_TICK_TIMEOUT_BUFFER).
+     - Tool-call latency: results arrive next tick; long τ-bench tool executions
+       can trip LiveKit's speech scheduling — keep tools non-interruptible only
+       for writes.
+     - LiveKit turn detector v1 needs LiveKit Cloud credentials; without them
+       use v1-mini locally (compute-optimized machine recommended by docs).
+     - Cost: ElevenLabs synthesis and Deepgram per turn across 114 six-minute
+       calls; Phase 0 smoke run yields the per-task estimate before committing
+       to the full pass.
+
+⏺ Plan approved. Starting Phase 0: checking local tooling, cloning τ-bench into
+  the project, and laying down the directory skeleton in parallel.
+
+  Read 6 files, listed 1 directory, ran 11 shell commands (ctrl+o to expand)
+⏺ Write(agent/prompts/v0_tau_cascaded.md)
+  ⎿  Wrote 18 lines to agent/prompts/v0_tau_cascaded.md
+       1 You are a customer service agent handling a VOICE CALL with a cu
+       2 
+       3 # Important Voice Call Considerations
+       4 
+         itten text. Expect:
+       6 - Misspellings of names, emails, or technical terms
+       8 - Run-on sentences or incomplete thoughts
+       9 
+      10 2. Respond naturally and conversationally as you would in a real
+         down formatting.
+     … +18 lines (ctrl+o to expand)
+
+⏺ Write(agent/prompts/README.md)
+  ⎿  Wrote 14 lines to agent/prompts/README.md
+       1 # Agent prompt versions
+       3 Each file is the `agent_instruction` block that τ-bench prepends
+          to the retail `policy.md`
+       4 (`AUDIO_NATIVE_SYSTEM_PROMPT_PLAIN` = `{agent_instruction}\n\n{d
+       5 
+       6 | Version | File | Hypothesis / change | Status |
+       8 | v0 | `v0_tau_cascaded.md` | Verbatim `CASCADED_MODEL_INSTRUCTI
+         ON` from tau2-bench (the prompt behind the leaderboard "Cascaded
+          baseline" row). Baseline, no change. | baseline |
+      10 Rules:
+     … +11 lines (ctrl+o to expand)
+
+⏺ Background command "Read LiveKit AgentInput/AgentOutput, event dataclasses,
+and turn-handling option exports" completed (exit code 0)
+
+⏺ Brew and uv sync are wrapping up. I'll review the LiveKit event/I-O
+  definitions now and start drafting the τ-bench registration edits while the
+  environment finishes installing. · summarized
+
+  Read 1 file, listed 1 directory, ran 4 shell commands (ctrl+o to expand)
+
+⏺ Write(external/tau2-bench/src/tau2/voice/audio_native/livekit_session/config.p
+       y)
+  ⎿  Wrote 191 lines to external/tau2-bench/src/tau2/voice/audio_native/liv
+     ekit_session/config.py
+       1 """Configuration for the LiveKit AgentSession-based cascaded voi
+       2 
+          *plugins*
+       4 directly with Deepgram's VAD deciding turns), this provider runs
+       5 ``livekit.agents.AgentSession``: LiveKit's turn detector, endpoi
+       6 adaptive interruption handling and preemptive generation are all
+       7 so behaviours governed by those components can be evaluated.
+       8 
+         aseline"
+         steria-en TTS)
+     … +221 lines (ctrl+o to expand)
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+⏺ The Python environment setup is still running as uv resolves the voice extras.
+  While that finishes, I'll pin down the remaining LiveKit API details for the
+  bridge—turn-handling option types, the turn-detector constructor, and the
+  overlapping-speech event. · summarized
+
+  Ran 5 shell commands (ctrl+o to expand)
+
+⏺ Found the environment has livekit-agents 1.5.1, which lacks the audio turn
+  detector, bundled VAD, and adaptive interruption features I need. I'll upgrade
+  the LiveKit packages (τ-bench only requires ≥1.5.0) while writing the run
+  script, env template, and subset selector in parallel. · summarized
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Write(.env.example)
+  ⎿  Wrote 28 lines to .env.example
+       1 # Copy to external/tau2-bench/.env (tau2 reads .env from its own
+       2 # and to ~/livekit-agent-evals/.env for the LiveKit-native text 
+         tests.
+       4 # --- Agent under test (cascaded pipeline) ---
+          simulator (gpt-4.1) and default judges
+       6 DEEPGRAM_API_KEY=          # nova-3 STT + aura-asteria-en TTS; t
+       7 
+       8 # --- tau2 voice user simulator ---
+         tau2 synthesis)
+         te the printed lines)
+     … +28 lines (ctrl+o to expand)
+
+⏺ Write(scripts/run_retail.sh)
+  ⎿  Wrote 66 lines to scripts/run_retail.sh
+       1 #!/usr/bin/env bash
+         ion cascaded agent.
+       3 #
+       5 #   scripts/run_retail.sh smoke   [prompt_file]          # 2 tas
+       6 #   scripts/run_retail.sh compare [prompt_file]          # 5 tas
+         ks: built-in livekit provider vs livekit_session (regular)
+         sk iteration subset, regular
+       8 #   scripts/run_retail.sh full    [prompt_file] [name]   # all 1
+       9 #   scripts/run_retail.sh ablate  [prompt_file] [name]   # subse
+      10 #   scripts/run_retail.sh post    <
+     … +80 lines (ctrl+o to expand)
+
+⏺ Write(evals/subsets/select_iter30.py)
+  ⎿  Wrote 99 lines to evals/subsets/select_iter30.py
+       1 """Build the frozen 30-task retail iteration subset.
+       3 Composition (see plan, Phase 3):
+       4   * the 20 "voice-fragile" retail tasks Sierra used for their ow
+       5     (pass in text, fail in clean voice) -- fixed;
+       6   * 10 more tasks chosen deterministically to (a) prefer tasks w
+       7     (identity lookups by name+zip instead of email -> behaviour 
+         1), (b) prefer
+         the five regular
+       9     personas so each appears >= 5 times across the 30 (persona p
+      10     in tasks_voice.json).
+     … +112 lines (ctrl+o to expand)
+
+⏺ Background command "Install portaudio/ffmpeg and sync tau2-bench voice+dev
+extras in the background" completed (exit code 0)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ I've frozen the subset: 30 retail tasks covering all five accented personas
+  evenly, with 26 involving withheld identity info and 18 having multiple write
+  actions. Next, I'll check the LiveKit upgrade and review the installed
+  turn-handling and tool-execution internals to ensure the bridge matches the
+  exact version. · summarized
+
+  Ran 11 shell commands (ctrl+o to expand)
+⏺ Write(evals/common.py)
+  ⎿  Wrote 165 lines to evals/common.py
+       1 """Shared helpers for the behaviour evals.
+       2 
+       4 ``results.json`` + ``simulations/sim_*.json`` + ``artifacts/task
+         _<id>/sim_<uuid>/``)
+       5 and the optional LiveKit sidecar written by the ``livekit_sessio
+       6 (``artifacts/task_<id>/sim_<uuid>/livekit_events.jsonl``).
+       7 
+       8 Run with the tau2 environment so ``tau2`` is importable::
+      10     uv run --project external/tau2-bench python evals/<script>.p
+         y <run_dir> ...
+     … +171 lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Write(evals/b2_selectivity.py)
+  ⎿  Wrote 133 lines to evals/b2_selectivity.py
+       1 """Behaviour 2 — selectivity: does the agent talk through backch
+       2 tics and non-directed speech instead of stopping or answering th
+       3 
+          leaderboard
+         nd per
+       6 environment. When the run comes from the ``livekit_session`` pro
+       7 LiveKit sidecar is cross-checked so a failure can be attributed 
+       8 "LiveKit's interruption detector classified the overlap as a rea
+       9 (config/model problem) versus "the agent stopped although the de
+      10 backchannel" (pipeline/prompt problem).
+     … +151 lines (ctrl+o to expand)
+
+⏺ Write(evals/b3_bargein.py)
+  ⎿  Wrote 168 lines to evals/b3_bargein.py
+      1 """Behaviour 3 — barge-in handling: yield quickly on a real inter
+      2 talk over the caller, resume correctly after a false interruption
+        .
+      3 
+      5   R_Y   yield rate: share of real user interruptions where the ag
+        ent stopped within 2.0 s
+      7   I_A   agent-interrupts-user events per user turn (agent segment
+         starting while the user speaks)
+      8   overlap_share  share of ticks where both parties speak
+        it_session provider only)
+     … +190 lines (ctrl+o to expand)
+
+⏺ Write(evals/report.py)
+  ⎿  Wrote 127 lines to evals/report.py
+      1 """One comparison table across runs: pass^1, τ-bench interaction 
+        panel, and the
+         run.
+      3 
+      4 Usage:
+        run_dir> [<run_dir> ...] [--baseline <run_dir>] [--subset]
+      6 
+      7 `--subset` restricts pass^1 to the frozen 30-task iteration subse
+      8 and subset runs can be compared on the same tasks.
+      9 """
+     … +145 lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Write(evals/b1_identifiers.py)
+  ⎿  Wrote 252 lines to evals/b1_identifiers.py
+       1 """Behaviour 1 — identifier capture under accent and noise.
+       3 For every simulation:
+       4   * ground-truth entities from the task (name, zip, email, and a
+         ny order ids the
+       6   * what the agent USED: arguments of identity/lookup tool calls
+       7     (find_user_id_by_name_zip, find_user_id_by_email, get_order_
+       8   * what the agent HEARD (livekit_session provider only): final 
+         STT transcripts
+       9     from the LiveKit sidecar;
+         ex over the agent
+     … +288 lines (ctrl+o to expand)
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+⏺ Write(external/tau2-bench/src/tau2/voice/audio_native/livekit_session/__init__
+       .py)
+  ⎿  Wrote 39 lines to external/tau2-bench/src/tau2/voice/audio_native/live
+     kit_session/__init__.py
+      1 """LiveKit AgentSession-based cascaded voice provider (STT → LLM 
+      2 
+      3 Runs a real ``livekit.agents.AgentSession`` inside the τ-bench ti
+      4 system under test is a genuine LiveKit voice agent: LiveKit's tur
+      5 endpointing, (adaptive) interruption handling, preemptive generat
+        ion and tool
+        through
+      7 custom ``AudioInput``/``AudioOutput`` sinks paced by the 200 ms s
+      8 ticks; τ-bench tool calls are bridged through LiveKit function to
+      9 results are delivered on the next tick.
+     … +41 lines (ctrl+o to expand)
+
+⏺ Write(external/tau2-bench/src/tau2/voice/audio_native/livekit_session/session_
+       provider.py)
+  ⎿  Wrote 706 lines to external/tau2-bench/src/tau2/voice/audio_native/liv
+     ekit_session/session_provider.py
+      1 """AgentSession-backed voice provider.
+      2 
+        e provider
+      4 owns one ``AgentSession`` per simulation and exposes three tick-f
+        riendly
+      6 
+      7 - ``push_audio(pcm16)``          user audio for this tick (16 kHz
+         PCM16)
+        ed to the tick
+      9 - ``resolve_tool(call_id, ...)`` deliver a τ-bench tool result
+     … +788 lines (ctrl+o to expand)
+
+⏺ Write(external/tau2-bench/src/tau2/voice/audio_native/livekit_session/discrete
+       _time_adapter.py)
+  ⎿  Wrote 394 lines to external/tau2-bench/src/tau2/voice/audio_native/liv
+     ekit_session/discrete_time_adapter.py
+       1 """Discrete-time adapter for the AgentSession-based cascaded pro
+       2 
+       3 Same tick contract as ``LiveKitCascadedAdapter`` (background asy
+       4 telephony ↔ PCM conversion, event queue drained within the tick 
+         budget,
+          but the agent
+       6 pipeline is a real ``AgentSession``. Barge-in is *not* decided h
+       7 adapter only reacts to LiveKit clearing the output buffer.
+       8 """
+      10 from __future__ import annotations
+     … +452 lines (ctrl+o to expand)
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Write(external/tau2-bench/tests/test_voice/test_livekit_session_adapter.py)
+  ⎿  Wrote 175 lines to
+     external/tau2-bench/tests/test_voice/test_livekit_session_adapter.py
+       1 """Tests for the AgentSession-based cascaded provider.
+       2 
+       3 Pure tests (no network): tick-paced audio sinks and the adapter'
+       4 handling. Integration test (real Deepgram + OpenAI): skipped unl
+         ess the API
+       5 keys are present and ``TAU2_RUN_LIVEKIT_SESSION_TESTS=1``.
+       6 """
+       8 from __future__ import annotations
+       9 
+      10 import asyncio
+     … +198 lines (ctrl+o to expand)
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Write(agent/retail_agent.py)
+  ⎿  Wrote 116 lines to agent/retail_agent.py
+       1 """LiveKit-native harness for the retail agent under test.
+       3 Two entry points:
+       4 
+         the τ-bench
+       6   ``livekit_session`` provider uses (single source of truth for 
+       7   turn handling), so LiveKit-side experiments and τ-bench runs s
+         hare one agent
+       9 * ``build_text_session(...)`` – an ``AgentSession`` in **text mo
+         de** (no
+         bench retail
+     … +131 lines (ctrl+o to expand)
+
+⏺ Write(evals/text/test_b1_spelling.py)
+  ⎿  Wrote 133 lines to evals/text/test_b1_spelling.py
+      1 """Behaviour 1 pre-screen (text mode, seconds per case, only an O
+      2 
+      3 Feeds the retail agent ASR-style corruptions of identifiers, as a
+      4 pipeline would see them under accent and noise, and checks that t
+      5 
+      6   1. does not write to the database before identity is establishe
+      7   2. either asks the caller to spell / confirm the identifier, or
+         reaches a
+        e);
+        umber.
+     … +153 lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+⏺ Write(external/tau2-bench/src/tau2/voice/audio_native/livekit_session/README.m
+       d)
+  ⎿  Wrote 55 lines to external/tau2-bench/src/tau2/voice/audio_native/live
+     kit_session/README.md
+       1 # LiveKit AgentSession cascaded provider (`livekit_session`)
+       3 A τ-bench audio-native provider whose agent is a real `livekit.a
+       4 running the cascaded pipeline (Deepgram nova-3 → gpt-4.1 → Deepg
+         ram Aura by default).
+       6 | | `livekit` (built-in) | `livekit_session` (this module) |
+       8 | Pipeline | LiveKit *plugins* called directly | `AgentSession` 
+       9 | Turn end | Deepgram VAD endpointing (`endpointing_ms`) | LiveK
+         it turn detector / VAD / STT endpointing (`TurnHandlingOptions`)
+      10 | Barge-in | instant on any STT speech event | LiveKit interrupt
+         nterruption resume) |
+     … +76 lines (ctrl+o to expand)
+
+⏺ Background command "Upgrade livekit-agents and plugins to the latest 1.x in
+the tau2 venv" completed (exit code 0)
+
+⏺ LiveKit is now at 1.8.3. Verifying the APIs my provider calls exist in this
+  version, importing the new modules, and running the pure unit tests.
+
+  Ran 6 shell commands (ctrl+o to expand)
+
+⏺ Update(CLAUDE.md)
+  ⎿  Added 37 lines
+      411  
+      412  Recommended pairing: candidate 1 on retail as the base, candid
+           ate 2 on telecom as the ceiling. Keep the standard v1.0 user s
+           imulator so numbers remain comparable with the leaderboard; an
+           y prompt change makes a formal submission "custom", which is a
+           cceptable for internal evals.
+      413  
+      414 +## PART 10 — IMPLEMENTATION STATUS (evals for behaviours 1–3, 
+          +cascaded agent, retail)                                       
+      415 +                                                              
+      416 +Plan: `~/.claude/plans/i-have-gone-through-groovy-tower.md`. D
+          +ecisions: real LiveKit `AgentSession` bridged into τ-bench (no
+          +t the plugin-level `livekit` provider); retail; full 114-task 
+          +baseline + frozen 30-task iteration subset; paid OpenAI + Deep
+          +gram + ElevenLabs keys.                                       
+      417 +                                                              
+      418 +### Layout                                                    
+      419 +```                                                           
+      420 +external/tau2-bench/            git clone of sierra-research/t
+          +au2-bench (main @ b7ea907, 2026-09-17; livekit-agents upgraded
+          + 1.5.1 → 1.8.3 via uv lock)                                   
+      421 +  src/tau2/voice/audio_native/livekit_session/   NEW provider:
+          + config.py (SESSION_CONFIGS: cascaded-session | cascaded-sessi
+          +on-vad | cascaded-session-mini),                              
+      422 +                                                  session_prov
+          +ider.py (AgentSession + TickAudioInput/TickAudioOutput/TickTex
+          +tOutput + tool bridge + JSONL sidecar),                       
+      423 +                                                  discrete_tim
+          +e_adapter.py (LiveKitSessionAdapter), README.md               
+      424 +  edits: config.py, data_model/simulation.py (provider literal
+          +, agent_prompt_file, cascaded_config resolution), cli.py (--au
+          +dio-native-provider livekit_session, --agent-prompt-file),    
+      425 +         agent/discrete_time_audio_native_agent.py (prompt ove
+          +rride), voice/audio_native/adapter.py (factory), runner/{batch
+          +,worker}.py (plugin preregistration,                          
+      426 +         _current_artifact_dir contextvar), voice/audio_native
+          +/livekit/__init__.py (per-plugin preregistration)             
+      427 +  tests/test_voice/test_livekit_session_adapter.py   3 pure te
+          +sts pass; end-to-end test gated by TAU2_RUN_LIVEKIT_SESSION_TE
+          +STS=1 + keys                                                  
+      428 +agent/retail_agent.py           text-mode AgentSession over a 
+          +real τ-bench retail environment (for evals/text); prompts/v0_t
+          +au_cascaded.md = τ-bench CASCADED_MODEL_INSTRUCTION verbatim  
+      429 +evals/subsets/retail_iter30.json  frozen: 20 Sierra voice-frag
+          +ile ids + 10 persona-balanced (6 per persona; 26 with unknown_
+          +info; 18 with ≥2 writes)                                      
+      430 +evals/b1_identifiers.py · b2_selectivity.py · b3_bargein.py · 
+          +report.py · common.py · text/test_b1_spelling.py              
+      431 +scripts/run_retail.sh {smoke|compare|subset|full|ablate|post} 
+          +  .env.example                                                
+      432 +```                                                           
+      433 +                                                              
+      434 +### How to run (after filling `external/tau2-bench/.env` from 
+          +`.env.example`)                                               
+      435 +```                                                           
+      436 +cd external/tau2-bench && uv run python -m tau2.voice.scripts.
+          +setup_voices      # 7 ElevenLabs personas → TAU2_VOICE_ID_* in
+          +to .env                                                       
+      437 +scripts/run_retail.sh smoke                                   
+          +                  # 2 tasks, control, audio debug             
+      438 +scripts/run_retail.sh compare                                 
+          +                  # built-in livekit vs livekit_session on 5 t
+          +asks                                                          
+      439 +scripts/run_retail.sh full  agent/prompts/v0_tau_cascaded.md v
+          +0                 # baseline (114 tasks, regular)             
+      440 +scripts/run_retail.sh subset agent/prompts/v1_<slug>.md v1    
+          +                  # prompt iteration (30 tasks)               
+      441 +scripts/run_retail.sh post <run_name>                         
+          +                  # interaction metrics + review + report     
+      442 +uv run --project external/tau2-bench python evals/b1_identifie
+          +rs.py <run>  (same for b2/b3; report.py <run> --baseline <v0 r
+          +un> --subset)                                                 
+      443 +cd external/tau2-bench && uv run pytest ../../evals/text/test_
+          +b1_spelling.py -q  # text pre-screen (OpenAI key only)        
+      444 +```                                                           
+      445 +PRESET=cascaded-session needs LiveKit Cloud creds (hosted v1 t
+          +urn detector + adaptive interruption model); without them use 
+          +PRESET=cascaded-session-mini (local v1-mini, ~108 MB weights v
+          +ia livekit-local-inference) or cascaded-session-vad.          
+      446 +                                                              
+      447 +### Verified / not yet verified (2026-09-27)                  
+      448 +- Verified: provider registered in factory + CLI; config resol
+          +ution; pure sink tests (framing, pacing, playback-finished, in
+          +terrupt, pause/resume, text segments); eval scripts compile; r
+          +etail agent factory wraps 16 tools.                           
+      449 +- Not verified (no API keys on this machine): end-to-end tick 
+          +loop with real Deepgram/OpenAI, ElevenLabs persona creation, b
+          +aseline run, metric scripts on a real run. First real run shou
+          +ld be `scripts/run_retail.sh smoke`.                          
+      450 +                                                              
+      451  ## Source index (docs.livekit.io, rendered 2026-09-27)
+      452  
+      453  Get started: `/agents`, `/agents/start/voice-ai`, `/agents/sta
+           rt/builder`, `/agents/start/embed`, `/agents/start/prompting`,
+            `/agents/start/telephony`, `/agents/start/frontend`
+
+  Wrote 1 memory (ctrl+o to expand)
+
+⏺ Write(external/tau2-bench/tests/test_voice/test_livekit_session_adapter_stub.p
+       y)
+  ⎿  Wrote 130 lines to external/tau2-bench/tests/test_voice/test_livekit_s
+     ession_adapter_stub.py
+       1 """Adapter tick-loop test with a stub provider (no LiveKit, no n
+       2 
+       3 Exercises LiveKitSessionAdapter._async_run_tick end to end: audi
+         o conversion,
+          next tick,
+       5 per-tick audio capping/buffering, proportional transcripts and u
+       6 """
+       7 
+       8 from __future__ import annotations
+      10 import asyncio
+     … +151 lines (ctrl+o to expand)
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+⏺ Everything that can be verified without API keys is done. Here's where things
+  stand.
+
+  Built
+
+  - τ-bench provider livekit_session in
+    external/tau2-bench/src/tau2/voice/audio_native/livekit_session/. It runs a
+    real LiveKit AgentSession (Deepgram nova-3, gpt-4.1, Deepgram Aura, LiveKit
+    turn detector, adaptive interruption, preemptive generation) inside
+    τ-bench's 200 ms tick loop. Audio flows through custom tick-paced input and
+    output sinks, τ-bench tool calls are bridged through LiveKit function tools,
+    and a JSONL sidecar records what the agent heard, state changes,
+    overlapping-speech verdicts, false interruptions, and per-turn metrics.
+    Three presets: cascaded-session (needs LiveKit Cloud credentials for the
+    hosted detector and adaptive model), cascaded-session-mini (local v1-mini
+    detector), cascaded-session-vad (config ablation).
+  - τ-bench edits (9 files): provider registration, --audio-native-provider 
+    livekit_session, a new --agent-prompt-file flag for prompt iteration, plugin
+    preregistration that tolerates uninstalled optional plugins, and a
+    per-simulation artifact-dir context variable. LiveKit packages upgraded from
+    1.5.1 to 1.8.3 in the lock file, since 1.5.1 predates the audio turn
+    detector and bundled VAD.
+  - Evals: evals/b1_identifiers.py, b2_selectivity.py, b3_bargein.py, report.py
+    (with the leaderboard cascaded-baseline row as reference), a text-mode
+    pre-screen for behaviour 1, and the frozen 30-task subset (20 Sierra
+    voice-fragile tasks plus 10 persona-balanced ones).
+  - Harness: agent/retail_agent.py, agent/prompts/v0_tau_cascaded.md (verbatim
+    baseline prompt), scripts/run_retail.sh with smoke, compare, subset, full,
+    ablate, and post modes, and .env.example.
+
+  Verified
+
+  - Provider resolves through τ-bench's factory and CLI; configs load.
+  - 5 tests pass: audio framing, tick pacing with playback-finished reporting,
+    interruption and pause/resume semantics, text segmentation, and a full
+    adapter tick loop against a stub provider (transcript, tool call, tool
+    result on the next tick, audio capping, proportional transcript, usage
+    records). Lint is clean.
+
+  Not verified, because no API keys exist on this machine
+
+  - The real end-to-end tick loop with Deepgram and OpenAI, ElevenLabs persona
+    creation, any τ-bench run, and the metric scripts on real output. The
+    adapter's real-time coupling with AgentSession is the main risk and can only
+    be tested live.
+
+  Next steps for you
+
+  1. Copy .env.example to external/tau2-bench/.env and fill in OpenAI, Deepgram,
+     and ElevenLabs keys (LiveKit Cloud keys optional; without them use
+     PRESET=cascaded-session-mini).
+  2. Run the persona setup, then scripts/run_retail.sh smoke.
+
+  cd external/tau2-bench && uv run python -m tau2.voice.scripts.setup_voices
+  scripts/run_retail.sh smoke
+
+  3. If the smoke run produces audio, a tool round-trip, and a reward, proceed
+     to compare, then the full baseline.
+
+  CLAUDE.md Part 10 records the layout, commands, and the
+  verified-versus-unverified split. The τ-bench changes are uncommitted in
+  external/tau2-bench; I did not commit anything.
+
+✻ Cooked for 52m 45s · done 7:32 PM
+
+※ recap: Goal is evals for three voice behaviours on a LiveKit cascaded agent against τ-bench retail; the provider, eval scripts, and tests are built and passing offline. Next: fill in API keys and run scripts/run_retail.sh smoke. (disable recaps in /config)

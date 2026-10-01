@@ -1,0 +1,223 @@
+[
+  {
+    "task_id": "14",
+    "reward": 0.0,
+    "termination": "TerminationReason.TOO_MANY_ERRORS",
+    "duration": 752.0109042499971,
+    "ticks": 3269,
+    "agent_speech_ticks": 1241,
+    "user_speech_ticks": 807,
+    "tool_calls": 10,
+    "tool_errors": 10,
+    "json_spoken": 0,
+    "calls": [
+      {
+        "tick": 144,
+        "name": "find_user_id_by_email",
+        "arguments": {
+          "email": "the email the customer is using to contact you"
+        },
+        "id": "call_ev12yyoc",
+        "error": true
+      },
+      {
+        "tick": 445,
+        "name": "find_user_id_by_email",
+        "arguments": {
+          "email": "Mia. Garcia2723@example, com"
+        },
+        "id": "call_frij6m6h",
+        "error": true
+      },
+      {
+        "tick": 720,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "first_name": "Mia",
+          "last_name": "Garcia2723",
+          "zip": ""
+        },
+        "id": "call_ojr5htrz",
+        "error": true
+      },
+      {
+        "tick": 1164,
+        "name": "find_user_id_by_email",
+        "arguments": {
+          "email": "MIA.GARCIA2723@EXAMPLE, COM"
+        },
+        "id": "call_mnfvko7i",
+        "error": true
+      },
+      {
+        "tick": 1562,
+        "name": "cancel_pending_order",
+        "arguments": {
+          "order_id": "user does not have order id",
+          "reason": "no longer needed"
+        },
+        "id": "call_n0dcjscp",
+        "error": true
+      },
+      {
+        "tick": 1831,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "#W0000000"
+        },
+        "id": "call_6mqfw0aa",
+        "error": true
+      },
+      {
+        "tick": 2275,
+        "name": "get_user_details",
+        "arguments": {
+          "user_id": "find_user_id_by_email",
+          "email": "Mia Garcia2723@example.com"
+        },
+        "id": "call_tpgocwwb",
+        "error": true
+      },
+      {
+        "tick": 2755,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "#W0000000"
+        },
+        "id": "call_i4pbi19c",
+        "error": true
+      },
+      {
+        "tick": 2869,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "#W0000000"
+        },
+        "id": "call_7u940aru",
+        "error": true
+      },
+      {
+        "tick": 3268,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "first_name": "customer",
+          "last_name": "provided",
+          "zip": "provided"
+        },
+        "id": "call_0qvtsoqw",
+        "error": true
+      }
+    ]
+  },
+  {
+    "task_id": "6",
+    "reward": 0.0,
+    "termination": "TerminationReason.TOO_MANY_ERRORS",
+    "duration": 634.5499944579788,
+    "ticks": 2730,
+    "agent_speech_ticks": 769,
+    "user_speech_ticks": 641,
+    "tool_calls": 10,
+    "tool_errors": 10,
+    "json_spoken": 0,
+    "calls": [
+      {
+        "tick": 211,
+        "name": "exchange_delivered_order_items",
+        "arguments": {
+          "order_id": "#W0000000",
+          "item_ids": "['1008292230', '1008292240']",
+          "new_item_ids": "['1008292250', '1008292260']",
+          "payment_method_id": "gift_card_000000"
+        },
+        "id": "call_f5e45dql",
+        "error": true
+      },
+      {
+        "tick": 513,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "None"
+        },
+        "id": "call_l6gwccq5",
+        "error": true
+      },
+      {
+        "tick": 746,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "first_name": "J",
+          "last_name": "O, H, N",
+          "zip": "12345"
+        },
+        "id": "call_4f6iestt",
+        "error": true
+      },
+      {
+        "tick": 1000,
+        "name": "find_user_id_by_email",
+        "arguments": {
+          "email": "j@gmail.com"
+        },
+        "id": "call_lntpgd9a",
+        "error": true
+      },
+      {
+        "tick": 1309,
+        "name": "find_user_id_by_email",
+        "arguments": {
+          "email": "johndoe@gmail.com"
+        },
+        "id": "call_pc5y8qr2",
+        "error": true
+      },
+      {
+        "tick": 1548,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "first_name": "J-O-H-N",
+          "last_name": "D-O",
+          "zip": "28236"
+        },
+        "id": "call_0w8r09ss",
+        "error": true
+      },
+      {
+        "tick": 1868,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "#W0000000"
+        },
+        "id": "call_880o9fo4",
+        "error": true
+      },
+      {
+        "tick": 2110,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "None"
+        },
+        "id": "call_mzcwaxc1",
+        "error": true
+      },
+      {
+        "tick": 2393,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "None"
+        },
+        "id": "call_ja8jwi4o",
+        "error": true
+      },
+      {
+        "tick": 2729,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "None"
+        },
+        "id": "call_75koolys",
+        "error": true
+      }
+    ]
+  }
+]

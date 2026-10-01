@@ -1,0 +1,223 @@
+[
+  {
+    "task_id": "14",
+    "reward": 0.0,
+    "termination": "TerminationReason.TOO_MANY_ERRORS",
+    "duration": 424.10270750001655,
+    "ticks": 1393,
+    "agent_speech_ticks": 103,
+    "user_speech_ticks": 862,
+    "tool_calls": 10,
+    "tool_errors": 10,
+    "json_spoken": 5,
+    "calls": [
+      {
+        "tick": 108,
+        "name": "cancel_pending_order",
+        "arguments": {
+          "order_id": "#W0000000",
+          "reason": "no longer needed"
+        },
+        "id": "call_kp202qqk",
+        "error": true
+      },
+      {
+        "tick": 370,
+        "name": "find_user_id_by_email",
+        "arguments": {
+          "email": "Mia, Garcia2723@example.com"
+        },
+        "id": "call_i7hudrhs",
+        "error": true
+      },
+      {
+        "tick": 455,
+        "name": "find_user_id_by_email",
+        "arguments": {
+          "email": "Mia, Garcia2723@example.com"
+        },
+        "id": "call_uimlmn4a",
+        "error": true
+      },
+      {
+        "tick": 614,
+        "name": "find_user_id_by_email",
+        "arguments": {
+          "email": "Mia, Garcia2723@example.com"
+        },
+        "id": "call_39buhg0f",
+        "error": true
+      },
+      {
+        "tick": 695,
+        "name": "find_user_id_by_email",
+        "arguments": {
+          "email": "Mia, Garcia2723@example.com"
+        },
+        "id": "call_uy0vkx3e",
+        "error": true
+      },
+      {
+        "tick": 774,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "first_name": "Mia",
+          "zip": "12345",
+          "last_name": "Garcia"
+        },
+        "id": "call_xu9i4xho",
+        "error": true
+      },
+      {
+        "tick": 1123,
+        "name": "find_user_id_by_email",
+        "arguments": {
+          "email": "Mia, Garcia2723@example.com"
+        },
+        "id": "call_kgulputk",
+        "error": true
+      },
+      {
+        "tick": 1213,
+        "name": "find_user_id_by_email",
+        "arguments": {
+          "email": "Mia, Garcia2723@example.com"
+        },
+        "id": "call_rew89tc3",
+        "error": true
+      },
+      {
+        "tick": 1302,
+        "name": "find_user_id_by_email",
+        "arguments": {
+          "email": "Mia, Garcia2723@example.com"
+        },
+        "id": "call_1sk5g1ym",
+        "error": true
+      },
+      {
+        "tick": 1392,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "last_name": "Garcia",
+          "zip": "12345",
+          "first_name": "Mia"
+        },
+        "id": "call_mdx9r67o",
+        "error": true
+      }
+    ]
+  },
+  {
+    "task_id": "6",
+    "reward": 0.0,
+    "termination": "TerminationReason.TOO_MANY_ERRORS",
+    "duration": 537.4059817500238,
+    "ticks": 1797,
+    "agent_speech_ticks": 128,
+    "user_speech_ticks": 1150,
+    "tool_calls": 10,
+    "tool_errors": 10,
+    "json_spoken": 5,
+    "calls": [
+      {
+        "tick": 508,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "zip": "28236",
+          "first_name": "",
+          "last_name": "DoE"
+        },
+        "id": "call_bjpe8mb5",
+        "error": true
+      },
+      {
+        "tick": 602,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "first_name": "",
+          "last_name": "DoE",
+          "zip": "28236"
+        },
+        "id": "call_87exj086",
+        "error": true
+      },
+      {
+        "tick": 870,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "first_name": "",
+          "last_name": "Doe",
+          "zip": "28236"
+        },
+        "id": "call_ygs6qm16",
+        "error": true
+      },
+      {
+        "tick": 1086,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "first_name": "",
+          "last_name": "DoE",
+          "zip": "28236"
+        },
+        "id": "call_tm7mdujq",
+        "error": true
+      },
+      {
+        "tick": 1196,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "#W0000000"
+        },
+        "id": "call_hjpe531m",
+        "error": true
+      },
+      {
+        "tick": 1380,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "#W0000000"
+        },
+        "id": "call_57q07ggz",
+        "error": true
+      },
+      {
+        "tick": 1484,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "#W0000000"
+        },
+        "id": "call_dhbfhg9w",
+        "error": true
+      },
+      {
+        "tick": 1588,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "#W0000000"
+        },
+        "id": "call_iki9uu6i",
+        "error": true
+      },
+      {
+        "tick": 1692,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "#W0000000"
+        },
+        "id": "call_qoofb46s",
+        "error": true
+      },
+      {
+        "tick": 1796,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "#W0000000"
+        },
+        "id": "call_yw1twa6l",
+        "error": true
+      }
+    ]
+  }
+]

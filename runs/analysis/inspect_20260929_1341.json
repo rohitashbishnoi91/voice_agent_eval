@@ -1,0 +1,60 @@
+[
+  {
+    "task_id": "6",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 1327.808186749986,
+    "ticks": 6001,
+    "agent_speech_ticks": 3473,
+    "user_speech_ticks": 876,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "calls": []
+  },
+  {
+    "task_id": "14",
+    "reward": 0.0,
+    "termination": "TerminationReason.USER_STOP",
+    "duration": 1124.1805534169835,
+    "ticks": 5143,
+    "agent_speech_ticks": 2486,
+    "user_speech_ticks": 623,
+    "tool_calls": 3,
+    "tool_errors": 2,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "calls": [
+      {
+        "tick": 371,
+        "name": "get_order_details",
+        "arguments": {
+          "order_id": "#W123456789"
+        },
+        "id": "call_5eml10vl",
+        "error": true
+      },
+      {
+        "tick": 1043,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "first_name": "MIA",
+          "last_name": "GRCIA",
+          "zip": "XXXXXXXX"
+        },
+        "id": "call_st5cqgeh",
+        "error": true
+      },
+      {
+        "tick": 1514,
+        "name": "find_user_id_by_email",
+        "arguments": {
+          "email": "Mia.Garcia2723@example.com"
+        },
+        "id": "call_lhb8whoa",
+        "error": false
+      }
+    ]
+  }
+]

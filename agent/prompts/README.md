@@ -1,0 +1,18 @@
+# Agent prompt versions
+
+Each file is the `agent_instruction` block that τ-bench prepends to the retail `policy.md`
+(`AUDIO_NATIVE_SYSTEM_PROMPT_PLAIN` = `{agent_instruction}\n\n{domain_policy}`).
+
+| Version | File | Hypothesis / change | Status |
+|---|---|---|---|
+| v0 | `v0_tau_cascaded.md` | Verbatim `CASCADED_MODEL_INSTRUCTION` from tau2-bench (the prompt behind the leaderboard "Cascaded baseline" row). Baseline, no change. | baseline |
+| v1 | `v1_backchannel_concise.md` | Behaviour 2 (+F3): v0 + "listening sounds" section — never answer or query a backchannel/garbled one-word turn, keep replies to one or two sentences with one question, no recaps. Motivated by the v0 baseline (S_BC 0.32; agent answered "Amen." transcripts of "mm-hmm"; 30-s replies). | revised 2026-09-30 (minimal acknowledgement wording + ~25-word cap) after the b2 pre-screen: first draft 3/5, revised 5/5; subset run `retail_subset_local_v1_backchannel_concise_v1` done 2026-09-30: pass 0/10 (=v0), tokens p50 74→41, cancelled generations 58→26, false interruptions 16→9, but S_BC 0.32→0.26 (yield happens at VAD level, not prompt-addressable) — kept as base for v3, see `runs/analysis/v1_findings.md` |
+| v2 | `v2_identifier_readback.md` | Behaviour 1: v0 + identifier capture protocol — rebuild spelled values (letters/digits, at→@, dot→.), read the *rebuilt* value back letter by letter and wait for confirmation before any lookup, never pass placeholders or unknown values, re-spell instead of retrying a failed value; short replies. Motivated by smoke runs 9/12/13 (`"Mia. Garcia2723@example, com"`, `zip="XXXXXXXX"`). | drafted 2026-09-29, not yet run |
+
+| v3 | `v3_authenticate_first.md` | F2 (policy order), cumulative on v1: authenticate via email or name+zip before anything else, never ask for order/item/user ids (callers don't know them; a user id can never come from the caller), read the account's orders with tools after auth, never call a tool with a value neither the caller nor a tool provided. Motivated by v0/v1 (0/20 authentications; v1 task 22 wrote with a caller-invented user id 12345). | revised twice on the pre-screens (explicit first question; "call the lookup in the same turn, never say 'let me check' without calling"): b1 2/3 (lookups fire with the raw ASR value, then asks to spell), b2 4/5; subset run `retail_subset_local_v3_authenticate_first_v3` launched 2026-09-30 17:1x |
+| v4 | `v4_saying_is_not_doing.md` | Grounded action, cumulative on v3: names the lookup/read/write tools explicitly, forbids claiming to check/cancel/update without a returned tool call, and limits spell-out requests to garbled transcripts or failed lookups. Motivated by v3 voice runs (caller said "Mei Kovacs, zip 28236" clearly; agent asked to spell it, said "let me check your account now" with no call, announced a cancellation with no call → caller hung up). | drafted 2026-09-30, pre-screen pending |
+Rules:
+- One hypothesis per version file; name it `v<N>_<short-slug>.md`.
+- Never edit an older version after it has been run; add a new file.
+- Pass to τ-bench with `--agent-prompt-file agent/prompts/<file>` (only the instruction block changes; policy, tools, user simulator, evaluator stay standard).
+- Record the run directory and subset results for each version in `runs/analysis/`.
