@@ -1,0 +1,378 @@
+{
+  "run": "retail_subset_local_v3_authenticate_first_v3",
+  "metric_definitions": {
+    "S_BC": "share of user backchannels the agent correctly talked through (yield within 1.0 s = error)",
+    "S_VT": "share of vocal tics correctly ignored (yield within 1.0 s while speaking / respond within 2.0 s while silent = error)",
+    "S_ND": "share of non-directed speech correctly ignored (same windows)"
+  },
+  "targets": {
+    "S_BC": 0.85,
+    "S_VT": 0.5,
+    "S_ND": 0.4
+  },
+  "cascaded_baseline_row": {
+    "S_BC": 0.57,
+    "S_VT": 0.5,
+    "S_ND": 0.52
+  },
+  "by_group": {
+    "all": {
+      "S_BC": {
+        "selectivity": 0.21532846715328469,
+        "n": 274,
+        "errors": 215
+      },
+      "S_ND": {
+        "selectivity": 0.8518518518518519,
+        "n": 27,
+        "errors": 4
+      },
+      "S_VT": {
+        "selectivity": 0.5555555555555556,
+        "n": 18,
+        "errors": 8
+      }
+    },
+    "persona=wei_lin": {
+      "S_BC": {
+        "selectivity": 0.8620689655172413,
+        "n": 29,
+        "errors": 4
+      },
+      "S_ND": {
+        "selectivity": 0.75,
+        "n": 8,
+        "errors": 2
+      },
+      "S_VT": {
+        "selectivity": 0.8333333333333334,
+        "n": 6,
+        "errors": 1
+      }
+    },
+    "env=indoor": {
+      "S_BC": {
+        "selectivity": 0.2376237623762376,
+        "n": 202,
+        "errors": 154
+      },
+      "S_ND": {
+        "selectivity": 0.8095238095238095,
+        "n": 21,
+        "errors": 4
+      },
+      "S_VT": {
+        "selectivity": 0.7777777777777778,
+        "n": 9,
+        "errors": 2
+      }
+    },
+    "persona=arjun_roy": {
+      "S_ND": {
+        "selectivity": 1.0,
+        "n": 5,
+        "errors": 0
+      },
+      "S_BC": {
+        "selectivity": 0.0,
+        "n": 55,
+        "errors": 55
+      },
+      "S_VT": {
+        "selectivity": 0.16666666666666663,
+        "n": 6,
+        "errors": 5
+      }
+    },
+    "env=outdoor": {
+      "S_ND": {
+        "selectivity": 1.0,
+        "n": 6,
+        "errors": 0
+      },
+      "S_BC": {
+        "selectivity": 0.1527777777777778,
+        "n": 72,
+        "errors": 61
+      },
+      "S_VT": {
+        "selectivity": 0.33333333333333337,
+        "n": 9,
+        "errors": 6
+      }
+    },
+    "persona=priya_patil": {
+      "S_BC": {
+        "selectivity": 0.19999999999999996,
+        "n": 70,
+        "errors": 56
+      },
+      "S_VT": {
+        "selectivity": 0.33333333333333337,
+        "n": 3,
+        "errors": 2
+      },
+      "S_ND": {
+        "selectivity": 0.8888888888888888,
+        "n": 9,
+        "errors": 1
+      }
+    },
+    "persona=mildred_kaplan": {
+      "S_BC": {
+        "selectivity": 0.0,
+        "n": 2,
+        "errors": 2
+      }
+    },
+    "persona=mamadou_diallo": {
+      "S_BC": {
+        "selectivity": 0.1694915254237288,
+        "n": 118,
+        "errors": 98
+      },
+      "S_ND": {
+        "selectivity": 0.8,
+        "n": 5,
+        "errors": 1
+      },
+      "S_VT": {
+        "selectivity": 1.0,
+        "n": 3,
+        "errors": 0
+      }
+    }
+  },
+  "per_simulation": {
+    "5e4a86e3-a9f1-458d-a390-ec538168d91b": {
+      "backchannel": {
+        "n": 2,
+        "errors": 0
+      },
+      "vocal_tic": {
+        "n": 0,
+        "errors": 0
+      },
+      "non_directed": {
+        "n": 3,
+        "errors": 1
+      },
+      "livekit_overlaps": {
+        "n": 0,
+        "judged_interruption": 0,
+        "judged_backchannel": 0,
+        "mean_detection_delay": null
+      },
+      "task_id": "16",
+      "persona": "wei_lin",
+      "environment": "indoor"
+    },
+    "6a47a891-f844-432a-8846-f24d97fb8c3c": {
+      "backchannel": {
+        "n": 39,
+        "errors": 39
+      },
+      "vocal_tic": {
+        "n": 1,
+        "errors": 0
+      },
+      "non_directed": {
+        "n": 4,
+        "errors": 0
+      },
+      "livekit_overlaps": {
+        "n": 0,
+        "judged_interruption": 0,
+        "judged_backchannel": 0,
+        "mean_detection_delay": null
+      },
+      "task_id": "19",
+      "persona": "arjun_roy",
+      "environment": "outdoor"
+    },
+    "758a05ce-eed6-48a3-9b8f-a00c4c043412": {
+      "backchannel": {
+        "n": 41,
+        "errors": 35
+      },
+      "vocal_tic": {
+        "n": 1,
+        "errors": 1
+      },
+      "non_directed": {
+        "n": 5,
+        "errors": 0
+      },
+      "livekit_overlaps": {
+        "n": 0,
+        "judged_interruption": 0,
+        "judged_backchannel": 0,
+        "mean_detection_delay": null
+      },
+      "task_id": "24",
+      "persona": "priya_patil",
+      "environment": "indoor"
+    },
+    "92dab129-f4d4-40fa-818b-572fa1a36c8f": {
+      "backchannel": {
+        "n": 2,
+        "errors": 2
+      },
+      "vocal_tic": {
+        "n": 0,
+        "errors": 0
+      },
+      "non_directed": {
+        "n": 0,
+        "errors": 0
+      },
+      "livekit_overlaps": {
+        "n": 0,
+        "judged_interruption": 0,
+        "judged_backchannel": 0,
+        "mean_detection_delay": null
+      },
+      "task_id": "14",
+      "persona": "mildred_kaplan",
+      "environment": "outdoor"
+    },
+    "a5b2fda1-65b7-4cf6-b697-8294d9f87f0d": {
+      "backchannel": {
+        "n": 29,
+        "errors": 21
+      },
+      "vocal_tic": {
+        "n": 2,
+        "errors": 1
+      },
+      "non_directed": {
+        "n": 4,
+        "errors": 1
+      },
+      "livekit_overlaps": {
+        "n": 0,
+        "judged_interruption": 0,
+        "judged_backchannel": 0,
+        "mean_detection_delay": null
+      },
+      "task_id": "8",
+      "persona": "priya_patil",
+      "environment": "indoor"
+    },
+    "c04287f4-10c2-4bf8-bbb2-4f873da67648": {
+      "backchannel": {
+        "n": 49,
+        "errors": 36
+      },
+      "vocal_tic": {
+        "n": 2,
+        "errors": 0
+      },
+      "non_directed": {
+        "n": 1,
+        "errors": 0
+      },
+      "livekit_overlaps": {
+        "n": 0,
+        "judged_interruption": 0,
+        "judged_backchannel": 0,
+        "mean_detection_delay": null
+      },
+      "task_id": "22",
+      "persona": "mamadou_diallo",
+      "environment": "indoor"
+    },
+    "d6054259-1b9a-4062-bf40-0ec10f19f93a": {
+      "backchannel": {
+        "n": 15,
+        "errors": 4
+      },
+      "vocal_tic": {
+        "n": 3,
+        "errors": 1
+      },
+      "non_directed": {
+        "n": 1,
+        "errors": 0
+      },
+      "livekit_overlaps": {
+        "n": 0,
+        "judged_interruption": 0,
+        "judged_backchannel": 0,
+        "mean_detection_delay": null
+      },
+      "task_id": "6",
+      "persona": "wei_lin",
+      "environment": "outdoor"
+    },
+    "d89bf24c-e687-4370-b95e-d18968490e9a": {
+      "backchannel": {
+        "n": 16,
+        "errors": 16
+      },
+      "vocal_tic": {
+        "n": 5,
+        "errors": 5
+      },
+      "non_directed": {
+        "n": 1,
+        "errors": 0
+      },
+      "livekit_overlaps": {
+        "n": 0,
+        "judged_interruption": 0,
+        "judged_backchannel": 0,
+        "mean_detection_delay": null
+      },
+      "task_id": "4",
+      "persona": "arjun_roy",
+      "environment": "outdoor"
+    },
+    "e3a32c85-e341-4c3e-af4f-a631f5249408": {
+      "backchannel": {
+        "n": 12,
+        "errors": 0
+      },
+      "vocal_tic": {
+        "n": 3,
+        "errors": 0
+      },
+      "non_directed": {
+        "n": 4,
+        "errors": 1
+      },
+      "livekit_overlaps": {
+        "n": 0,
+        "judged_interruption": 0,
+        "judged_backchannel": 0,
+        "mean_detection_delay": null
+      },
+      "task_id": "23",
+      "persona": "wei_lin",
+      "environment": "indoor"
+    },
+    "ec349fff-00db-449a-9807-bdcbc5693f96": {
+      "backchannel": {
+        "n": 69,
+        "errors": 62
+      },
+      "vocal_tic": {
+        "n": 1,
+        "errors": 0
+      },
+      "non_directed": {
+        "n": 4,
+        "errors": 1
+      },
+      "livekit_overlaps": {
+        "n": 0,
+        "judged_interruption": 0,
+        "judged_backchannel": 0,
+        "mean_detection_delay": null
+      },
+      "task_id": "7",
+      "persona": "mamadou_diallo",
+      "environment": "indoor"
+    }
+  }
+}

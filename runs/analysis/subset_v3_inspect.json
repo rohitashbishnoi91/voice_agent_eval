@@ -1,0 +1,275 @@
+[
+  {
+    "task_id": "16",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 728.8466948750138,
+    "ticks": 3001,
+    "agent_speech_ticks": 430,
+    "user_speech_ticks": 864,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": []
+  },
+  {
+    "task_id": "19",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 884.5744613750139,
+    "ticks": 3001,
+    "agent_speech_ticks": 727,
+    "user_speech_ticks": 869,
+    "tool_calls": 2,
+    "tool_errors": 2,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 3,
+    "calls": [
+      {
+        "tick": 446,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "last_name": "Davis",
+          "zip": "80217",
+          "first_name": "May"
+        },
+        "id": "call_4zdbmpdh",
+        "error": true
+      },
+      {
+        "tick": 809,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "first_name": "May",
+          "last_name": "Davis",
+          "zip": "80217"
+        },
+        "id": "call_okuvtbcz",
+        "error": true
+      }
+    ]
+  },
+  {
+    "task_id": "24",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 865.1000436249888,
+    "ticks": 3001,
+    "agent_speech_ticks": 760,
+    "user_speech_ticks": 1030,
+    "tool_calls": 3,
+    "tool_errors": 3,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": [
+      {
+        "tick": 239,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "last_name": "Hernandez",
+          "zip": "98193",
+          "first_name": "Sophia"
+        },
+        "id": "call_zti63xrb",
+        "error": true
+      },
+      {
+        "tick": 369,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "zip": "98193",
+          "first_name": "S.O.F.I.",
+          "last_name": ""
+        },
+        "id": "call_19qazdjf",
+        "error": true
+      },
+      {
+        "tick": 967,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "first_name": "SOS",
+          "last_name": "I",
+          "zip": "98193"
+        },
+        "id": "call_lznkeu43",
+        "error": true
+      }
+    ]
+  },
+  {
+    "task_id": "14",
+    "reward": 0.0,
+    "termination": "TerminationReason.USER_STOP",
+    "duration": 116.59096924998448,
+    "ticks": 430,
+    "agent_speech_ticks": 108,
+    "user_speech_ticks": 80,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 3,
+    "calls": []
+  },
+  {
+    "task_id": "8",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 860.617229083,
+    "ticks": 3001,
+    "agent_speech_ticks": 684,
+    "user_speech_ticks": 822,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 2,
+    "calls": []
+  },
+  {
+    "task_id": "22",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 860.4716252920043,
+    "ticks": 3001,
+    "agent_speech_ticks": 921,
+    "user_speech_ticks": 659,
+    "tool_calls": 3,
+    "tool_errors": 3,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": [
+      {
+        "tick": 383,
+        "name": "modify_user_address",
+        "arguments": {
+          "address1": "123 Main St",
+          "address2": "",
+          "city": "Denver",
+          "state": "CO",
+          "country": "USA",
+          "zip": "80280",
+          "user_id": "ethan_garcia_54321"
+        },
+        "id": "call_g7xhl6k3",
+        "error": true
+      },
+      {
+        "tick": 476,
+        "name": "modify_user_address",
+        "arguments": {
+          "country": "USA",
+          "zip": "80280",
+          "user_id": "jason_garcia_729",
+          "address1": "New address 1",
+          "address2": "",
+          "city": "New City",
+          "state": "CO"
+        },
+        "id": "call_1g9la9dx",
+        "error": true
+      },
+      {
+        "tick": 790,
+        "name": "modify_user_address",
+        "arguments": {
+          "city": "Denver",
+          "state": "CO",
+          "country": "USA",
+          "zip": "80280",
+          "user_id": "jason_garcia_789",
+          "address1": "1234 15th Street",
+          "address2": ""
+        },
+        "id": "call_h72pfuib",
+        "error": true
+      }
+    ]
+  },
+  {
+    "task_id": "6",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 782.0591777079972,
+    "ticks": 3001,
+    "agent_speech_ticks": 415,
+    "user_speech_ticks": 1384,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": []
+  },
+  {
+    "task_id": "4",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 1002.0293903329875,
+    "ticks": 3001,
+    "agent_speech_ticks": 693,
+    "user_speech_ticks": 1306,
+    "tool_calls": 1,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 1,
+    "calls": [
+      {
+        "tick": 558,
+        "name": "list_all_product_types",
+        "arguments": {},
+        "id": "call_mph6zpk0",
+        "error": false
+      }
+    ]
+  },
+  {
+    "task_id": "23",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 809.7835178329842,
+    "ticks": 3001,
+    "agent_speech_ticks": 334,
+    "user_speech_ticks": 1506,
+    "tool_calls": 1,
+    "tool_errors": 1,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": [
+      {
+        "tick": 1135,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "first_name": "Sophia",
+          "last_name": "Hernandez",
+          "zip": "193"
+        },
+        "id": "call_cofn11jn",
+        "error": true
+      }
+    ]
+  },
+  {
+    "task_id": "7",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 833.2711697080231,
+    "ticks": 3001,
+    "agent_speech_ticks": 1064,
+    "user_speech_ticks": 436,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": []
+  }
+]

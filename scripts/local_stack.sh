@@ -23,8 +23,9 @@ case "${1:-status}" in
   up)
     if ! health localhost:11434/api/version; then
       echo ">>> starting ollama serve (context ${OLLAMA_CONTEXT_LENGTH:-12288})"
-      # single-instance default: 3 slots (agent, user-sim, decision model); with USERSIM_INSTANCE=1 the agent needs 1
-      OLLAMA_CONTEXT_LENGTH="${OLLAMA_CONTEXT_LENGTH:-12288}" OLLAMA_NUM_PARALLEL="${OLLAMA_NUM_PARALLEL:-$([[ "${USERSIM_INSTANCE:-0}" == 1 ]] && echo 1 || echo 3)}" OLLAMA_FLASH_ATTENTION=1 OLLAMA_KV_CACHE_TYPE=q8_0 python3 "$ROOT/scripts/daemonize.py" "$LOG/ollama.log" ollama serve; sleep 2
+      # single-instance default: 3 slots (agent, user-sim, decision model); with USERSIM_INSTANCE=1 the agent needs 1.
+      # KEEP_ALIVE 24h: the default 5 min unloads the model between runs and the ~20 s reload trips LiveKit's LLM timeout.
+      OLLAMA_KEEP_ALIVE="${OLLAMA_KEEP_ALIVE:-24h}" OLLAMA_CONTEXT_LENGTH="${OLLAMA_CONTEXT_LENGTH:-12288}" OLLAMA_NUM_PARALLEL="${OLLAMA_NUM_PARALLEL:-$([[ "${USERSIM_INSTANCE:-0}" == 1 ]] && echo 1 || echo 3)}" OLLAMA_FLASH_ATTENTION=1 OLLAMA_KV_CACHE_TYPE=q8_0 python3 "$ROOT/scripts/daemonize.py" "$LOG/ollama.log" ollama serve; sleep 2
     fi
     ollama list | grep -q "^${OLLAMA_MODEL%%:*}" || { echo ">>> pulling $OLLAMA_MODEL"; ollama pull "$OLLAMA_MODEL"; }
     if [[ "${USERSIM_INSTANCE:-0}" == 1 ]] && ! health "localhost:$USERSIM_PORT/api/version"; then

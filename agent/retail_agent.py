@@ -19,6 +19,7 @@ Run inside the tau2 environment::
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Optional
@@ -125,7 +126,14 @@ def build_text_session(
     from livekit.agents import AgentSession
 
     rva = RetailVoiceAgent(prompt_file=prompt_file, env=env)
-    session = AgentSession(llm=build_text_llm(preset, llm_model), max_tool_steps=3)
+    kwargs = {}
+    cfg = build_voice_session_config(preset or os.getenv("TAU2_SESSION_PRESET", "local"))
+    if getattr(cfg, "llm_timeout_s", None):  # same per-attempt LLM timeout as the voice runs (local: 40 s)
+        from livekit.agents import APIConnectOptions
+        from livekit.agents.voice.agent_session import SessionConnectOptions
+
+        kwargs["conn_options"] = SessionConnectOptions(llm_conn_options=APIConnectOptions(timeout=cfg.llm_timeout_s))
+    session = AgentSession(llm=build_text_llm(preset, llm_model), max_tool_steps=3, **kwargs)
     return session, rva
 
 

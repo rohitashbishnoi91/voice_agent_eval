@@ -1,0 +1,323 @@
+{
+  "run": "retail_subset_local_v3_authenticate_first_v3",
+  "targets": {
+    "R_Y": 0.95,
+    "L_Y_mean": 0.6,
+    "I_A": 0.2
+  },
+  "cascaded_baseline_row": {
+    "R_Y": 0.99,
+    "L_Y_mean": 0.84,
+    "I_A": 0.58
+  },
+  "notes": "I_A here counts agent segments starting while the user speaks, normalised by user turns (same definition as \u03c4-bench's panel; small numeric differences possible because \u03c4-bench applies its end-of-conversation filter).",
+  "by_group": {
+    "all": {
+      "R_Y": 0.7840909090909091,
+      "yield_n": 88,
+      "L_Y_mean": 0.7536231884057971,
+      "L_Y_p50": 0.8,
+      "L_Y_p95": 1.0,
+      "I_A": 0.021551724137931036,
+      "overlap_share": 0.12710978342046303,
+      "false_interruptions": 2,
+      "false_interruptions_resumed": 2
+    },
+    "persona=wei_lin": {
+      "R_Y": 0.21739130434782608,
+      "yield_n": 23,
+      "L_Y_mean": 0.9600000000000001,
+      "L_Y_p50": 1.0,
+      "L_Y_p95": 1.6,
+      "I_A": 0.09345794392523364,
+      "overlap_share": 0.12037247331364978,
+      "false_interruptions": 0,
+      "false_interruptions_resumed": 0
+    },
+    "env=indoor": {
+      "R_Y": 0.7045454545454546,
+      "yield_n": 44,
+      "L_Y_mean": 0.7935483870967742,
+      "L_Y_p50": 0.8,
+      "L_Y_p95": 1.0,
+      "I_A": 0.01607717041800643,
+      "overlap_share": 0.13769589663835388,
+      "false_interruptions": 1,
+      "false_interruptions_resumed": 1
+    },
+    "persona=arjun_roy": {
+      "R_Y": 1.0,
+      "yield_n": 35,
+      "L_Y_mean": 0.7257142857142858,
+      "L_Y_p50": 0.8,
+      "L_Y_p95": 0.8,
+      "I_A": 0.0,
+      "overlap_share": 0.09637084476974687,
+      "false_interruptions": 0,
+      "false_interruptions_resumed": 0
+    },
+    "env=outdoor": {
+      "R_Y": 0.8636363636363636,
+      "yield_n": 44,
+      "L_Y_mean": 0.7210526315789474,
+      "L_Y_p50": 0.8,
+      "L_Y_p95": 0.8,
+      "I_A": 0.032679738562091505,
+      "overlap_share": 0.10952096998608626,
+      "false_interruptions": 1,
+      "false_interruptions_resumed": 1
+    },
+    "persona=priya_patil": {
+      "R_Y": 0.9583333333333334,
+      "yield_n": 24,
+      "L_Y_mean": 0.782608695652174,
+      "L_Y_p50": 0.8,
+      "L_Y_p95": 1.0,
+      "I_A": 0.0,
+      "overlap_share": 0.13264604810996564,
+      "false_interruptions": 0,
+      "false_interruptions_resumed": 0
+    },
+    "persona=mildred_kaplan": {
+      "R_Y": 1.0,
+      "yield_n": 3,
+      "L_Y_mean": 0.6666666666666667,
+      "L_Y_p50": 0.6000000000000001,
+      "L_Y_p95": 0.8,
+      "I_A": 0.0,
+      "overlap_share": 0.11242603550295859,
+      "false_interruptions": 1,
+      "false_interruptions_resumed": 1
+    },
+    "persona=mamadou_diallo": {
+      "R_Y": 1.0,
+      "yield_n": 3,
+      "L_Y_mean": 0.6000000000000001,
+      "L_Y_p50": 0.8,
+      "L_Y_p95": 0.8,
+      "I_A": 0.0,
+      "overlap_share": 0.17154811715481172,
+      "false_interruptions": 1,
+      "false_interruptions_resumed": 1
+    }
+  },
+  "per_simulation": {
+    "5e4a86e3-a9f1-458d-a390-ec538168d91b": {
+      "task_id": "16",
+      "persona": "wei_lin",
+      "environment": "indoor",
+      "yield_n": 12,
+      "yield_ok": 4,
+      "yield_latencies": [
+        1.6,
+        1.0,
+        0.8,
+        0.4
+      ],
+      "agent_interrupts": 1,
+      "user_turns": 36,
+      "overlap_ticks": 181,
+      "speech_ticks": 1113,
+      "false_interruptions": 0,
+      "false_interruptions_resumed": 0
+    },
+    "6a47a891-f844-432a-8846-f24d97fb8c3c": {
+      "task_id": "19",
+      "persona": "arjun_roy",
+      "environment": "outdoor",
+      "yield_n": 3,
+      "yield_ok": 3,
+      "yield_latencies": [
+        0.8,
+        0.8,
+        0.6000000000000001
+      ],
+      "agent_interrupts": 0,
+      "user_turns": 50,
+      "overlap_ticks": 130,
+      "speech_ticks": 1466,
+      "false_interruptions": 0,
+      "false_interruptions_resumed": 0
+    },
+    "758a05ce-eed6-48a3-9b8f-a00c4c043412": {
+      "task_id": "24",
+      "persona": "priya_patil",
+      "environment": "indoor",
+      "yield_n": 2,
+      "yield_ok": 2,
+      "yield_latencies": [
+        0.8,
+        0.6000000000000001
+      ],
+      "agent_interrupts": 0,
+      "user_turns": 50,
+      "overlap_ticks": 179,
+      "speech_ticks": 1611,
+      "false_interruptions": 0,
+      "false_interruptions_resumed": 0
+    },
+    "92dab129-f4d4-40fa-818b-572fa1a36c8f": {
+      "task_id": "14",
+      "persona": "mildred_kaplan",
+      "environment": "outdoor",
+      "yield_n": 3,
+      "yield_ok": 3,
+      "yield_latencies": [
+        0.6000000000000001,
+        0.8,
+        0.6000000000000001
+      ],
+      "agent_interrupts": 0,
+      "user_turns": 9,
+      "overlap_ticks": 19,
+      "speech_ticks": 169,
+      "false_interruptions": 1,
+      "false_interruptions_resumed": 1
+    },
+    "a5b2fda1-65b7-4cf6-b697-8294d9f87f0d": {
+      "task_id": "8",
+      "persona": "priya_patil",
+      "environment": "indoor",
+      "yield_n": 22,
+      "yield_ok": 21,
+      "yield_latencies": [
+        1.0,
+        0.8,
+        1.0,
+        0.6000000000000001,
+        0.8,
+        0.8,
+        0.8,
+        0.6000000000000001,
+        0.8,
+        0.8,
+        0.8,
+        1.0,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        1.0,
+        0.8,
+        0.8,
+        0.2
+      ],
+      "agent_interrupts": 0,
+      "user_turns": 57,
+      "overlap_ticks": 207,
+      "speech_ticks": 1299,
+      "false_interruptions": 0,
+      "false_interruptions_resumed": 0
+    },
+    "c04287f4-10c2-4bf8-bbb2-4f873da67648": {
+      "task_id": "22",
+      "persona": "mamadou_diallo",
+      "environment": "indoor",
+      "yield_n": 3,
+      "yield_ok": 3,
+      "yield_latencies": [
+        0.8,
+        0.8,
+        0.2
+      ],
+      "agent_interrupts": 0,
+      "user_turns": 63,
+      "overlap_ticks": 200,
+      "speech_ticks": 1380,
+      "false_interruptions": 1,
+      "false_interruptions_resumed": 1
+    },
+    "d6054259-1b9a-4062-bf40-0ec10f19f93a": {
+      "task_id": "6",
+      "persona": "wei_lin",
+      "environment": "outdoor",
+      "yield_n": 6,
+      "yield_ok": 0,
+      "yield_latencies": [],
+      "agent_interrupts": 5,
+      "user_turns": 39,
+      "overlap_ticks": 216,
+      "speech_ticks": 1583,
+      "false_interruptions": 0,
+      "false_interruptions_resumed": 0
+    },
+    "d89bf24c-e687-4370-b95e-d18968490e9a": {
+      "task_id": "4",
+      "persona": "arjun_roy",
+      "environment": "outdoor",
+      "yield_n": 32,
+      "yield_ok": 32,
+      "yield_latencies": [
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.6000000000000001,
+        0.6000000000000001,
+        0.6000000000000001,
+        0.6000000000000001,
+        0.6000000000000001,
+        0.6000000000000001,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.6000000000000001,
+        0.8,
+        0.6000000000000001,
+        0.8,
+        0.6000000000000001,
+        0.6000000000000001,
+        0.8,
+        0.6000000000000001,
+        0.8,
+        0.8,
+        0.6000000000000001,
+        0.8,
+        0.8,
+        0.8
+      ],
+      "agent_interrupts": 0,
+      "user_turns": 55,
+      "overlap_ticks": 186,
+      "speech_ticks": 1813,
+      "false_interruptions": 0,
+      "false_interruptions_resumed": 0
+    },
+    "e3a32c85-e341-4c3e-af4f-a631f5249408": {
+      "task_id": "23",
+      "persona": "wei_lin",
+      "environment": "indoor",
+      "yield_n": 5,
+      "yield_ok": 1,
+      "yield_latencies": [
+        1.0
+      ],
+      "agent_interrupts": 4,
+      "user_turns": 32,
+      "overlap_ticks": 133,
+      "speech_ticks": 1707,
+      "false_interruptions": 0,
+      "false_interruptions_resumed": 0
+    },
+    "ec349fff-00db-449a-9807-bdcbc5693f96": {
+      "task_id": "7",
+      "persona": "mamadou_diallo",
+      "environment": "indoor",
+      "yield_n": 0,
+      "yield_ok": 0,
+      "yield_latencies": [],
+      "agent_interrupts": 0,
+      "user_turns": 73,
+      "overlap_ticks": 251,
+      "speech_ticks": 1249,
+      "false_interruptions": 0,
+      "false_interruptions_resumed": 0
+    }
+  }
+}

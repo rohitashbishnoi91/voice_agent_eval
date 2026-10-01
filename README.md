@@ -33,6 +33,7 @@ Kokoro); the same code runs the paid leaderboard stack (OpenAI + Deepgram + Elev
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | **v0 (τ-bench prompt)** | 0/10 | 0 % | 0.00 / 0.11 | 0.32 / 0.39 / 0.72 | 0.90 / 0.77 s / 0.13 | 89 % / 4.74 s | 4 (2) | 2 | 0 | 0 | 35 % |
 | **v1 backchannels+brevity** | 0/10 | 0 % | 0.00 / 0.16 | 0.26 / 0.47 / 0.71 | 0.93 / 0.84 s / 0.15 | 87 % / 3.91 s | 13 (13) | 6 | 3 | 0 | 31 % |
+| **v3 + authenticate first** | 0/10 | 0 % | 0.00 / 0.16 | 0.22 / 0.56 / 0.85 | 0.78 / 0.75 s / 0.06 | 76 % / 4.75 s | 10 (9) | 9 | 0 | 0 | 22 % |
 | *leaderboard cascaded baseline (gpt-4.1 + Deepgram, 114 tasks, paid)* | 28.9 % | 56 % | – | 0.57 / 0.50 / 0.52 | 0.99 / 0.84 s / 0.58 | 77 % / 4.02 s | – | – | – | – | – |
 
 ## How to run
