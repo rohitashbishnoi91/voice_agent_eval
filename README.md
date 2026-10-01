@@ -36,6 +36,32 @@ Kokoro); the same code runs the paid leaderboard stack (OpenAI + Deepgram + Elev
 | **v3 + authenticate first** | 0/10 | 0 % | 0.00 / 0.16 | 0.22 / 0.56 / 0.85 | 0.78 / 0.75 s / 0.06 | 76 % / 4.75 s | 10 (9) | 9 | 0 | 0 | 22 % |
 | *leaderboard cascaded baseline (gpt-4.1 + Deepgram, 114 tasks, paid)* | 28.9 % | 56 % | – | 0.57 / 0.50 / 0.52 | 0.99 / 0.84 s / 0.58 | 77 % / 4.02 s | – | – | – | – | – |
 
+Leaderboard numbers are from Sierra's paid gpt-4.1 + Deepgram run and are shown only as an anchor; the local
+turn-taking numbers (R_R, L_R, I_A) are not comparable (see deviations). Sleep-contaminated calls are flagged in each
+run's `sleep_gaps.json`.
+
+**What the iterations showed** (details per version in `runs/analysis/v*_findings.md`):
+- **v0 → v1 (behaviour 2 + brevity):** replies halved (74 → 41 tokens median), LLM generations cancelled by caller
+  speech halved (58 → 26), LiveKit false interruptions halved (16 → 9) — the LLM-side half of the backchannel problem
+  is prompt-addressable. τ-bench's S_BC did **not** improve (0.32 → 0.26): on this stack the agent is cut off at the
+  audio level (VAD interruption on a 0.5 s "mm-hmm") before any transcript exists, which only configuration can change
+  (`local-bc` preset prepared: `min_interruption_words=2`, `min_interruption_duration=1.0`).
+- **v1 → v3 (authenticate first, act in the same turn):** lookups 1 → 3 → 8; behaviour 1 is finally exercised in voice,
+  and `b1` attributes the failures: whisper small.en hears "May" for "Mei" (STT), the agent passes the raw spelled
+  transcript `"S.O.F.I."` as a first name (LLM reconstruction), a zip is truncated by a turn split, and clearly heard
+  values are re-asked to be spelled (the v0 rule over-applied). Authentications stayed at 0/10.
+- **v3 → v4 (saying is not doing):** the first v4 draft — three stacked sections, 667 words — regressed on the
+  pre-screen to no tool calls at all and a reply in Chinese: for a 7B model, prompt length is itself a failure mode.
+  Rewritten as one compact block (355 words) it recovered on the pre-screen; voice result below.
+- **Grounded action is the base model's dominant failure:** qwen never fabricates ids (unlike llama3.1:8b, which spoke
+  JSON aloud and called `cancel_pending_order("#W0000000")` on turn one), but it narrates — "let me check your account
+  now", even "your order is being cancelled" — without calling a tool (`unbacked_claims` 2 → 6 → 9 across v0/v1/v3).
+- **Barge-in (behaviour 3) is not where this base fails:** R_Y 0.78–0.93, L_Y 0.75–0.84 s, I_A ≤ 0.15 in every version;
+  the eval is in place and the LiveKit `agent_false_interruption` resumes are counted, but no prompt work was spent on it.
+- **No version passed a task** (pass^1 0/10 throughout). The subset is 8/10 voice-fragile tasks on which Sierra's
+  paid cascaded baseline also fails, run by a 7B model on whisper-small; pass^1 was never the lever here — the
+  behaviour metrics are. The same scripts run unchanged on the paid preset for comparable numbers.
+
 ## How to run
 
 ```bash
