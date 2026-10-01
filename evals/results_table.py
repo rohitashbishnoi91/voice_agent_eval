@@ -74,8 +74,10 @@ def main() -> None:
     if a.write_readme:
         p = Path(__file__).resolve().parents[1] / "README.md"
         s = p.read_text()
-        s = re.sub(r"(## Results \(10-task retail subset, `regular` speech complexity, local stack\)\n\n)(.*?)(\n\n## How to run)",
-                   lambda m: m.group(1) + t + m.group(3), s, flags=re.S)
+        # replace only the contiguous table block (lines starting with '|') right after the heading,
+        # leaving the narrative that follows it untouched
+        s = re.sub(r"(## Results \(10-task retail subset, `regular` speech complexity, local stack\)\n\n)((?:\|[^\n]*\n?)+)",
+                   lambda m: m.group(1) + t + "\n", s)
         p.write_text(s)
         print("README results table updated")
 

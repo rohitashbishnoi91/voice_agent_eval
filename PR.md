@@ -16,7 +16,17 @@ Full write-up: [README.md](README.md). Running log of decisions/findings: [CLAUD
 - Prompt versions in `agent/prompts/` (one hypothesis per file; policy untouched).
 
 ## Results
-RESULTS_PLACEHOLDER
+| version | pass^1 | auth | b1 wrong (LLM / STT) | S_BC / S_VT / S_ND | R_Y / L_Y / I_A | R_R / L_R | tool calls (errors) | unbacked claims | placeholder args | JSON spoken | agent speech share |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| **v0 (τ-bench prompt)** | 0/10 | 0 % | 0.00 / 0.11 | 0.32 / 0.39 / 0.72 | 0.90 / 0.77 s / 0.13 | 89 % / 4.74 s | 4 (2) | 2 | 0 | 0 | 35 % |
+| **v1 backchannels+brevity** | 0/10 | 0 % | 0.00 / 0.16 | 0.26 / 0.47 / 0.71 | 0.93 / 0.84 s / 0.15 | 87 % / 3.91 s | 13 (13) | 6 | 3 | 0 | 31 % |
+| **v3 + authenticate first** | 0/10 | 0 % | 0.00 / 0.16 | 0.22 / 0.56 / 0.85 | 0.78 / 0.75 s / 0.06 | 76 % / 4.75 s | 10 (9) | 9 | 0 | 0 | 22 % |
+| **v4 + saying is not doing** | 0/10 | 0 % | 0.00 / 0.16 | 0.21 / 0.81 / 0.68 | 0.74 / 0.87 s / 0.09 | 68 % / 4.25 s | 7 (7) | 8 | 0 | 0 | 25 % |
+| *leaderboard cascaded baseline (gpt-4.1 + Deepgram, 114 tasks, paid)* | 28.9 % | 56 % | – | 0.57 / 0.50 / 0.52 | 0.99 / 0.84 s / 0.58 | 77 % / 4.02 s | – | – | – | – | – |
+
+- **Prompt changes moved what the LLM controls** (reply length −45 %, cancelled generations −55 %, lookups 1 → 8, authenticate-first ordering) and the evals measure each of them.
+- **They did not move pass^1 or authentication (0/10 in all versions)**: the residual failures are STT (`Mei` → `May`, spelled letters) and VAD-level interruption, which the evals attribute explicitly (`used_wrong_misheard`, `agent_false_interruption`).
+- Barge-in (behaviour 3) turned out not to be a failure of this base; grounded action (`unbacked_claims`, placeholder args, spoken JSON) is, and is scored.
 
 ## Approaches considered / trade-offs
 See README § "Approaches considered and trade-offs" and § "Local-stack deviations": paid vs local stack,
