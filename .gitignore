@@ -10,3 +10,6 @@ __pycache__/
 *.pyc
 .venv/
 *.wav
+
+# local-only material (never committed)
+private/
