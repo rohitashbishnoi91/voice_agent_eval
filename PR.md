@@ -26,6 +26,7 @@ Full write-up: [README.md](README.md). Running log of decisions/findings: [CLAUD
 
 - **Prompt changes moved what the LLM controls** (reply length −45 %, cancelled generations −55 %, lookups 1 → 8, authenticate-first ordering) and the evals measure each of them.
 - **They did not move pass^1 or authentication (0/10 in all versions)**: the residual failures are STT (`Mei` → `May`, spelled letters) and VAD-level interruption, which the evals attribute explicitly (`used_wrong_misheard`, `agent_false_interruption`).
+- **Config ablation**: raising LiveKit's interruption gate to 2 words / 1.0 s took S_BC 0.26 → 0.97 but R_Y 0.93 → 0.05 — behaviours 2 and 3 trade against each other on a VAD-only stack; adaptive interruption (cloud) is the fix, not prompts.
 - Barge-in (behaviour 3) turned out not to be a failure of this base; grounded action (`unbacked_claims`, placeholder args, spoken JSON) is, and is scored.
 
 ## Approaches considered / trade-offs

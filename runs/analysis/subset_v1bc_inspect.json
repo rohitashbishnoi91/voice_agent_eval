@@ -1,0 +1,183 @@
+[
+  {
+    "task_id": "8",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 836.5808796249912,
+    "ticks": 3001,
+    "agent_speech_ticks": 1698,
+    "user_speech_ticks": 558,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": []
+  },
+  {
+    "task_id": "16",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 758.5126025420032,
+    "ticks": 3001,
+    "agent_speech_ticks": 527,
+    "user_speech_ticks": 897,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": []
+  },
+  {
+    "task_id": "24",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 1307.246091167006,
+    "ticks": 3001,
+    "agent_speech_ticks": 1717,
+    "user_speech_ticks": 1125,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 41,
+    "calls": []
+  },
+  {
+    "task_id": "22",
+    "reward": 0.0,
+    "termination": "TerminationReason.USER_STOP",
+    "duration": 615.4053358339879,
+    "ticks": 1760,
+    "agent_speech_ticks": 766,
+    "user_speech_ticks": 625,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 5,
+    "calls": []
+  },
+  {
+    "task_id": "19",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 2657.225231166987,
+    "ticks": 3001,
+    "agent_speech_ticks": 1373,
+    "user_speech_ticks": 737,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": []
+  },
+  {
+    "task_id": "7",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 1085.529347417003,
+    "ticks": 3001,
+    "agent_speech_ticks": 1164,
+    "user_speech_ticks": 1368,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 1,
+    "calls": []
+  },
+  {
+    "task_id": "14",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 1092.738207916991,
+    "ticks": 3001,
+    "agent_speech_ticks": 1475,
+    "user_speech_ticks": 1063,
+    "tool_calls": 1,
+    "tool_errors": 1,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": [
+      {
+        "tick": 335,
+        "name": "find_user_id_by_name_zip",
+        "arguments": {
+          "zip": "",
+          "first_name": "Mia",
+          "last_name": "Garcia"
+        },
+        "id": "call_x1oqt56f",
+        "error": true
+      }
+    ]
+  },
+  {
+    "task_id": "6",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 749.1478724999761,
+    "ticks": 3001,
+    "agent_speech_ticks": 498,
+    "user_speech_ticks": 923,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": []
+  },
+  {
+    "task_id": "4",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 1103.9833412080188,
+    "ticks": 3001,
+    "agent_speech_ticks": 1328,
+    "user_speech_ticks": 697,
+    "tool_calls": 2,
+    "tool_errors": 2,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 1,
+    "calls": [
+      {
+        "tick": 962,
+        "name": "get_product_details",
+        "arguments": {
+          "product_id": "6086499569"
+        },
+        "id": "call_yt69pe0i",
+        "error": true
+      },
+      {
+        "tick": 1049,
+        "name": "get_product_details",
+        "arguments": {
+          "product_id": "6086499569"
+        },
+        "id": "call_hbyaszgv",
+        "error": true
+      }
+    ]
+  },
+  {
+    "task_id": "23",
+    "reward": 0.0,
+    "termination": "TerminationReason.MAX_STEPS",
+    "duration": 788.251475416997,
+    "ticks": 3001,
+    "agent_speech_ticks": 533,
+    "user_speech_ticks": 1003,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "json_spoken": 0,
+    "placeholder_arg_calls": 0,
+    "unbacked_claims": 0,
+    "calls": []
+  }
+]

@@ -35,6 +35,7 @@ Kokoro); the same code runs the paid leaderboard stack (OpenAI + Deepgram + Elev
 | **v1 backchannels+brevity** | 0/10 | 0 % | 0.00 / 0.16 | 0.26 / 0.47 / 0.71 | 0.93 / 0.84 s / 0.15 | 87 % / 3.91 s | 13 (13) | 6 | 3 | 0 | 31 % |
 | **v3 + authenticate first** | 0/10 | 0 % | 0.00 / 0.16 | 0.22 / 0.56 / 0.85 | 0.78 / 0.75 s / 0.06 | 76 % / 4.75 s | 10 (9) | 9 | 0 | 0 | 22 % |
 | **v4 + saying is not doing** | 0/10 | 0 % | 0.00 / 0.16 | 0.21 / 0.81 / 0.68 | 0.74 / 0.87 s / 0.09 | 68 % / 4.25 s | 7 (7) | 8 | 0 | 0 | 25 % |
+| **config ablation: v1 prompt + min_interruption 2 words / 1.0 s** | 0/10 | 0 % | 0.00 / 0.00 | 0.97 / 0.45 / 0.89 | 0.05 / 0.92 s / 0.22 | 82 % / 4.17 s | 3 (3) | 48 | 0 | 0 | 39 % |
 | *leaderboard cascaded baseline (gpt-4.1 + Deepgram, 114 tasks, paid)* | 28.9 % | 56 % | – | 0.57 / 0.50 / 0.52 | 0.99 / 0.84 s / 0.58 | 77 % / 4.02 s | – | – | – | – | – |
 
 Leaderboard numbers are from Sierra's paid gpt-4.1 + Deepgram run and are shown only as an anchor; the local
@@ -59,6 +60,10 @@ run's `sleep_gaps.json`.
   assembled an email address out of the caller's "mm-hmm" backchannels (`find_user_id_by_email("Amenhome")`) —
   behaviour 2 feeding behaviour 1. Shorter, more frequent agent turns also raised LiveKit false-interruption resumes
   to 35 and lowered R_Y/R_R: on a VAD-only stack, brevity has a turn-taking cost.
+- **Config ablation (not a prompt change, run to bound behaviour 2):** same v1 prompt with LiveKit's interruption gate
+  set to ≥ 2 words / ≥ 1.0 s — S_BC 0.26 → **0.97**, S_ND 0.71 → 0.89, but yield to genuine interruptions R_Y 0.93 → **0.05**
+  and 284 false-interruption pause/resumes. On a VAD-only stack behaviours 2 and 3 trade against each other; the panel
+  shows it, and LiveKit's adaptive interruption model is the component built to resolve it (`runs/analysis/ablation_local_bc.md`).
 - **Grounded action is the base model's dominant failure:** qwen never fabricates ids (unlike llama3.1:8b, which spoke
   JSON aloud and called `cancel_pending_order("#W0000000")` on turn one), but it narrates — "let me check your account
   now", even "your order is being cancelled" — without calling a tool (`unbacked_claims` 2 → 6 → 9 → 8).

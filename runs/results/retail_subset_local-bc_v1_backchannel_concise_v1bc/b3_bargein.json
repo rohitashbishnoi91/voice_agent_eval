@@ -1,0 +1,255 @@
+{
+  "run": "retail_subset_local-bc_v1_backchannel_concise_v1bc",
+  "targets": {
+    "R_Y": 0.95,
+    "L_Y_mean": 0.6,
+    "I_A": 0.2
+  },
+  "cascaded_baseline_row": {
+    "R_Y": 0.99,
+    "L_Y_mean": 0.84,
+    "I_A": 0.58
+  },
+  "notes": "I_A here counts agent segments starting while the user speaks, normalised by user turns (same definition as \u03c4-bench's panel; small numeric differences possible because \u03c4-bench applies its end-of-conversation filter).",
+  "by_group": {
+    "all": {
+      "R_Y": 0.047619047619047616,
+      "yield_n": 105,
+      "L_Y_mean": 0.9200000000000002,
+      "L_Y_p50": 1.2000000000000002,
+      "L_Y_p95": 1.4000000000000001,
+      "I_A": 0.03835978835978836,
+      "overlap_share": 0.18892508143322476,
+      "false_interruptions": 284,
+      "false_interruptions_resumed": 284
+    },
+    "persona=priya_patil": {
+      "R_Y": 0.019230769230769232,
+      "yield_n": 52,
+      "L_Y_mean": 1.2000000000000002,
+      "L_Y_p50": 1.2000000000000002,
+      "L_Y_p95": 1.2000000000000002,
+      "I_A": 0.021739130434782608,
+      "overlap_share": 0.23918327661643168,
+      "false_interruptions": 32,
+      "false_interruptions_resumed": 32
+    },
+    "env=indoor": {
+      "R_Y": 0.025,
+      "yield_n": 80,
+      "L_Y_mean": 1.3000000000000003,
+      "L_Y_p50": 1.2000000000000002,
+      "L_Y_p95": 1.4000000000000001,
+      "I_A": 0.05539358600583091,
+      "overlap_share": 0.21302014781816342,
+      "false_interruptions": 88,
+      "false_interruptions_resumed": 88
+    },
+    "persona=wei_lin": {
+      "R_Y": 0.1,
+      "yield_n": 10,
+      "L_Y_mean": 1.2000000000000002,
+      "L_Y_p50": 1.2000000000000002,
+      "L_Y_p95": 1.2000000000000002,
+      "I_A": 0.1271186440677966,
+      "overlap_share": 0.12390969728065675,
+      "false_interruptions": 7,
+      "false_interruptions_resumed": 7
+    },
+    "persona=mamadou_diallo": {
+      "R_Y": 0.045454545454545456,
+      "yield_n": 22,
+      "L_Y_mean": 1.4000000000000001,
+      "L_Y_p50": 1.4000000000000001,
+      "L_Y_p95": 1.4000000000000001,
+      "I_A": 0.03787878787878788,
+      "overlap_share": 0.25536,
+      "false_interruptions": 52,
+      "false_interruptions_resumed": 52
+    },
+    "persona=arjun_roy": {
+      "R_Y": 0.0,
+      "yield_n": 8,
+      "L_Y_mean": null,
+      "L_Y_p50": null,
+      "L_Y_p95": null,
+      "I_A": 0.01824817518248175,
+      "overlap_share": 0.13911845730027547,
+      "false_interruptions": 147,
+      "false_interruptions_resumed": 147
+    },
+    "env=outdoor": {
+      "R_Y": 0.12,
+      "yield_n": 25,
+      "L_Y_mean": 0.6666666666666667,
+      "L_Y_p50": 0.6000000000000001,
+      "L_Y_p95": 1.2000000000000002,
+      "I_A": 0.024213075060532687,
+      "overlap_share": 0.15496575342465754,
+      "false_interruptions": 196,
+      "false_interruptions_resumed": 196
+    },
+    "persona=mildred_kaplan": {
+      "R_Y": 0.15384615384615385,
+      "yield_n": 13,
+      "L_Y_mean": 0.4,
+      "L_Y_p50": 0.2,
+      "L_Y_p95": 0.6000000000000001,
+      "I_A": 0.010638297872340425,
+      "overlap_share": 0.19830028328611898,
+      "false_interruptions": 46,
+      "false_interruptions_resumed": 46
+    }
+  },
+  "per_simulation": {
+    "1bcf704d-9c07-422a-a23f-ba27b8d20e02": {
+      "task_id": "8",
+      "persona": "priya_patil",
+      "environment": "indoor",
+      "yield_n": 0,
+      "yield_ok": 0,
+      "yield_latencies": [],
+      "agent_interrupts": 1,
+      "user_turns": 52,
+      "overlap_ticks": 201,
+      "speech_ticks": 2055,
+      "false_interruptions": 14,
+      "false_interruptions_resumed": 14
+    },
+    "33711d8b-5cb4-4644-8972-a3725ca8a08d": {
+      "task_id": "16",
+      "persona": "wei_lin",
+      "environment": "indoor",
+      "yield_n": 1,
+      "yield_ok": 0,
+      "yield_latencies": [],
+      "agent_interrupts": 9,
+      "user_turns": 36,
+      "overlap_ticks": 121,
+      "speech_ticks": 1303,
+      "false_interruptions": 3,
+      "false_interruptions_resumed": 3
+    },
+    "4b835570-f4e3-4ad5-ba96-31828d48cd2e": {
+      "task_id": "24",
+      "persona": "priya_patil",
+      "environment": "indoor",
+      "yield_n": 52,
+      "yield_ok": 1,
+      "yield_latencies": [
+        1.2000000000000002
+      ],
+      "agent_interrupts": 2,
+      "user_turns": 86,
+      "overlap_ticks": 783,
+      "speech_ticks": 2059,
+      "false_interruptions": 18,
+      "false_interruptions_resumed": 18
+    },
+    "61771a76-57c3-4dcf-9523-deb54b3fccb5": {
+      "task_id": "22",
+      "persona": "mamadou_diallo",
+      "environment": "indoor",
+      "yield_n": 8,
+      "yield_ok": 0,
+      "yield_latencies": [],
+      "agent_interrupts": 2,
+      "user_turns": 52,
+      "overlap_ticks": 316,
+      "speech_ticks": 1075,
+      "false_interruptions": 12,
+      "false_interruptions_resumed": 12
+    },
+    "7212f2c7-de67-4317-bfe2-42bd6a9be6cd": {
+      "task_id": "19",
+      "persona": "arjun_roy",
+      "environment": "outdoor",
+      "yield_n": 6,
+      "yield_ok": 0,
+      "yield_latencies": [],
+      "agent_interrupts": 4,
+      "user_turns": 167,
+      "overlap_ticks": 265,
+      "speech_ticks": 1845,
+      "false_interruptions": 102,
+      "false_interruptions_resumed": 102
+    },
+    "7fe81925-0eac-4c22-ae14-fa31af16eb50": {
+      "task_id": "7",
+      "persona": "mamadou_diallo",
+      "environment": "indoor",
+      "yield_n": 14,
+      "yield_ok": 1,
+      "yield_latencies": [
+        1.4000000000000001
+      ],
+      "agent_interrupts": 3,
+      "user_turns": 80,
+      "overlap_ticks": 482,
+      "speech_ticks": 2050,
+      "false_interruptions": 40,
+      "false_interruptions_resumed": 40
+    },
+    "997ef265-17c8-4a18-81e6-f0151a8f3182": {
+      "task_id": "14",
+      "persona": "mildred_kaplan",
+      "environment": "outdoor",
+      "yield_n": 13,
+      "yield_ok": 2,
+      "yield_latencies": [
+        0.2,
+        0.6000000000000001
+      ],
+      "agent_interrupts": 1,
+      "user_turns": 94,
+      "overlap_ticks": 420,
+      "speech_ticks": 2118,
+      "false_interruptions": 46,
+      "false_interruptions_resumed": 46
+    },
+    "c5020e88-94a1-44a9-baa3-be90666c2a0e": {
+      "task_id": "6",
+      "persona": "wei_lin",
+      "environment": "outdoor",
+      "yield_n": 4,
+      "yield_ok": 1,
+      "yield_latencies": [
+        1.2000000000000002
+      ],
+      "agent_interrupts": 4,
+      "user_turns": 45,
+      "overlap_ticks": 161,
+      "speech_ticks": 1260,
+      "false_interruptions": 3,
+      "false_interruptions_resumed": 3
+    },
+    "c92adc1e-1083-4168-a263-7180e19eef2c": {
+      "task_id": "4",
+      "persona": "arjun_roy",
+      "environment": "outdoor",
+      "yield_n": 2,
+      "yield_ok": 0,
+      "yield_latencies": [],
+      "agent_interrupts": 1,
+      "user_turns": 107,
+      "overlap_ticks": 240,
+      "speech_ticks": 1785,
+      "false_interruptions": 45,
+      "false_interruptions_resumed": 45
+    },
+    "ff7fa0f9-3784-43cc-911c-732120e37ce6": {
+      "task_id": "23",
+      "persona": "wei_lin",
+      "environment": "indoor",
+      "yield_n": 5,
+      "yield_ok": 0,
+      "yield_latencies": [],
+      "agent_interrupts": 2,
+      "user_turns": 37,
+      "overlap_ticks": 201,
+      "speech_ticks": 1335,
+      "false_interruptions": 1,
+      "false_interruptions_resumed": 1
+    }
+  }
+}

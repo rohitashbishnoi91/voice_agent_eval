@@ -1,0 +1,52 @@
+{
+  "version": "1.0",
+  "config": {
+    "tick_duration_sec": 0.2,
+    "no_yield_window_sec": 2.0,
+    "backchannel_yield_window_sec": 1.0,
+    "vocal_tic_yield_window_sec": 1.0,
+    "non_directed_yield_window_sec": 1.0,
+    "vocal_tic_response_window_sec": 2.0,
+    "non_directed_response_window_sec": 2.0
+  },
+  "domains": {
+    "retail": {
+      "response_latency_mean": 4.1735849056603795,
+      "yield_latency_mean": 0.9200000000000003,
+      "response_rate": 0.8153846153846154,
+      "yield_rate": 0.047619047619047616,
+      "agent_interruption_rate": 0.2230769230769231,
+      "selectivity_backchannel": 0.9696969696969697,
+      "selectivity_vocal_tic": 0.45238095238095233,
+      "selectivity_non_directed": 0.8888888888888888,
+      "counts": {
+        "n_simulations": 10,
+        "response_total": 130,
+        "yield_total": 105,
+        "backchannel_total": 264,
+        "vocal_tic_total": 42,
+        "non_directed_total": 18,
+        "agent_interrupts_count": 29
+      }
+    }
+  },
+  "overall": {
+    "response_latency_mean": 4.1735849056603795,
+    "yield_latency_mean": 0.9200000000000003,
+    "response_rate": 0.8153846153846154,
+    "yield_rate": 0.047619047619047616,
+    "agent_interruption_rate": 0.2230769230769231,
+    "selectivity_backchannel": 0.9696969696969697,
+    "selectivity_vocal_tic": 0.45238095238095233,
+    "selectivity_non_directed": 0.8888888888888888,
+    "counts": {
+      "agent_interrupts_count": 29,
+      "backchannel_total": 264,
+      "n_simulations": 10,
+      "non_directed_total": 18,
+      "response_total": 130,
+      "vocal_tic_total": 42,
+      "yield_total": 105
+    }
+  }
+}

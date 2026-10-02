@@ -14,7 +14,8 @@ from pathlib import Path
 
 LABELS = {"v0_tau_cascaded": "v0 (τ-bench prompt)", "v1_backchannel_concise": "v1 backchannels+brevity",
           "v2_identifier_readback": "v2 identifier read-back", "v3_authenticate_first": "v3 + authenticate first",
-          "v4_saying_is_not_doing": "v4 + saying is not doing"}
+          "v4_saying_is_not_doing": "v4 + saying is not doing",
+          "local-bc_v1": "config ablation: v1 prompt + min_interruption 2 words / 1.0 s"}
 
 
 def load(d: Path) -> dict:
@@ -28,7 +29,7 @@ def load(d: Path) -> dict:
     rewards = [x.get("reward") or 0 for x in ins]
     row = {
         "run": d.name,
-        "label": next((v for k, v in LABELS.items() if k in d.name), d.name),
+        "label": next((v for k, v in LABELS.items() if k in d.name and not (k.startswith("v1_") and "local-bc" in d.name)), d.name),
         "n": len(ins),
         "pass1": sum(1 for r in rewards if r >= 1.0),
         "auth": b1.get("auth_success_rate"),
